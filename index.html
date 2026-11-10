@@ -19,11 +19,9 @@
 
   <style>
     body { -webkit-tap-highlight-color: transparent; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-24 select-none">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-24">
 
   <!-- Header App -->
   <header class="bg-slate-800/90 backdrop-blur sticky top-0 z-50 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
@@ -34,7 +32,7 @@
         <p class="text-xs text-blue-400">Pencatatan Omset Mandiri</p>
       </div>
     </div>
-    <button onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition">
+    <button type="button" onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition cursor-pointer">
       <i class="fa-solid fa-rotate text-xs"></i>
       <span>Sync Sheets</span>
     </button>
@@ -44,7 +42,7 @@
   <main class="p-4 max-w-lg mx-auto">
 
     <!-- TAB 1: FORM INPUT OMSET -->
-    <section id="tab-input" class="tab-content active space-y-4">
+    <section id="tab-input" class="tab-section space-y-4" style="display: block;">
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
           <i class="fa-solid fa-pen-to-square"></i> Input Omset Harian
@@ -83,7 +81,7 @@
           </div>
         </div>
 
-        <button onclick="simpanCatatan()" class="w-full bg-green-600 hover:bg-green-500 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2">
+        <button type="button" onclick="simpanCatatan()" class="w-full bg-green-600 hover:bg-green-500 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-floppy-disk"></i> Simpan Catatan Harian
         </button>
       </div>
@@ -94,7 +92,7 @@
     </section>
 
     <!-- TAB 2: REKAPITULASI & PDF -->
-    <section id="tab-rekap" class="tab-content space-y-4">
+    <section id="tab-rekap" class="tab-section space-y-4" style="display: none;">
       
       <!-- Filter Siklus -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex items-center justify-between">
@@ -134,7 +132,7 @@
           </div>
         </div>
 
-        <button onclick="downloadPDF()" class="w-full bg-red-600 hover:bg-red-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+        <button type="button" onclick="downloadPDF()" class="w-full bg-red-600 hover:bg-red-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm cursor-pointer">
           <i class="fa-solid fa-file-pdf"></i> Download Laporan PDF
         </button>
       </div>
@@ -161,7 +159,7 @@
     </section>
 
     <!-- TAB 3: PENGATURAN -->
-    <section id="tab-settings" class="tab-content space-y-4">
+    <section id="tab-settings" class="tab-section space-y-4" style="display: none;">
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
           <i class="fa-solid fa-gear"></i> Pengaturan Kontrak & API
@@ -187,7 +185,7 @@
           <input type="text" id="setting-logo-url" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:border-blue-500 outline-none">
         </div>
 
-        <button onclick="simpanPengaturan()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition text-sm">
+        <button type="button" onclick="simpanPengaturan()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition text-sm cursor-pointer">
           Simpan Pengaturan
         </button>
       </div>
@@ -195,10 +193,10 @@
       <!-- Testing Tools Internal -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-2">
         <p class="text-xs text-slate-400 font-semibold uppercase">Alat Uji Coba (Testing)</p>
-        <button onclick="generateDummyData()" class="w-full bg-slate-700 hover:bg-slate-600 text-yellow-400 text-xs py-2 rounded-xl font-medium">
+        <button type="button" onclick="generateDummyData()" class="w-full bg-slate-700 hover:bg-slate-600 text-yellow-400 text-xs py-2 rounded-xl font-medium cursor-pointer">
           ⚡ Isi 5 Data Uji Coba (Siklus 1)
         </button>
-        <button onclick="clearInternalData()" class="w-full bg-red-950/60 hover:bg-red-900 text-red-400 text-xs py-2 rounded-xl font-medium border border-red-800/50">
+        <button type="button" onclick="clearInternalData()" class="w-full bg-red-950/60 hover:bg-red-900 text-red-400 text-xs py-2 rounded-xl font-medium border border-red-800/50 cursor-pointer">
           🗑️ Hapus Semua Data Internal
         </button>
       </div>
@@ -208,23 +206,59 @@
 
   <!-- Navigation Bar Bottom -->
   <nav class="fixed bottom-0 left-0 right-0 bg-slate-800/95 backdrop-blur border-t border-slate-700 flex justify-around py-2 z-50">
-    <button onclick="switchTab('tab-input')" id="nav-tab-input" class="flex flex-col items-center text-blue-400 text-xs font-medium py-1 px-3">
+    <button type="button" onclick="window.switchTab('tab-input')" id="nav-tab-input" class="flex flex-col items-center text-blue-400 text-xs font-medium py-1 px-4 cursor-pointer">
       <i class="fa-solid fa-plus-circle text-lg mb-0.5"></i>
       <span>Input</span>
     </button>
-    <button onclick="switchTab('tab-rekap')" id="nav-tab-rekap" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-3">
+    <button type="button" onclick="window.switchTab('tab-rekap')" id="nav-tab-rekap" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-4 cursor-pointer">
       <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
       <span>Rekap & PDF</span>
     </button>
-    <button onclick="switchTab('tab-settings')" id="nav-tab-settings" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-3">
+    <button type="button" onclick="window.switchTab('tab-settings')" id="nav-tab-settings" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-4 cursor-pointer">
       <i class="fa-solid fa-sliders text-lg mb-0.5"></i>
       <span>Pengaturan</span>
     </button>
   </nav>
 
-  <!-- JavaScript Engine -->
+  <!-- Global Script Engine -->
   <script>
-    // Safe Initialization with Defaults
+    // 1. DEKLARASI SWITCH TAB LANGSUNG DILAKUKAN PERTAMA KALI (DELESI KETERGANTUNGAN LOAD)
+    window.switchTab = function(tabId) {
+      const sections = document.querySelectorAll('.tab-section');
+      sections.forEach(sec => {
+        sec.style.display = 'none';
+      });
+
+      const target = document.getElementById(tabId);
+      if (target) {
+        target.style.display = 'block';
+      }
+
+      const navs = {
+        'tab-input': document.getElementById('nav-tab-input'),
+        'tab-rekap': document.getElementById('nav-tab-rekap'),
+        'tab-settings': document.getElementById('nav-tab-settings')
+      };
+
+      Object.keys(navs).forEach(id => {
+        const btn = navs[id];
+        if (btn) {
+          if (id === tabId) {
+            btn.classList.add('text-blue-400');
+            btn.classList.remove('text-slate-400');
+          } else {
+            btn.classList.remove('text-blue-400');
+            btn.classList.add('text-slate-400');
+          }
+        }
+      });
+
+      if (tabId === 'tab-rekap') {
+        renderRekap();
+      }
+    };
+
+    // Defaults Safe State
     const DEFAULT_SETTINGS = {
       gajiPerKaryawan: 1500000,
       jumlahKaryawan: 2,
@@ -253,12 +287,15 @@
       }
     }
 
-    // Window Load Event
+    // Window Init
     window.addEventListener('load', () => {
       loadInitialState();
-      
+
+      // Register / Update Service Worker
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Registration skipped', err));
+        navigator.serviceWorker.register('sw.js').then(reg => {
+          reg.update();
+        }).catch(err => console.log('SW Registration skipped', err));
       }
 
       const inputTanggal = document.getElementById('input-tanggal');
@@ -271,29 +308,7 @@
       renderRekap();
     });
 
-    // Tab Switching
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      const targetTab = document.getElementById(tabId);
-      if (targetTab) targetTab.classList.add('active');
-
-      ['tab-input', 'tab-rekap', 'tab-settings'].forEach(id => {
-        const btn = document.getElementById('nav-' + id);
-        if (btn) {
-          if (id === tabId) {
-            btn.classList.add('text-blue-400');
-            btn.classList.remove('text-slate-400');
-          } else {
-            btn.classList.remove('text-blue-400');
-            btn.classList.add('text-slate-400');
-          }
-        }
-      });
-
-      if (tabId === 'tab-rekap') renderRekap();
-    }
-
-    // Currency Formatting Helpers
+    // Formatting Helpers
     function formatRupiahInput(el) {
       if (!el) return;
       let val = el.value.replace(/[^0-9]/g, '');
@@ -422,23 +437,6 @@
             <td class="p-2 text-slate-400">${r.tanggal}</td>
             <td class="p-2 text-right font-semibold text-green-400">Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}</td>
             <td class="p-2 text-center">
-              <button onclick="hapusCatatan('${r.id}')" class="text-red-400 hover:text-red-300 p-1">
+              <button type="button" onclick="hapusCatatan('${r.id}')" class="text-red-400 hover:text-red-300 p-1 cursor-pointer">
                 <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    // Load & Save Settings
-    function loadSettingsUI() {
-      const gajiRate = settings.gajiPerKaryawan || 0;
-      document.getElementById('setting-gaji').value = 'Rp ' + gajiRate.toLocaleString('id-ID');
-      document.getElementById('setting-karyawan').value = settings.jumlahKaryawan || 0;
-      document.getElementById('setting-script-url').value = settings.scriptUrl || '';
-      document.getElementById('setting-logo-url').value = settings.logoUrl || '';
-
-      if (settings.logoUrl) {
-        const logoImg = document.getElementById('header-logo');
-        if (logoImg) logoImg.src = sett
+              
