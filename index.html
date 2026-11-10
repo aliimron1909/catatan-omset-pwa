@@ -439,4 +439,175 @@
             <td class="p-2 text-center">
               <button type="button" onclick="hapusCatatan('${r.id}')" class="text-red-400 hover:text-red-300 p-1 cursor-pointer">
                 <i class="fa-solid fa-trash-can"></i>
-              
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Load & Save Settings
+    function loadSettingsUI() {
+      const gajiRate = settings.gajiPerKaryawan || 0;
+      document.getElementById('setting-gaji').value = 'Rp ' + gajiRate.toLocaleString('id-ID');
+      document.getElementById('setting-karyawan').value = settings.jumlahKaryawan || 0;
+      document.getElementById('setting-script-url').value = settings.scriptUrl || '';
+      document.getElementById('setting-logo-url').value = settings.logoUrl || '';
+
+      if (settings.logoUrl) {
+        const logoImg = document.getElementById('header-logo');
+        if (logoImg) logoImg.src = settings.logoUrl;
+      }
+    }
+
+    function simpanPengaturan() {
+      settings.gajiPerKaryawan = parseRupiah(document.getElementById('setting-gaji').value);
+      settings.jumlahKaryawan = parseInt(document.getElementById('setting-karyawan').value, 10) || 0;
+      settings.scriptUrl = document.getElementById('setting-script-url').value.trim();
+      settings.logoUrl = document.getElementById('setting-logo-url').value.trim();
+
+      localStorage.setItem('suramadu_settings', JSON.stringify(settings));
+      loadSettingsUI();
+      alert('Pengaturan berhasil disimpan!');
+    }
+
+    // Testing & Sync Helpers
+    async function syncToGoogleSheets() {
+      if (!settings.scriptUrl) {
+        alert('URL Google Apps Script belum diisi di Pengaturan!');
+        return;
+      }
+
+      const statusEl = document.getElementById('status-sync');
+      if (statusEl) statusEl.innerText = 'Mengirim data ke Google Sheets...';
+
+      try {
+        await fetch(settings.scriptUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'syncAll', records })
+        });
+
+        if (statusEl) statusEl.innerText = 'Sinkronisasi berhasil dikirim.';
+        alert('Data dikirim ke Google Sheets!');
+      } catch (err) {
+        if (statusEl) statusEl.innerText = 'Gagal sync ke Google Sheets.';
+        alert('Gagal menyinkronkan data.');
+      }
+    }
+
+    async function sendRecordToSheets(record) {
+      if (!settings.scriptUrl) return;
+      try {
+        await fetch(settings.scriptUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'addRecord', record })
+        });
+      } catch (e) {}
+    }
+
+    function generateDummyData() {
+      records = [
+        { id: '101', tanggal: '2026-11-01', siklus: 1, hariKe: 1, omsetKotor: 1200000, tabungan: 120000, pendapatanBersih: 1080000 },
+        { id: '102', tanggal: '2026-11-02', siklus: 1, hariKe: 2, omsetKotor: 1500000, tabungan: 150000, pendapatanBersih: 1350000 },
+        { id: '103', tanggal: '2026-11-03', siklus: 1, hariKe: 3, omsetKotor: 950000,  tabungan: 95000,  pendapatanBersih: 855000 },
+        { id: '104', tanggal: '2026-11-04', siklus: 1, hariKe: 4, omsetKotor: 1800000, tabungan: 180000, pendapatanBersih: 1620000 },
+        { id: '105', tanggal: '2026-11-05', siklus: 1, hariKe: 5, omsetKotor: 2100000, tabungan: 210000, pendapatanBersih: 1890000 }
+      ];
+      localStorage.setItem('suramadu_records', JSON.stringify(records));
+      alert('5 Data uji coba berhasil dimasukkan!');
+      renderRekap();
+    }
+
+    function clearInternalData() {
+      if (confirm('Hapus seluruh catatan lokal?')) {
+        records = [];
+        localStorage.removeItem('suramadu_records');
+        alert('Penyimpanan internal telah dibersihkan.');
+        renderRekap();
+      }
+    }
+
+    // PDF Export
+    function downloadPDF() {
+      if (typeof window.jspdf === 'undefined') {
+        alert('Library PDF sedang dimuat, coba beberapa detik lagi.');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const activeSiklus = parseInt(document.getElementById('filter-siklus').value, 10) || 1;
+      const filteredRecords = records.filter(r => r.siklus === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+
+      let totalOmset = 0;
+      let totalTabungan = 0;
+      let totalBersih = 0;
+
+      filteredRecords.forEach(r => {
+        totalOmset += (r.omsetKotor || 0);
+        totalTabungan += (r.tabungan || 0);
+        totalBersih += (r.pendapatanBersih || 0);
+      });
+
+      const gajiRate = settings.gajiPerKaryawan || 0;
+      const jmlKaryawan = settings.jumlahKaryawan || 0;
+      const totalHakKaryawan = gajiRate * jmlKaryawan;
+      const sisaBoss = totalBersih - totalHakKaryawan;
+
+      doc.setFontSize(16);
+      doc.setTextColor(37, 99, 235);
+      doc.text("LAPORAN KEUANGAN WARUNG SURAMADU", 14, 20);
+
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      doc.text(`Siklus Ke: ${activeSiklus} | Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 27);
+      doc.line(14, 30, 196, 30);
+
+      const tableBody = filteredRecords.map(r => [
+        `Hari ke-${r.hariKe}`,
+        r.tanggal,
+        `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
+        `Rp ${(r.tabungan || 0).toLocaleString('id-ID')}`,
+        `Rp ${(r.pendapatanBersih || 0).toLocaleString('id-ID')}`
+      ]);
+
+      doc.autoTable({
+        startY: 35,
+        head: [['Hari', 'Tanggal', 'Omset Kotor', 'Tabungan (10%)', 'Pendapatan Bersih']],
+        body: tableBody,
+        theme: 'striped',
+        headStyles: { fillColor: [37, 99, 235] }
+      });
+
+      const finalY = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 40) + 10;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(0);
+      doc.text("Ringkasan & Formulasi Kontrak Siklus", 14, finalY);
+
+      const summaryRows = [
+        ["Total Omset Kotor", `Rp ${totalOmset.toLocaleString('id-ID')}`],
+        ["Total Tabungan Mandiri (10%)", `Rp ${totalTabungan.toLocaleString('id-ID')}`],
+        ["Total Pendapatan Bersih", `Rp ${totalBersih.toLocaleString('id-ID')}`],
+        [`Hak Karyawan (${jmlKaryawan} Org x Rp ${gajiRate.toLocaleString('id-ID')})`, `Rp ${totalHakKaryawan.toLocaleString('id-ID')}`],
+        ["Sisa Pendapatan Bersih Boss", `Rp ${sisaBoss.toLocaleString('id-ID')}`]
+      ];
+
+      doc.autoTable({
+        startY: finalY + 4,
+        body: summaryRows,
+        theme: 'plain',
+        styles: { fontSize: 10, cellPadding: 2 },
+        columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right', fontStyle: 'bold' } }
+      });
+
+      doc.save(`Laporan_Warung_Suramadu_Siklus_${activeSiklus}.pdf`);
+    }
+  </script>
+</body>
+</html>
