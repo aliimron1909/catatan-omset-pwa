@@ -23,18 +23,18 @@
     .tab-content.active { display: block; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-20 select-none">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-24 select-none">
 
   <!-- Header App -->
   <header class="bg-slate-800/90 backdrop-blur sticky top-0 z-50 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <img id="header-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-9 h-9 rounded-lg shadow" alt="Logo">
+      <img id="header-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-9 h-9 rounded-lg shadow" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
       <div>
         <h1 class="font-bold text-lg leading-tight text-white">Warung Suramadu</h1>
         <p class="text-xs text-blue-400">Pencatatan Omset Mandiri</p>
       </div>
     </div>
-    <button onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition">
+    <button onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition">
       <i class="fa-solid fa-rotate text-xs"></i>
       <span>Sync Sheets</span>
     </button>
@@ -52,17 +52,17 @@
 
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Tanggal Operasional</label>
-          <input type="date" id="input-tanggal" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:border-blue-500 outline-none">
+          <input type="date" id="input-tanggal" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-medium text-slate-400 mb-1">Siklus Ke-</label>
-            <input type="number" id="input-siklus" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:border-blue-500 outline-none">
+            <input type="number" id="input-siklus" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
           </div>
           <div>
             <label class="block text-xs font-medium text-slate-400 mb-1">Hari Ke- (Dalam Siklus)</label>
-            <input type="number" id="input-hari" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:border-blue-500 outline-none">
+            <input type="number" id="input-hari" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
           </div>
         </div>
 
@@ -83,14 +83,13 @@
           </div>
         </div>
 
-        <button onclick="simpanCatatan()" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2">
+        <button onclick="simpanCatatan()" class="w-full bg-green-600 hover:bg-green-500 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2">
           <i class="fa-solid fa-floppy-disk"></i> Simpan Catatan Harian
         </button>
       </div>
 
-      <!-- Quick Info / Status -->
       <div id="status-sync" class="text-xs text-center text-slate-400">
-        Data tersimpan lokal (Offline Ready)
+        Penyimpanan internal aktif (Offline Ready)
       </div>
     </section>
 
@@ -101,7 +100,7 @@
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex items-center justify-between">
         <label class="text-sm font-medium text-slate-300">Pilih Siklus:</label>
         <select id="filter-siklus" onchange="renderRekap()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-blue-400 font-semibold outline-none">
-          <!-- Dynamic Options -->
+          <option value="1">Siklus 1</option>
         </select>
       </div>
 
@@ -135,7 +134,7 @@
           </div>
         </div>
 
-        <button onclick="downloadPDF()" class="w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+        <button onclick="downloadPDF()" class="w-full bg-red-600 hover:bg-red-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
           <i class="fa-solid fa-file-pdf"></i> Download Laporan PDF
         </button>
       </div>
@@ -154,7 +153,6 @@
               </tr>
             </thead>
             <tbody id="tabel-catatan" class="divide-y divide-slate-700">
-              <!-- Dynamic Rows -->
             </tbody>
           </table>
         </div>
@@ -180,7 +178,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">URL Web App Google Apps Script</label>
+          <label class="block text-xs font-medium text-slate-400 mb-1">URL Web App Google Apps Script (Opsional)</label>
           <input type="text" id="setting-script-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:border-blue-500 outline-none">
         </div>
 
@@ -189,7 +187,261 @@
           <input type="text" id="setting-logo-url" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:border-blue-500 outline-none">
         </div>
 
-        <button onclick="simpanPengaturan()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-xl shadow transition text-sm">
+        <button onclick="simpanPengaturan()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition text-sm">
+          Simpan Pengaturan
+        </button>
+      </div>
+
+      <!-- Testing Tools Internal -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-2">
+        <p class="text-xs text-slate-400 font-semibold uppercase">Alat Uji Coba (Testing)</p>
+        <button onclick="generateDummyData()" class="w-full bg-slate-700 hover:bg-slate-600 text-yellow-400 text-xs py-2 rounded-xl font-medium">
+          ⚡ Isi 5 Data Uji Coba (Siklus 1)
+        </button>
+        <button onclick="clearInternalData()" class="w-full bg-red-950/60 hover:bg-red-900 text-red-400 text-xs py-2 rounded-xl font-medium border border-red-800/50">
+          🗑️ Hapus Semua Data Internal
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Navigation Bar Bottom -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-slate-800/95 backdrop-blur border-t border-slate-700 flex justify-around py-2 z-50">
+    <button onclick="switchTab('tab-input')" id="nav-tab-input" class="flex flex-col items-center text-blue-400 text-xs font-medium py-1 px-3">
+      <i class="fa-solid fa-plus-circle text-lg mb-0.5"></i>
+      <span>Input</span>
+    </button>
+    <button onclick="switchTab('tab-rekap')" id="nav-tab-rekap" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-3">
+      <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
+      <span>Rekap & PDF</span>
+    </button>
+    <button onclick="switchTab('tab-settings')" id="nav-tab-settings" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-3">
+      <i class="fa-solid fa-sliders text-lg mb-0.5"></i>
+      <span>Pengaturan</span>
+    </button>
+  </nav>
+
+  <!-- JavaScript Engine -->
+  <script>
+    // Safe Initialization with Defaults
+    const DEFAULT_SETTINGS = {
+      gajiPerKaryawan: 1500000,
+      jumlahKaryawan: 2,
+      scriptUrl: '',
+      logoUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+    };
+
+    let records = [];
+    let settings = { ...DEFAULT_SETTINGS };
+
+    function loadInitialState() {
+      try {
+        const savedRecords = localStorage.getItem('suramadu_records');
+        if (savedRecords) records = JSON.parse(savedRecords) || [];
+      } catch (e) {
+        records = [];
+      }
+
+      try {
+        const savedSettings = localStorage.getItem('suramadu_settings');
+        if (savedSettings) {
+          settings = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(savedSettings));
+        }
+      } catch (e) {
+        settings = { ...DEFAULT_SETTINGS };
+      }
+    }
+
+    // Window Load Event
+    window.addEventListener('load', () => {
+      loadInitialState();
+      
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Registration skipped', err));
+      }
+
+      const inputTanggal = document.getElementById('input-tanggal');
+      if (inputTanggal) {
+        const today = new Date().toISOString().split('T')[0];
+        inputTanggal.value = today;
+      }
+
+      loadSettingsUI();
+      renderRekap();
+    });
+
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) targetTab.classList.add('active');
+
+      ['tab-input', 'tab-rekap', 'tab-settings'].forEach(id => {
+        const btn = document.getElementById('nav-' + id);
+        if (btn) {
+          if (id === tabId) {
+            btn.classList.add('text-blue-400');
+            btn.classList.remove('text-slate-400');
+          } else {
+            btn.classList.remove('text-blue-400');
+            btn.classList.add('text-slate-400');
+          }
+        }
+      });
+
+      if (tabId === 'tab-rekap') renderRekap();
+    }
+
+    // Currency Formatting Helpers
+    function formatRupiahInput(el) {
+      if (!el) return;
+      let val = el.value.replace(/[^0-9]/g, '');
+      el.value = val ? 'Rp ' + parseInt(val, 10).toLocaleString('id-ID') : '';
+    }
+
+    function parseRupiah(str) {
+      if (!str) return 0;
+      return parseInt(str.toString().replace(/[^0-9]/g, ''), 10) || 0;
+    }
+
+    function formatAndCalculate(el) {
+      formatRupiahInput(el);
+      const omset = parseRupiah(el.value);
+      const tabungan = Math.round(omset * 0.10);
+      const bersih = omset - tabungan;
+
+      document.getElementById('preview-tabungan').innerText = 'Rp ' + tabungan.toLocaleString('id-ID');
+      document.getElementById('preview-bersih').innerText = 'Rp ' + bersih.toLocaleString('id-ID');
+    }
+
+    // Input Save Record
+    function simpanCatatan() {
+      const tanggal = document.getElementById('input-tanggal').value;
+      const siklus = parseInt(document.getElementById('input-siklus').value, 10) || 1;
+      const hariKe = parseInt(document.getElementById('input-hari').value, 10) || 1;
+      const omsetKotor = parseRupiah(document.getElementById('input-omset').value);
+
+      if (!tanggal || omsetKotor <= 0) {
+        alert('Mohon masukkan tanggal dan nominal omset kotor!');
+        return;
+      }
+
+      const tabungan = Math.round(omsetKotor * 0.10);
+      const pendapatanBersih = omsetKotor - tabungan;
+
+      const newRecord = {
+        id: Date.now().toString(),
+        tanggal,
+        siklus,
+        hariKe,
+        omsetKotor,
+        tabungan,
+        pendapatanBersih
+      };
+
+      records.push(newRecord);
+      localStorage.setItem('suramadu_records', JSON.stringify(records));
+
+      document.getElementById('input-omset').value = '';
+      document.getElementById('preview-tabungan').innerText = 'Rp 0';
+      document.getElementById('preview-bersih').innerText = 'Rp 0';
+      document.getElementById('input-hari').value = hariKe + 1;
+
+      alert('Catatan omset berhasil disimpan di HP!');
+      
+      if (settings.scriptUrl) {
+        sendRecordToSheets(newRecord);
+      }
+    }
+
+    function hapusCatatan(id) {
+      if (confirm('Hapus catatan ini?')) {
+        records = records.filter(item => item.id !== id);
+        localStorage.setItem('suramadu_records', JSON.stringify(records));
+        renderRekap();
+      }
+    }
+
+    // Render Tab Rekapitulasi
+    function renderRekap() {
+      const selectSiklus = document.getElementById('filter-siklus');
+      if (!selectSiklus) return;
+
+      const allSiklus = [...new Set(records.map(r => r.siklus))].sort((a, b) => b - a);
+      const currentSelected = selectSiklus.value ? parseInt(selectSiklus.value, 10) : (allSiklus[0] || 1);
+      
+      selectSiklus.innerHTML = '';
+      if (allSiklus.length === 0) {
+        selectSiklus.innerHTML = '<option value="1">Siklus 1</option>';
+      } else {
+        allSiklus.forEach(s => {
+          selectSiklus.innerHTML += `<option value="${s}" ${s === currentSelected ? 'selected' : ''}>Siklus ${s}</option>`;
+        });
+      }
+
+      const activeSiklus = parseInt(selectSiklus.value, 10) || 1;
+      const filteredRecords = records.filter(r => r.siklus === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+
+      let totalOmset = 0;
+      let totalTabungan = 0;
+      let totalBersih = 0;
+
+      filteredRecords.forEach(r => {
+        totalOmset += (r.omsetKotor || 0);
+        totalTabungan += (r.tabungan || 0);
+        totalBersih += (r.pendapatanBersih || 0);
+      });
+
+      const gajiRate = settings.gajiPerKaryawan || 0;
+      const jmlKaryawan = settings.jumlahKaryawan || 0;
+      const totalHakKaryawan = gajiRate * jmlKaryawan;
+      const sisaBoss = totalBersih - totalHakKaryawan;
+
+      document.getElementById('rekap-omset').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
+      document.getElementById('rekap-tabungan').innerText = 'Rp ' + totalTabungan.toLocaleString('id-ID');
+      document.getElementById('rekap-bersih').innerText = 'Rp ' + totalBersih.toLocaleString('id-ID');
+      
+      document.getElementById('rekap-karyawan-count').innerText = jmlKaryawan;
+      document.getElementById('rekap-gaji-rate').innerText = gajiRate.toLocaleString('id-ID');
+      document.getElementById('rekap-total-gaji').innerText = 'Rp ' + totalHakKaryawan.toLocaleString('id-ID');
+      document.getElementById('rekap-bagian-boss').innerText = 'Rp ' + sisaBoss.toLocaleString('id-ID');
+
+      const tbody = document.getElementById('tabel-catatan');
+      tbody.innerHTML = '';
+
+      if (filteredRecords.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-slate-500">Belum ada catatan untuk siklus ini.</td></tr>';
+        return;
+      }
+
+      filteredRecords.forEach(r => {
+        tbody.innerHTML += `
+          <tr>
+            <td class="p-2 font-medium">Hari ${r.hariKe}</td>
+            <td class="p-2 text-slate-400">${r.tanggal}</td>
+            <td class="p-2 text-right font-semibold text-green-400">Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}</td>
+            <td class="p-2 text-center">
+              <button onclick="hapusCatatan('${r.id}')" class="text-red-400 hover:text-red-300 p-1">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Load & Save Settings
+    function loadSettingsUI() {
+      const gajiRate = settings.gajiPerKaryawan || 0;
+      document.getElementById('setting-gaji').value = 'Rp ' + gajiRate.toLocaleString('id-ID');
+      document.getElementById('setting-karyawan').value = settings.jumlahKaryawan || 0;
+      document.getElementById('setting-script-url').value = settings.scriptUrl || '';
+      document.getElementById('setting-logo-url').value = settings.logoUrl || '';
+
+      if (settings.logoUrl) {
+        const logoImg = document.getElementById('header-logo');
+        if (logoImg) logoImg.src = sett       <button onclick="simpanPengaturan()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-xl shadow transition text-sm">
           Simpan Pengaturan
         </button>
       </div>
