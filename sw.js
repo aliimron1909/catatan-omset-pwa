@@ -1,11 +1,10 @@
-const CACHE_NAME = 'suramadu-omset-v3';
+const CACHE_NAME = 'suramadu-omset-v4';
 const LOCAL_ASSETS = [
   './',
   './index.html',
   './manifest.json'
 ];
 
-// Force Install & Skip Waiting
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -13,7 +12,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Clear Old Caches Immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -28,7 +26,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Network First for HTML, Cache Fallback for Offline
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
