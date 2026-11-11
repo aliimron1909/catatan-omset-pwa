@@ -69,7 +69,7 @@
       <button type="button" onclick="backspacePin()" class="h-13 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-bold text-lg rounded-2xl border border-slate-800 transition"><i class="fa-solid fa-backspace"></i></button>
     </div>
 
-    <!-- Opsi Biometrik / Sidik Jari ganda -->
+    <!-- Opsi Biometrik / Sidik Jari -->
     <div class="flex flex-col gap-2 w-64">
       <button type="button" onclick="authenticateBiometrics()" class="w-full flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-semibold py-2.5 px-3 bg-blue-950/60 border border-blue-800/60 rounded-xl transition active:scale-95 cursor-pointer">
         <i class="fa-solid fa-fingerprint text-base"></i>
@@ -628,7 +628,7 @@
       document.getElementById('lock-screen').style.display = 'flex';
     }
 
-    // Penanganan Biometrik / Sidik Jari (Kunci Sandi WebAuthn)
+    // Penanganan Biometrik / Sidik Jari (Smart Fallback Tanpa Pop-up Error)
     async function authenticateBiometrics() {
       if (!window.PublicKeyCredential || !navigator.credentials) {
         alert('Perangkat atau browser Anda tidak mendukung fitur biometrik/sidik jari. Silakan gunakan PIN.');
@@ -637,13 +637,13 @@
 
       const isRegistered = localStorage.getItem('suramadu_passkey_registered');
 
-      if (!isRegistered || isRegistered !== 'true') {
-        if (confirm('Sidik jari belum terdaftar di HP ini untuk web aplikasi ini.\n\nKlik OK untuk mendaftarkan Sidik Jari sekarang.')) {
-          await registerBiometrics();
-        }
+      // Jika durasi registrasi belum ada di browser ini, langsung alihkan ke registerBiometrics()
+      if (isRegistered !== 'true') {
+        await registerBiometrics();
         return;
       }
 
+      // Jika sudah terdaftar di memori, coba lakukan verifikasi get()
       try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
@@ -664,10 +664,9 @@
         }
       } catch (err) {
         console.error('Biometric auth error:', err);
-        if (err.name === 'NotAllowedError') return;
-
-        if (confirm('Verifikasi sidik jari gagal atau belum tersimpan di HP ini.\n\nDaftarkan ulang Sidik Jari sekarang?')) {
-          localStorage.removeItem('suramadu_passkey_registered');
+        // Jika kunci sandi di Android ternyata belum ada / terhapus, otomatis alihkan ke registerBiometrics()
+        localStorage.removeItem('suramadu_passkey_registered');
+        if (err.name !== 'NotAllowedError') {
           await registerBiometrics();
         }
       }
@@ -711,7 +710,7 @@
 
         if (credential) {
           localStorage.setItem('suramadu_passkey_registered', 'true');
-          alert('✅ Sidik Jari berhasil didaftarkan! Layar kunci terbuka.');
+          alert('✅ Sidik Jari berhasil didaftarkan! Aplikasi terbuka.');
           document.getElementById('lock-screen').style.display = 'none';
           enteredPin = '';
           updatePinDots();
@@ -720,7 +719,7 @@
       } catch (err) {
         console.error('Biometric reg error:', err);
         if (err.name !== 'NotAllowedError') {
-          alert('Gagal mendaftarkan sidik jari: ' + (err.message || 'Silakan coba gunakan PIN.'));
+          alert('Gagal mendaftarkan sidik jari. Silakan gunakan PIN 4-digit.');
         }
       }
     }
@@ -1564,7 +1563,7 @@
       doc.setTextColor(...primaryNavy);
       doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 141, boxY + 11.5);
 
-      // 4. Tabel Rincian Omset Harian (Kolom Hari Berisi Nama Hari Murni)
+      // 4. Tabel Rincian Omset Harian (Nama Hari Murni)
       const tableBody = filteredRecords.map((r, i) => {
         const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
         return [
@@ -1595,7 +1594,7 @@
         footStyles: { fillColor: [239, 246, 255], textColor: primaryNavy, fontStyle: 'bold' }
       });
 
-      // 5. Formulasi Bagi Hasil & Alokasi Pendapatan (2 Kolom Berdampingan)
+      // 5. Formulasi Bagi Hasil & Alokasi Pendapatan
       const formY = doc.lastAutoTable.finalY + 6;
 
       doc.setFont("helvetica", "bold");
