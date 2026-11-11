@@ -1,21 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="100" fill="#0f172a"/>
-  <rect x="56" y="420" width="400" height="24" rx="6" fill="#1e293b"/>
-  <rect x="80" y="210" width="352" height="210" fill="#facc15"/>
-  <rect x="115" y="235" width="160" height="120" fill="#e11d48" rx="4"/>
-  <rect x="123" y="243" width="68" height="48" fill="#7dd3fc"/>
-  <rect x="199" y="243" width="68" height="48" fill="#7dd3fc"/>
-  <rect x="123" y="299" width="144" height="48" fill="#7dd3fc"/>
-  <rect x="310" y="235" width="105" height="185" fill="#dc2626" rx="4"/>
-  <circle cx="328" cy="335" r="7" fill="#ffffff"/>
-  <path d="M 96 110 L 416 110 A 20 20 0 0 1 436 130 L 448 180 L 64 180 L 76 130 A 20 20 0 0 1 96 110 Z" fill="#1e293b"/>
-  <g id="awning">
-    <path d="M 64 180 L 118 180 C 118 215, 64 215, 64 180 Z" fill="#dc2626"/>
-    <path d="M 118 180 L 172 180 C 172 215, 118 215, 118 180 Z" fill="#cbd5e1"/>
-    <path d="M 172 180 L 226 180 C 226 215, 172 215, 172 180 Z" fill="#dc2626"/>
-    <path d="M 226 180 L 280 180 C 280 215, 226 215, 226 180 Z" fill="#cbd5e1"/>
-    <path d="M 280 180 L 334 180 C 334 215, 280 215, 280 180 Z" fill="#dc2626"/>
-    <path d="M 334 180 L 388 180 C 388 215, 334 215, 334 180 Z" fill="#cbd5e1"/>
-    <path d="M 388 180 L 448 180 C 448 215, 388 215, 388 180 Z" fill="#dc2626"/>
-  </g>
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+
+    <!-- Gold Metallic Gradient -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+
+    <!-- Cyan Blue Accent Gradient -->
+    <linearGradient id="blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas Squircle (Sudut Membulat Beranda HP) -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  
+  <!-- Border Halus -->
+  <rect width="502" height="502" x="5" y="5" rx="107" fill="none" stroke="url(#gold)" stroke-width="2.5" opacity="0.3"/>
+
+  <!-- Cahaya Background (Subtle Glow) -->
+  <circle cx="256" cy="256" r="160" fill="#2563eb" opacity="0.12"/>
+
+  <!-- GRAPH BARS (Grafik Keuangan / Badan Toko) -->
+  <!-- Bar 1 (Kiri) -->
+  <rect x="136" y="290" width="48" height="100" rx="12" fill="url(#blue)" opacity="0.6"/>
+  <!-- Bar 2 (Tengah Kiri) -->
+  <rect x="204" y="250" width="48" height="140" rx="12" fill="url(#blue)" opacity="0.85"/>
+  <!-- Bar 3 (Tengah Kanan) -->
+  <rect x="272" y="210" width="48" height="180" rx="12" fill="url(#blue)"/>
+  <!-- Bar 4 (Kanan / Puncak Omset) -->
+  <rect x="340" y="150" width="48" height="240" rx="12" fill="url(#gold)"/>
+
+  <!-- ATAP WARUNG ELEGAN (Golden Canopy / Awning) -->
+  <path d="M 96 170 C 96 155 108 145 125 145 L 387 145 C 404 145 416 155 416 170 C 416 182 406 195 390 195 C 374 195 364 182 352 182 C 340 182 330 195 314 195 C 298 195 288 182 276 182 C 264 182 254 195 238 195 C 222 195 212 182 200 182 C 188 182 178 195 162 195 C 146 195 136 182 124 182 C 112 182 96 182 96 170 Z" fill="url(#gold)"/>
+
+  <!-- GARIS TREN PERTUMBUHAN (Gold Trendline Arrow) -->
+  <path d="M 120 320 Q 220 280 290 200 T 400 115" fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+  <!-- Ujung Panah -->
+  <path d="M 365 112 L 405 112 L 405 152" fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- AKSEN BINTANG SUKSES (Sparkle) -->
+  <path d="M 405 100 L 410 80 L 430 75 L 410 70 L 405 50 L 400 70 L 380 75 L 400 80 Z" fill="#fef08a"/>
 </svg>
