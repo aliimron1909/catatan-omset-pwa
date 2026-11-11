@@ -477,12 +477,12 @@
     // State & Defaults
     const DEFAULT_SETTINGS = {
       namaWarung: 'Warung Suramadu',
-      alamatWarung: 'Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur',
+      alamatWarung: 'Jl. Raya Bangilan No. 100, Tuban, Jawa Timur',
       hpWarung: '0812-3456-7890',
-      namaBoss: 'Ali Imron',
-      namaKaryawan1: 'Karyawan 1',
-      namaKaryawan2: 'Karyawan 2',
-      gajiPerKaryawan: 1500000,
+      namaBoss: 'Bbd. Rasid',
+      namaKaryawan1: 'Ali Imron',
+      namaKaryawan2: 'Hosnol Fawaid',
+      gajiPerKaryawan: 1250000,
       jumlahKaryawan: 2,
       scriptUrl: '',
       persentaseTabungan: 10,
@@ -550,13 +550,24 @@
       }
     }
 
+     // Helper merapikan tanggal menjadi YYYY-MM-DD
+    function cleanDateStr(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return String(dateStr).split('T')[0];
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Helper Mengambil Nama Hari
     function getHariNameFromDate(dateStr) {
       if (!dateStr) return '';
-      const d = new Date(dateStr + 'T00:00:00');
+      const d = new Date(dateStr);
       if (isNaN(d.getTime())) return '';
       return HARI_NAMES[d.getDay()];
     }
-
     window.addEventListener('load', () => {
       loadInitialState();
 
@@ -877,11 +888,12 @@
         const expNominal = r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-';
         const expLabel = r.catatanPengeluaran ? `<br><span class="text-[9px] text-purple-300">(${r.catatanPengeluaran})</span>` : '';
         const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
+        const cleanTanggal = cleanDateStr(r.tanggal);
 
         tbody.innerHTML += `
           <tr>
             <td class="p-2 text-center font-bold text-slate-400">${filteredRecords.length - idx}</td>
-            <td class="p-2 text-slate-300">${r.tanggal}</td>
+            <td class="p-2 text-slate-300">${cleanTanggal}</td>
             <td class="p-2 font-medium text-blue-300">${namaHariOnly}</td>
             <td class="p-2 text-right font-semibold text-green-400">Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}</td>
             <td class="p-2 text-right text-purple-400">${expNominal}${expLabel}</td>
