@@ -133,7 +133,22 @@
 
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Tanggal Operasional (Max 1x Input/Hari)</label>
-          <input type="date" id="input-tanggal" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+          <input type="date" id="input-tanggal" onchange="checkDateAlreadyInput()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <!-- Keterangan Banner Jika Tanggal Sudah Pernah Di-input -->
+        <div id="box-already-input" class="hidden bg-amber-950/80 border border-amber-600/70 p-3.5 rounded-xl text-xs space-y-2">
+          <div class="flex items-center justify-between text-amber-300 font-semibold">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-info text-amber-400 text-sm"></i>
+              <span id="already-input-text">Tanggal ini sudah di-input</span>
+            </span>
+            <span id="already-input-omset" class="text-emerald-400 font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-700"></span>
+          </div>
+          <p class="text-[11px] text-slate-300">Data omset untuk tanggal ini sudah tercatat. Jika ada perubahan, silakan tekan tombol edit di bawah ini.</p>
+          <button type="button" id="btn-edit-existing" onclick="editCatatanTanggalIni()" class="w-full bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-semibold py-2 rounded-lg transition text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Catatan Tanggal Ini
+          </button>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -440,17 +455,22 @@
     const DEFAULT_STORE_ICON = "./icon.svg";
 
     // Helper Format Tanggal menjadi DD-MM-YYYY (Contoh: 11-11-2026)
-        function formatDateDDMMYYYY(dateStr) {
+    function formatDateDDMMYYYY(dateStr) {
       if (!dateStr) return '-';
-      let str = String(dateStr).trim().split('T')[0].split(' ')[0];
+      let str = String(dateStr).trim();
       
-      // 1. Jika format YYYY-MM-DD (misal: 2026-03-26) -> Ubah langsung ke DD-MM-YYYY
-      const parts = str.split('-');
-      if (parts.length === 3 && parts[0].length === 4) {
-        return `${parts[2].padStart(2, '0')}-${parts[1].padStart(2, '0')}-${parts[0]}`;
+      const partsId = str.split(/[-/]/);
+      if (partsId.length === 3 && partsId[2].length === 4) {
+        return `${partsId[0].padStart(2, '0')}-${partsId[1].padStart(2, '0')}-${partsId[2]}`;
       }
       
-      // 2. Jika format teks tanggal panjang / GMT
+      if (partsId.length === 3 && partsId[0].length === 4) {
+        const day = partsId[2].split('T')[0].split(' ')[0].padStart(2, '0');
+        const month = partsId[1].padStart(2, '0');
+        const year = partsId[0];
+        return `${day}-${month}-${year}`;
+      }
+      
       const d = new Date(dateStr);
       if (!isNaN(d.getTime())) {
         const day = String(d.getDate()).padStart(2, '0');
@@ -460,6 +480,30 @@
       }
       
       return str;
+    }
+
+    // Helper merapikan tanggal menjadi YYYY-MM-DD (khusus standar input type="date")
+    function cleanDateStr(dateStr) {
+      if (!dateStr) return '';
+      let str = String(dateStr).trim();
+
+      const partsId = str.split(/[-/]/);
+      if (partsId.length === 3 && partsId[2].length === 4) {
+        return `${partsId[2]}-${partsId[1].padStart(2, '0')}-${partsId[0].padStart(2, '0')}`;
+      }
+
+      if (partsId.length === 3 && partsId[0].length === 4) {
+        return `${partsId[0]}-${partsId[1].padStart(2, '0')}-${partsId[2].split('T')[0].split(' ')[0].padStart(2, '0')}`;
+      }
+
+      const d = new Date(dateStr);
+      if (!isNaN(d.getTime())) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+      return '';
     }
 
     // Helper Menentukan Tanggal Input Selanjutnya (+1 hari dari input terakhir / hari berjalan)
@@ -486,6 +530,45 @@
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
+    }
+
+    // Helper Mengecek Apakah Tanggal di Form Input Sudah Pernah Di-input
+    function checkDateAlreadyInput() {
+      const editingId = document.getElementById('editing-id').value;
+      const inputTanggal = document.getElementById('input-tanggal');
+      const boxBanner = document.getElementById('box-already-input');
+      if (!inputTanggal || !boxBanner) return;
+
+      const selectedDateStr = cleanDateStr(inputTanggal.value);
+      if (!selectedDateStr) {
+        boxBanner.classList.add('hidden');
+        return;
+      }
+
+      // Cari apakah tanggal yang dipilih sudah ada di records (dan bukan record yang sedang di-edit)
+      const existingRecord = records.find(r => cleanDateStr(r.tanggal) === selectedDateStr && r.id !== editingId);
+
+      if (existingRecord) {
+        const tglFormatted = formatDateDDMMYYYY(existingRecord.tanggal);
+        const textEl = document.getElementById('already-input-text');
+        const omsetEl = document.getElementById('already-input-omset');
+        if (textEl) textEl.innerText = `Tanggal ${tglFormatted} sudah di-input`;
+        if (omsetEl) omsetEl.innerText = `Rp ${(existingRecord.omsetKotor || 0).toLocaleString('id-ID')}`;
+        boxBanner.setAttribute('data-record-id', existingRecord.id);
+        boxBanner.classList.remove('hidden');
+      } else {
+        boxBanner.classList.add('hidden');
+        boxBanner.removeAttribute('data-record-id');
+      }
+    }
+
+    function editCatatanTanggalIni() {
+      const boxBanner = document.getElementById('box-already-input');
+      if (!boxBanner) return;
+      const recordId = boxBanner.getAttribute('data-record-id');
+      if (recordId) {
+        editCatatan(recordId);
+      }
     }
 
     // Tab Navigation Logic
@@ -580,6 +663,8 @@
         inputTanggal.value = getNextInputDate();
       }
 
+      checkDateAlreadyInput();
+
       if (!records || records.length === 0) {
         document.getElementById('input-siklus').value = 1;
         document.getElementById('input-hari').value = 1;
@@ -603,17 +688,6 @@
         document.getElementById('input-siklus').value = maxSiklus + 1;
         document.getElementById('input-hari').value = 1;
       }
-    }
-
-     // Helper merapikan tanggal menjadi YYYY-MM-DD
-    function cleanDateStr(dateStr) {
-      if (!dateStr) return '';
-      const d = new Date(dateStr);
-      if (isNaN(d.getTime())) return String(dateStr).split('T')[0];
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
     }
 
     // Helper Mengambil Nama Hari
@@ -696,6 +770,7 @@
       document.getElementById('input-hari').value = 1;
       document.getElementById('input-tanggal').value = new Date().toISOString().split('T')[0];
 
+      checkDateAlreadyInput();
       alert(`Siklus Baru (Siklus ${siklusBaru}) berhasil dibuat!`);
       window.switchTab('tab-input');
     }
@@ -714,9 +789,9 @@
         return;
       }
 
-      const duplicateRecord = records.find(r => r.tanggal === tanggal);
+      const duplicateRecord = records.find(r => cleanDateStr(r.tanggal) === cleanDateStr(tanggal));
       if (duplicateRecord && duplicateRecord.id !== editingId) {
-        alert(`Omset untuk tanggal ${tanggal} sudah pernah dicatat!\nHanya diizinkan 1 kali input per hari.\nSilakan gunakan tombol EDIT jika ingin mengubah.`);
+        alert(`Omset untuk tanggal ${formatDateDDMMYYYY(tanggal)} sudah pernah dicatat!\nHanya diizinkan 1 kali input per hari.\nSilakan gunakan tombol EDIT jika ingin mengubah.`);
         return;
       }
 
@@ -768,7 +843,7 @@
       if (!record) return;
 
       document.getElementById('editing-id').value = record.id;
-      // Perbaikan: gunakan cleanDateStr agar format tanggal sesuai standar input date (YYYY-MM-DD)
+      // Gunakan cleanDateStr agar format tanggal dipastikan YYYY-MM-DD yang terbaca oleh input date HTML5
       document.getElementById('input-tanggal').value = cleanDateStr(record.tanggal);
       document.getElementById('input-siklus').value = record.siklus;
       document.getElementById('input-hari').value = record.hariKe;
@@ -786,6 +861,8 @@
       document.getElementById('btn-submit').className = 'w-full bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2 cursor-pointer';
       document.getElementById('btn-cancel-edit').classList.remove('hidden');
 
+      checkDateAlreadyInput();
+
       window.switchTab('tab-input');
     }
 
@@ -801,6 +878,7 @@
       document.getElementById('btn-submit').className = 'w-full bg-green-600 hover:bg-green-500 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2 cursor-pointer';
       document.getElementById('btn-cancel-edit').classList.add('hidden');
       autoSetSiklusDanHari();
+      checkDateAlreadyInput();
     }
 
     function hapusCatatan(id) {
@@ -1327,7 +1405,6 @@
       if (confirm('Hapus seluruh catatan lokal di HP ini? (Data di Google Sheets TETAP AMAN)')) {
         records = [];
         localStorage.removeItem('suramadu_records');
-        // Panggilan pushToSheets() DIDELET/DIHAPUS agar Google Sheets tidak ikut terhapus
         alert('Penyimpanan internal HP telah dibersihkan.');
         autoSetSiklusDanHari();
         renderRekap(false);
@@ -1464,18 +1541,17 @@
 
      const tableBody = filteredRecords.map((r, i) => {
      const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
-     const tglFormatted = formatDateDDMMYYYY(r.tanggal); // Mengubah tanggal ke DD-MM-YYYY
+     const tglFormatted = formatDateDDMMYYYY(r.tanggal);
 
      return [
        (i + 1).toString(),
-       tglFormatted, // Menggunakan tanggal DD-MM-YYYY
+       tglFormatted,
        namaHariOnly,
        `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
        `Rp ${(r.tabungan || Math.round(r.omsetKotor * (percentTab / 100))).toLocaleString('id-ID')}`,
        r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
      ];
    });
-
 
       tableBody.push([
         '', '', 'TOTAL',
