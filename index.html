@@ -1336,8 +1336,8 @@
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
       const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
 
-      const startDate = filteredRecords.length > 0 ? filteredRecords[0].tanggal : '-';
-      const endDate = filteredRecords.length > 0 ? filteredRecords[filteredRecords.length - 1].tanggal : '-';
+      const startDate = filteredRecords.length > 0 ? cleanDateStr(filteredRecords[0].tanggal) : '-';
+const endDate = filteredRecords.length > 0 ? cleanDateStr(filteredRecords[filteredRecords.length - 1].tanggal) : '-';
       const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
       const primaryNavy = [30, 58, 138];
@@ -1406,16 +1406,18 @@
       doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 141, boxY + 11.5);
 
       const tableBody = filteredRecords.map((r, i) => {
-        const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
-        return [
-          (i + 1).toString(),
-          r.tanggal,
-          namaHariOnly,
-          `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
-          `Rp ${(r.tabungan || Math.round(r.omsetKotor * (percentTab / 100))).toLocaleString('id-ID')}`,
-          r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
-        ];
-      });
+  const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
+  const tglClean = cleanDateStr(r.tanggal);
+  
+  return [
+    (i + 1).toString(),
+    tglClean, // Tanggal ringkas (contoh: 2026-10-29)
+    namaHariOnly,
+    `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
+    `Rp ${(r.tabungan || Math.round(r.omsetKotor * (percentTab / 100))).toLocaleString('id-ID')}`,
+    r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
+  ];
+});
 
       tableBody.push([
         '', '', 'TOTAL',
@@ -1508,7 +1510,7 @@
       doc.setTextColor(148, 163, 184);
       doc.text(`${namaWarung} • Laporan Keuangan Siklus ${activeSiklus}`, 14, 322);
       doc.text("Halaman 1 dari 1", 100, 322);
-      doc.text("by: aliimron1909", 170, 322);
+      doc.text("by: rf_family", 170, 322);
 
       doc.save(`Laporan_Keuangan_${namaWarung.replace(/\s+/g, '_')}_Siklus_${activeSiklus}.pdf`);
     }
