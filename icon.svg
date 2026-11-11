@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="100" fill="#0f172a" />
+  <rect x="56" y="420" width="400" height="24" rx="6" fill="#1e293b" />
+  <rect x="80" y="210" width="352" height="210" fill="#facc15" />
+  <rect x="115" y="235" width="160" height="120" fill="#e11d48" rx="4" />
+  <rect x="123" y="243" width="68" height="48" fill="#7dd3fc" />
+  <rect x="199" y="243" width="68" height="48" fill="#7dd3fc" />
+  <rect x="123" y="299" width="144" height="48" fill="#7dd3fc" />
+  <rect x="310" y="235" width="105" height="185" fill="#dc2626" rx="4" />
+  <circle cx="328" cy="335" r="7" fill="#ffffff" />
+  <path d="M 96 110 L 416 110 A 20 20 0 0 1 436 130 L 448 180 L 64 180 L 76 130 A 20 20 0 0 1 96 110 Z" fill="#1e293b" />
+  <g id="awning">
+    <path d="M 64 180 L 118 180 C 118 215, 64 215, 64 180 Z" fill="#dc2626" />
+    <path d="M 118 180 L 172 180 C 172 215, 118 215, 118 180 Z" fill="#cbd5e1" />
+    <path d="M 172 180 L 226 180 C 226 215, 172 215, 172 180 Z" fill="#dc2626" />
+    <path d="M 226 180 L 280 180 C 280 215, 226 215, 226 180 Z" fill="#cbd5e1" />
+    <path d="M 280 180 L 334 180 C 334 215, 280 215, 280 180 Z" fill="#dc2626" />
+    <path d="M 334 180 L 388 180 C 388 215, 334 215, 334 180 Z" fill="#cbd5e1" />
+    <path d="M 388 180 L 448 180 C 448 215, 388 215, 388 180 Z" fill="#dc2626" />
+  </g>
+</svg>
