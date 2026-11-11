@@ -506,9 +506,7 @@
       return '';
     }
 
-    // Helper Menentukan Tanggal Input Selanjutnya (+1 hari dari input terakhir / hari berjalan)
-    function getNextInputDate() {
-        // Helper Menentukan Tanggal Input (Tatap hari ini jika sudah di-input, atau +1 hari jika belum)
+    // Helper Menentukan Tanggal Input (Tatap hari ini jika sudah di-input, atau +1 hari jika belum)
     function getNextInputDate() {
       const todayStr = new Date().toISOString().split('T')[0];
       if (!records || records.length === 0) return todayStr;
