@@ -38,14 +38,14 @@
 
   <!-- LOCK SCREEN MODAL -->
   <div id="lock-screen" class="fixed inset-0 bg-slate-950 z-[100] flex flex-col items-center justify-center p-6 text-center">
-    <div class="mb-6 space-y-2">
+    <div class="mb-5 space-y-2">
       <img id="lock-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-16 h-16 mx-auto rounded-2xl shadow-lg border border-slate-700 p-1 bg-slate-800 object-cover" alt="Logo">
       <h2 id="lock-title" class="text-xl font-bold text-white tracking-wide">Warung Suramadu</h2>
       <p class="text-xs text-slate-400">Masukkan PIN Keamanan untuk Akses</p>
     </div>
 
     <!-- PIN Indicator Dots -->
-    <div class="flex space-x-4 mb-8">
+    <div class="flex space-x-4 mb-6">
       <div id="dot-0" class="pin-digit"></div>
       <div id="dot-1" class="pin-digit"></div>
       <div id="dot-2" class="pin-digit"></div>
@@ -53,27 +53,34 @@
     </div>
 
     <!-- Numpad 3x4 -->
-    <div class="grid grid-cols-3 gap-4 w-64 mb-6">
-      <button type="button" onclick="pressPin('1')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">1</button>
-      <button type="button" onclick="pressPin('2')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">2</button>
-      <button type="button" onclick="pressPin('3')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">3</button>
-      <button type="button" onclick="pressPin('4')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">4</button>
-      <button type="button" onclick="pressPin('5')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">5</button>
-      <button type="button" onclick="pressPin('6')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">6</button>
-      <button type="button" onclick="pressPin('7')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">7</button>
-      <button type="button" onclick="pressPin('8')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">8</button>
-      <button type="button" onclick="pressPin('9')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">9</button>
+    <div class="grid grid-cols-3 gap-3.5 w-64 mb-5">
+      <button type="button" onclick="pressPin('1')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">1</button>
+      <button type="button" onclick="pressPin('2')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">2</button>
+      <button type="button" onclick="pressPin('3')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">3</button>
+      <button type="button" onclick="pressPin('4')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">4</button>
+      <button type="button" onclick="pressPin('5')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">5</button>
+      <button type="button" onclick="pressPin('6')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">6</button>
+      <button type="button" onclick="pressPin('7')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">7</button>
+      <button type="button" onclick="pressPin('8')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">8</button>
+      <button type="button" onclick="pressPin('9')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">9</button>
       
-      <button type="button" onclick="clearPin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-medium text-xs rounded-2xl border border-slate-800 transition">Hapus</button>
-      <button type="button" onclick="pressPin('0')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">0</button>
-      <button type="button" onclick="backspacePin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-bold text-lg rounded-2xl border border-slate-800 transition"><i class="fa-solid fa-backspace"></i></button>
+      <button type="button" onclick="clearPin()" class="h-13 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-medium text-xs rounded-2xl border border-slate-800 transition">Hapus</button>
+      <button type="button" onclick="pressPin('0')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">0</button>
+      <button type="button" onclick="backspacePin()" class="h-13 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-bold text-lg rounded-2xl border border-slate-800 transition"><i class="fa-solid fa-backspace"></i></button>
     </div>
 
-    <!-- Fingerprint Option -->
-    <button type="button" onclick="authenticateBiometrics()" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-medium py-2.5 px-4 bg-blue-950/50 border border-blue-800/50 rounded-xl transition active:scale-95 cursor-pointer">
-      <i class="fa-solid fa-fingerprint text-lg"></i>
-      <span>Masuk dengan Sidik Jari</span>
-    </button>
+    <!-- Opsi Biometrik / Sidik Jari ganda -->
+    <div class="flex flex-col gap-2 w-64">
+      <button type="button" onclick="authenticateBiometrics()" class="w-full flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-semibold py-2.5 px-3 bg-blue-950/60 border border-blue-800/60 rounded-xl transition active:scale-95 cursor-pointer">
+        <i class="fa-solid fa-fingerprint text-base"></i>
+        <span>Masuk dengan Sidik Jari</span>
+      </button>
+
+      <button type="button" onclick="registerBiometrics()" class="w-full flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-300 text-[11px] py-1.5 px-3 bg-slate-900 border border-slate-800 rounded-lg transition active:scale-95 cursor-pointer">
+        <i class="fa-solid fa-key text-[10px]"></i>
+        <span>Daftar / Setel Ulang Sidik Jari</span>
+      </button>
+    </div>
   </div>
 
   <!-- Header App -->
@@ -621,7 +628,7 @@
       document.getElementById('lock-screen').style.display = 'flex';
     }
 
-    // Perbaikan Tuntas Biometrik / Sidik Jari (Tanpa Pop-up Error Abu-Abu)
+    // Penanganan Biometrik / Sidik Jari (Kunci Sandi WebAuthn)
     async function authenticateBiometrics() {
       if (!window.PublicKeyCredential || !navigator.credentials) {
         alert('Perangkat atau browser Anda tidak mendukung fitur biometrik/sidik jari. Silakan gunakan PIN.');
@@ -630,15 +637,13 @@
 
       const isRegistered = localStorage.getItem('suramadu_passkey_registered');
 
-      // Jika belum terdaftar di local storage, LANGSUNG panggil pendaftaran bawaan Android
       if (!isRegistered || isRegistered !== 'true') {
-        if (confirm('Sidik jari belum terdaftar untuk aplikasi ini di HP Anda.\n\nKlik OK untuk memindai & mendaftarkan sidik jari Anda.')) {
+        if (confirm('Sidik jari belum terdaftar di HP ini untuk web aplikasi ini.\n\nKlik OK untuk mendaftarkan Sidik Jari sekarang.')) {
           await registerBiometrics();
         }
         return;
       }
 
-      // Jika sudah terdaftar, panggil verifikasi
       try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
@@ -659,12 +664,9 @@
         }
       } catch (err) {
         console.error('Biometric auth error:', err);
-        if (err.name === 'NotAllowedError') {
-          // User menekan batal pada dialog HP
-          return;
-        }
-        // Jika kredensial tidak ditemukan di sistem HP
-        if (confirm('Verifikasi sidik jari tidak ditemukan atau terhapus di HP ini.\n\nDaftarkan ulang sidik jari sekarang?')) {
+        if (err.name === 'NotAllowedError') return;
+
+        if (confirm('Verifikasi sidik jari gagal atau belum tersimpan di HP ini.\n\nDaftarkan ulang Sidik Jari sekarang?')) {
           localStorage.removeItem('suramadu_passkey_registered');
           await registerBiometrics();
         }
@@ -672,6 +674,11 @@
     }
 
     async function registerBiometrics() {
+      if (!window.PublicKeyCredential || !navigator.credentials) {
+        alert('Browser/HP ini tidak mendukung pendaftaran biometrik WebAuthn.');
+        return;
+      }
+
       try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
@@ -704,7 +711,7 @@
 
         if (credential) {
           localStorage.setItem('suramadu_passkey_registered', 'true');
-          alert('✅ Sidik Jari berhasil didaftarkan! Layar kunci otomatis terbuka.');
+          alert('✅ Sidik Jari berhasil didaftarkan! Layar kunci terbuka.');
           document.getElementById('lock-screen').style.display = 'none';
           enteredPin = '';
           updatePinDots();
@@ -713,7 +720,7 @@
       } catch (err) {
         console.error('Biometric reg error:', err);
         if (err.name !== 'NotAllowedError') {
-          alert('Gagal mendaftarkan sidik jari. Silakan gunakan PIN 4-digit.');
+          alert('Gagal mendaftarkan sidik jari: ' + (err.message || 'Silakan coba gunakan PIN.'));
         }
       }
     }
@@ -951,7 +958,7 @@
       updateDashboardCharts(true);
     }
 
-    // Render Tab Rekapitulasi (Default Siklus Berjalan Terbaru & Terbaru di Atas)
+    // Render Tab Rekapitulasi (Murni Nama Hari Tanpa Teks "Hari ke-X")
     function renderRekap(isUserChange = false) {
       const selectSiklus = document.getElementById('filter-siklus');
       if (!selectSiklus) return;
@@ -959,7 +966,6 @@
       const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => a - b);
       const maxSiklus = getMaxSiklus();
       
-      // Jika bukan interaksi manual pengguna, paksa terpilih Siklus Berjalan (maxSiklus)
       let targetSiklus = maxSiklus;
       if (isUserChange && selectSiklus.value) {
         targetSiklus = parseInt(selectSiklus.value, 10) || maxSiklus;
@@ -1050,7 +1056,7 @@
         </div>
       `;
 
-      // Render Tabel Riwayat (URUTAN DIBALIK: TERBARU DI ATAS)
+      // Render Tabel Riwayat (URUTAN TERBARU DI ATAS & NAMA HARI TANPA "Hari ke-X")
       const tbody = document.getElementById('tabel-catatan');
       tbody.innerHTML = '';
 
@@ -1064,14 +1070,13 @@
       sortedNewestFirst.forEach((r, idx) => {
         const expNominal = r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-';
         const expLabel = r.catatanPengeluaran ? `<br><span class="text-[9px] text-purple-300">(${r.catatanPengeluaran})</span>` : '';
-        const namaHari = getHariNameFromDate(r.tanggal);
-        const displayHari = namaHari ? `${namaHari} (Hari ${r.hariKe})` : `Hari ${r.hariKe}`;
+        const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
 
         tbody.innerHTML += `
           <tr>
             <td class="p-2 text-center font-bold text-slate-400">${filteredRecords.length - idx}</td>
             <td class="p-2 text-slate-300">${r.tanggal}</td>
-            <td class="p-2 font-medium text-blue-300">${displayHari}</td>
+            <td class="p-2 font-medium text-blue-300">${namaHariOnly}</td>
             <td class="p-2 text-right font-semibold text-green-400">Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}</td>
             <td class="p-2 text-right text-purple-400">${expNominal}${expLabel}</td>
             <td class="p-2 text-center space-x-1">
@@ -1087,7 +1092,7 @@
       });
     }
 
-    // Dashboard Update & Grafik Chart.js (Default Siklus Berjalan Terbaru & Max 15 Juta)
+    // Dashboard Update & Grafik Chart.js
     function updateDashboardCharts(isUserChange = false) {
       if (typeof Chart === 'undefined') return;
 
@@ -1435,7 +1440,7 @@
       }
     }
 
-    // PDF Generator Resmi (F4 1 Lembar - Tema Warna Selaras & Harmonis)
+    // PDF Generator Resmi (F4 1 Lembar - Murni Nama Hari Tanpa Teks "Hari ke-X")
     function downloadPDF() {
       if (typeof window.jspdf === 'undefined') {
         alert('Library PDF sedang dimuat, coba beberapa detik lagi.');
@@ -1488,11 +1493,11 @@
       const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
       // Skema Warna Harmonis (Executive Navy Theme)
-      const primaryNavy = [30, 58, 138];    // #1e3a8a (Warna Utama & Header)
-      const accentBlue = [37, 99, 235];     // #2563eb (Aksen Biru)
-      const textDark = [15, 23, 42];        // #0f172a (Teks Utama)
-      const bgCard = [248, 250, 252];       // #f8fafc (Kartu Soft)
-      const borderCard = [203, 213, 225];   // #cbd5e1 (Garis Pemisah)
+      const primaryNavy = [30, 58, 138];
+      const accentBlue = [37, 99, 235];
+      const textDark = [15, 23, 42];
+      const bgCard = [248, 250, 252];
+      const borderCard = [203, 213, 225];
 
       // 1. Kop Header Resmi
       doc.setFont("helvetica", "bold");
@@ -1518,7 +1523,7 @@
       doc.setTextColor(100);
       doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${totalHariBerjalan} Hari) • Dicetak: ${printDateStr}`, 14, 35);
 
-      // 3. Grid Summary Box (3 Box Ringkasan - Warna Harmonis)
+      // 3. Grid Summary Box (3 Box Ringkasan)
       const boxY = 39;
       const boxW = 59;
       const boxH = 16;
@@ -1548,7 +1553,7 @@
       doc.text(`Rp ${totalTabungan.toLocaleString('id-ID')}`, 79, boxY + 11.5);
 
       // Box 3: Total Pendapatan Boss
-      doc.setFillColor(239, 246, 255); // Blue Tint
+      doc.setFillColor(239, 246, 255);
       doc.setDrawColor(...accentBlue);
       doc.roundedRect(138, boxY, boxW + 4, boxH, 1.5, 1.5, 'FD');
       doc.setFontSize(7);
@@ -1559,14 +1564,13 @@
       doc.setTextColor(...primaryNavy);
       doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 141, boxY + 11.5);
 
-      // 4. Tabel Rincian Omset Harian (Header Deep Navy Selaras)
+      // 4. Tabel Rincian Omset Harian (Kolom Hari Berisi Nama Hari Murni)
       const tableBody = filteredRecords.map((r, i) => {
-        const namaHari = getHariNameFromDate(r.tanggal);
-        const displayHari = namaHari ? `${namaHari} (Hari ${r.hariKe})` : `Hari ${r.hariKe}`;
+        const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
         return [
           (i + 1).toString(),
           r.tanggal,
-          displayHari,
+          namaHariOnly,
           `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
           `Rp ${(r.tabungan || Math.round(r.omsetKotor * 0.1)).toLocaleString('id-ID')}`,
           r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
@@ -1582,7 +1586,7 @@
 
       doc.autoTable({
         startY: boxY + 19,
-        head: [['No', 'Tanggal', 'Hari Berjalan', 'Omset Kotor', 'Tabungan (10%)', 'Pengeluaran']],
+        head: [['No', 'Tanggal', 'Hari', 'Omset Kotor', 'Tabungan (10%)', 'Pengeluaran']],
         body: tableBody,
         theme: 'striped',
         margin: { left: 14, right: 14 },
@@ -1591,7 +1595,7 @@
         footStyles: { fillColor: [239, 246, 255], textColor: primaryNavy, fontStyle: 'bold' }
       });
 
-      // 5. Formulasi Bagi Hasil & Alokasi Pendapatan (2 Kolom Berdampingan Selaras)
+      // 5. Formulasi Bagi Hasil & Alokasi Pendapatan (2 Kolom Berdampingan)
       const formY = doc.lastAutoTable.finalY + 6;
 
       doc.setFont("helvetica", "bold");
@@ -1629,7 +1633,7 @@
 
       const leftFinalY = doc.lastAutoTable.finalY;
 
-      // Tabel Kolom Kanan (Warna Selaras Primary Navy)
+      // Tabel Kolom Kanan
       doc.autoTable({
         startY: formY + 3,
         head: [['DISTRIBUSI BAGI HASIL', 'NOMINAL']],
