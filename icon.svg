@@ -1,53 +1,80 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f172a"/>
-      <stop offset="50%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#090d16"/>
+    <!-- Background Gradient Premium -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1f3d"/>
+      <stop offset="50%" stop-color="#0d1b33"/>
+      <stop offset="100%" stop-color="#070f1f"/>
     </linearGradient>
 
     <!-- Gold Metallic Gradient -->
-    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a"/>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffea79"/>
       <stop offset="50%" stop-color="#f59e0b"/>
       <stop offset="100%" stop-color="#b45309"/>
     </linearGradient>
 
-    <!-- Cyan Blue Accent Gradient -->
-    <linearGradient id="blue" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#1d4ed8"/>
+    <!-- Atap/Awning Merah -->
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#be123c"/>
     </linearGradient>
+
+    <!-- Aksen Glow Jendela -->
+    <linearGradient id="windowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a5f3fc"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    
+    <!-- Shadow Filter -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
   </defs>
 
-  <!-- Canvas Squircle (Sudut Membulat Beranda HP) -->
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  
-  <!-- Border Halus -->
-  <rect width="502" height="502" x="5" y="5" rx="107" fill="none" stroke="url(#gold)" stroke-width="2.5" opacity="0.3"/>
+  <!-- Background Utama (Mengisi penuh & Masking Aman) -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
 
-  <!-- Cahaya Background (Subtle Glow) -->
-  <circle cx="256" cy="256" r="160" fill="#2563eb" opacity="0.12"/>
+  <!-- Kumpulan Grafis Berbayang (Drop Shadow) -->
+  <g filter="url(#dropShadow)">
+    
+    <!-- 1. JEMBATAN SURAMADU (Latar Kiri) -->
+    <path d="M 124 370 L 124 300 M 124 285 L 124 292 M 104 370 L 124 290 L 144 370" stroke="url(#goldGrad)" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <line x1="124" y1="310" x2="108" y2="350" stroke="url(#goldGrad)" stroke-width="2" opacity="0.4"/>
+    <line x1="124" y1="315" x2="114" y2="350" stroke="url(#goldGrad)" stroke-width="2" opacity="0.4"/>
+    <line x1="124" y1="310" x2="140" y2="350" stroke="url(#goldGrad)" stroke-width="2" opacity="0.4"/>
+    <line x1="124" y1="315" x2="134" y2="350" stroke="url(#goldGrad)" stroke-width="2" opacity="0.4"/>
 
-  <!-- GRAPH BARS (Grafik Keuangan / Badan Toko) -->
-  <!-- Bar 1 (Kiri) -->
-  <rect x="136" y="290" width="48" height="100" rx="12" fill="url(#blue)" opacity="0.6"/>
-  <!-- Bar 2 (Tengah Kiri) -->
-  <rect x="204" y="250" width="48" height="140" rx="12" fill="url(#blue)" opacity="0.85"/>
-  <!-- Bar 3 (Tengah Kanan) -->
-  <rect x="272" y="210" width="48" height="180" rx="12" fill="url(#blue)"/>
-  <!-- Bar 4 (Kanan / Puncak Omset) -->
-  <rect x="340" y="150" width="48" height="240" rx="12" fill="url(#gold)"/>
+    <!-- 2. BADAN WARUNG (Tengah) -->
+    <rect x="180" y="240" width="144" height="120" rx="12" fill="url(#goldGrad)"/>
+    
+    <!-- Pintu Merah -->
+    <rect x="200" y="275" width="34" height="85" rx="4" fill="url(#redGrad)"/>
+    <circle cx="226" cy="315" r="3.5" fill="#fef08a"/>
 
-  <!-- ATAP WARUNG ELEGAN (Golden Canopy / Awning) -->
-  <path d="M 96 170 C 96 155 108 145 125 145 L 387 145 C 404 145 416 155 416 170 C 416 182 406 195 390 195 C 374 195 364 182 352 182 C 340 182 330 195 314 195 C 298 195 288 182 276 182 C 264 182 254 195 238 195 C 222 195 212 182 200 182 C 188 182 178 195 162 195 C 146 195 136 182 124 182 C 112 182 96 182 96 170 Z" fill="url(#gold)"/>
+    <!-- Jendela Biru Terang -->
+    <rect x="248" y="275" width="60" height="48" rx="6" fill="#1e293b" stroke="url(#goldGrad)" stroke-width="3"/>
+    <rect x="251" y="278" width="54" height="42" rx="4" fill="url(#windowGrad)"/>
+    <!-- Sekat Jendela -->
+    <line x1="278" y1="278" x2="278" y2="320" stroke="#0f172a" stroke-width="2" opacity="0.3"/>
 
-  <!-- GARIS TREN PERTUMBUHAN (Gold Trendline Arrow) -->
-  <path d="M 120 320 Q 220 280 290 200 T 400 115" fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
-  <!-- Ujung Panah -->
-  <path d="M 365 112 L 405 112 L 405 152" fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- 3. ATAP MERAH PUTIH (Lebar & Tebal) -->
+    <!-- Alas Atap -->
+    <path d="M 160 250 L 344 250 C 344 250 348 240 338 232 L 182 232 C 172 240 160 250 160 250 Z" fill="#94a3b8"/>
+    <!-- Gelombang Canopy Red & White -->
+    <path d="M 160 240 L 344 240 L 334 195 L 170 195 Z" fill="url(#redGrad)"/>
+    <!-- Stripes Putih -->
+    <path d="M 191 195 L 209 195 L 200 240 L 184 240 Z M 239 195 L 257 195 L 252 240 L 235 240 Z M 287 195 L 305 195 L 305 240 L 288 240 Z" fill="#f8fafc" opacity="0.9"/>
+    <!-- Penutup Atap atas -->
+    <rect x="182" y="185" width="140" height="12" rx="4" fill="url(#redGrad)"/>
 
-  <!-- AKSEN BINTANG SUKSES (Sparkle) -->
-  <path d="M 405 100 L 410 80 L 430 75 L 410 70 L 405 50 L 400 70 L 380 75 L 400 80 Z" fill="#fef08a"/>
+    <!-- 4. LENGKUNGAN PANAH EMAS (Suramadu Bridge & Growth/Omset) -->
+    <path d="M 164 425 Q 230 380 295 435 Q 360 410 395 300" fill="none" stroke="url(#goldGrad)" stroke-width="26" stroke-linecap="round"/>
+    <!-- Kepala Panah -->
+    <path d="M 370 285 L 406 270 L 416 312" fill="none" stroke="url(#goldGrad)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Bintang Keberuntungan (Keberhasilan Usaha) -->
+    <path d="M 402 242 L 406 226 L 420 222 L 406 218 L 402 202 L 398 218 L 384 222 L 398 226 Z" fill="#ffea79"/>
+
+  </g>
 </svg>
