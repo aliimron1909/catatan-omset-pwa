@@ -39,7 +39,7 @@
   <!-- LOCK SCREEN MODAL -->
   <div id="lock-screen" class="fixed inset-0 bg-slate-950 z-[100] flex flex-col items-center justify-center p-6 text-center">
     <div class="mb-6 space-y-2">
-      <img id="lock-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-16 h-16 mx-auto rounded-2xl shadow-lg border border-slate-700 p-1 bg-slate-800" alt="Logo">
+      <img id="lock-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-16 h-16 mx-auto rounded-2xl shadow-lg border border-slate-700 p-1 bg-slate-800 object-cover" alt="Logo">
       <h2 id="lock-title" class="text-xl font-bold text-white tracking-wide">Warung Suramadu</h2>
       <p class="text-xs text-slate-400">Masukkan PIN Keamanan untuk Akses</p>
     </div>
@@ -79,7 +79,7 @@
   <!-- Header App -->
   <header class="bg-slate-800/90 backdrop-blur sticky top-0 z-50 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <img id="header-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-9 h-9 rounded-lg shadow" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+      <img id="header-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-9 h-9 rounded-lg shadow object-cover" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
       <div>
         <h1 id="header-app-title" class="font-bold text-lg leading-tight text-white">Warung Suramadu</h1>
         <p class="text-xs text-blue-400">Pencatatan Omset Mandiri</p>
@@ -143,7 +143,7 @@
         </div>
       </div>
 
-      <!-- Chart 1: Daily Omset -->
+      <!-- Chart 1: Daily Omset (Default Max 15 Juta) -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-semibold uppercase text-blue-400 tracking-wider">Grafik Omset Harian</h3>
@@ -221,14 +221,10 @@
           </div>
         </div>
 
-        <!-- Realtime Auto Calculation -->
-        <div class="bg-slate-900/60 p-3 rounded-xl space-y-2 border border-slate-800 text-xs">
+        <!-- Realtime Auto Calculation (Tanpa Stok 90%) -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-xs">
           <div class="flex justify-between">
-            <span class="text-slate-400">Diputar ke Stok Barang (90%):</span>
-            <span id="preview-stok" class="font-semibold text-blue-400">Rp 0</span>
-          </div>
-          <div class="flex justify-between pt-1 border-t border-slate-800">
-            <span class="text-slate-400">Tabungan Masuk Bagi Hasil (10%):</span>
+            <span class="text-slate-400">Tabungan Masuk Bagi Hasil (10% Omset):</span>
             <span id="preview-tabungan" class="font-bold text-yellow-400">Rp 0</span>
           </div>
         </div>
@@ -246,7 +242,7 @@
     <!-- TAB 3: REKAPITULASI & PDF -->
     <section id="tab-rekap" class="tab-section space-y-4" style="display: none;">
       
-      <!-- Filter Siklus & Tombol Siklus Baru -->
+      <!-- Filter Siklus & Opsi Siklus Belum 30 Hari -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
         <div class="flex items-center justify-between">
           <label class="text-sm font-medium text-slate-300">Pilih Siklus Operasional:</label>
@@ -254,12 +250,31 @@
             <option value="1">Siklus 1</option>
           </select>
         </div>
+
+        <!-- Opsi Kontrak Jika Siklus Belum 30 Hari -->
+        <div id="box-opsi-kontrak" class="bg-slate-900/80 p-3 rounded-xl border border-amber-500/40 space-y-2 hidden">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-amber-300 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-circle-info"></i> Siklus Belum 30 Hari (<span id="txt-total-hari-siklus">0</span> Hari)
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400">Pilih Opsi Pemotongan Kontrak Operasional:</p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button type="button" id="btn-kontrak-zero" onclick="setKontrakOption('zero')" class="py-1.5 px-2 rounded-lg font-medium border text-center transition cursor-pointer">
+              Opsi 1: Rp 0 (0 Kontrak)
+            </button>
+            <button type="button" id="btn-kontrak-prorata" onclick="setKontrakOption('prorata')" class="py-1.5 px-2 rounded-lg font-medium border text-center transition cursor-pointer">
+              Opsi 2: Bagi 30 Hari (Prorata)
+            </button>
+          </div>
+        </div>
+
         <button type="button" onclick="mulaiSiklusBaru()" class="w-full bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 border border-amber-500/40 text-xs py-2 rounded-xl font-medium flex justify-center items-center gap-2 transition cursor-pointer">
-          <i class="fa-solid fa-calendar-plus"></i> Buat Siklus Baru (Default 30 Hari)
+          <i class="fa-solid fa-calendar-plus"></i> Buat Siklus Baru
         </button>
       </div>
 
-      <!-- Ringkasan Perhitungan & Bagi Hasil -->
+      <!-- Ringkasan Perhitungan & Bagi Hasil (Tanpa Stok 90%) -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
         <h3 class="text-xs uppercase tracking-wider font-semibold text-slate-400">Ringkasan & Bagi Hasil Siklus</h3>
         
@@ -269,16 +284,12 @@
             <p id="rekap-omset" class="text-sm font-bold text-white mt-1">Rp 0</p>
           </div>
           <div class="bg-slate-900 p-3 rounded-xl">
-            <p class="text-slate-400">Stok Barang (90%)</p>
-            <p id="rekap-stok" class="text-sm font-bold text-blue-400 mt-1">Rp 0</p>
+            <p class="text-slate-400">Total Tabungan (10%)</p>
+            <p id="rekap-tabungan" class="text-sm font-bold text-yellow-400 mt-1">Rp 0</p>
           </div>
         </div>
 
         <div class="bg-slate-900 p-3 rounded-xl space-y-2 text-xs">
-          <div class="flex justify-between">
-            <span class="text-slate-400">Total Tabungan (10% Omset):</span>
-            <span id="rekap-tabungan" class="font-bold text-yellow-400">Rp 0</span>
-          </div>
           <div class="flex justify-between">
             <span class="text-slate-400">Biaya Kontrak / Operasional:</span>
             <span id="rekap-kontrak-operasional" class="font-semibold text-red-400">Rp 0</span>
@@ -319,8 +330,9 @@
           <table class="w-full text-left text-xs text-slate-300">
             <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
               <tr>
-                <th class="p-2">Hari</th>
+                <th class="p-2 text-center">No</th>
                 <th class="p-2">Tanggal</th>
+                <th class="p-2">Hari</th>
                 <th class="p-2 text-right">Omset</th>
                 <th class="p-2 text-right">Pengeluaran</th>
                 <th class="p-2 text-center">Aksi</th>
@@ -356,11 +368,26 @@
         </div>
       </div>
 
-      <!-- Settings Profil Warung -->
+      <!-- Settings Profil Warung & Upload Foto -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
-          <i class="fa-solid fa-gear"></i> Pengaturan Profil, Kontrak & PDF
+          <i class="fa-solid fa-gear"></i> Pengaturan Profil, Foto & Kontrak
         </h2>
+
+        <!-- Upload Foto Profil / Logo -->
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 space-y-2">
+          <label class="block text-xs font-semibold text-blue-300">Foto Profil / Logo Aplikasi</label>
+          <div class="flex items-center space-x-3">
+            <img id="setting-logo-preview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-12 h-12 rounded-xl border border-slate-700 object-cover bg-slate-800">
+            <div class="flex-1 space-y-1">
+              <label class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium inline-flex items-center gap-1 cursor-pointer">
+                <i class="fa-solid fa-upload"></i> Unggah Foto dari Galeri
+                <input type="file" id="setting-logo-file" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
+              </label>
+              <p class="text-[10px] text-slate-400">Format: JPG, PNG (Otomatis tersimpan di HP)</p>
+            </div>
+          </div>
+        </div>
 
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Nama Warung / Usaha</label>
@@ -393,7 +420,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">Biaya Kontrak / Operasional (Rp / Siklus)</label>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Biaya Kontrak / Operasional (Rp / 30 Hari)</label>
           <input type="text" id="setting-gaji" inputmode="numeric" pattern="[0-9]*" oninput="formatRupiahInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
         </div>
 
@@ -413,7 +440,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">URL Logo / Icon Aplikasi</label>
+          <label class="block text-xs font-medium text-slate-400 mb-1">URL Logo / Icon (Alternatif)</label>
           <input type="text" id="setting-logo-url" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:border-blue-500 outline-none">
         </div>
 
@@ -511,7 +538,10 @@
       logoUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
     };
 
+    const HARI_NAMES = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
     let records = [];
+    let cycleKontrakOptions = {}; // Simpan opsi pemotongan per siklus ('zero', 'prorata', 'full')
     let settings = { ...DEFAULT_SETTINGS };
     let enteredPin = '';
     let dailyChartInstance = null;
@@ -522,6 +552,11 @@
         const savedRecords = localStorage.getItem('suramadu_records');
         if (savedRecords) records = JSON.parse(savedRecords) || [];
       } catch (e) { records = []; }
+
+      try {
+        const savedOptions = localStorage.getItem('suramadu_kontrak_options');
+        if (savedOptions) cycleKontrakOptions = JSON.parse(savedOptions) || {};
+      } catch (e) { cycleKontrakOptions = {}; }
 
       try {
         const savedSettings = localStorage.getItem('suramadu_settings');
@@ -580,7 +615,7 @@
       document.getElementById('lock-screen').style.display = 'flex';
     }
 
-    // WebAuthn Passkey & Sidik Jari (Pendaftaran & Autentikasi yang diperbaiki)
+    // WebAuthn Passkey & Sidik Jari
     async function authenticateBiometrics() {
       if (!window.PublicKeyCredential || !navigator.credentials) {
         alert('Perangkat atau browser Anda tidak mendukung fitur biometrik/sidik jari. Silakan gunakan PIN.');
@@ -713,6 +748,14 @@
       }
     }
 
+    // Helper Mengambil Nama Hari dari Tanggal (e.g. "Senin")
+    function getHariNameFromDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d.getTime())) return '';
+      return HARI_NAMES[d.getDay()];
+    }
+
     // Window Init
     window.addEventListener('load', () => {
       loadInitialState();
@@ -747,11 +790,27 @@
     function formatAndCalculate(el) {
       formatRupiahInput(el);
       const omset = parseRupiah(el.value);
-      const stok = Math.round(omset * 0.90);
       const tabungan = Math.round(omset * 0.10);
 
-      document.getElementById('preview-stok').innerText = 'Rp ' + stok.toLocaleString('id-ID');
       document.getElementById('preview-tabungan').innerText = 'Rp ' + tabungan.toLocaleString('id-ID');
+    }
+
+    // Handle Upload Foto dari Galeri HP
+    function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Img = e.target.result;
+        settings.logoUrl = base64Img;
+        document.getElementById('setting-logo-preview').src = base64Img;
+        document.getElementById('header-logo').src = base64Img;
+        document.getElementById('lock-logo').src = base64Img;
+        localStorage.setItem('suramadu_settings', JSON.stringify(settings));
+        alert('Foto Profil / Logo berhasil diperbarui!');
+      };
+      reader.readAsDataURL(file);
     }
 
     // Fitur membuat siklus baru
@@ -764,7 +823,7 @@
       document.getElementById('input-hari').value = 1;
       document.getElementById('input-tanggal').value = new Date().toISOString().split('T')[0];
 
-      alert(`Siklus Baru (Siklus ${siklusBaru}) berhasil dibuat!\nDefault siklus adalah 30 hari.`);
+      alert(`Siklus Baru (Siklus ${siklusBaru}) berhasil dibuat!`);
       window.switchTab('tab-input');
     }
 
@@ -790,7 +849,6 @@
         return;
       }
 
-      const stokModal = Math.round(omsetKotor * 0.90);
       const tabungan = Math.round(omsetKotor * 0.10);
 
       if (editingId) {
@@ -802,7 +860,6 @@
             siklus,
             hariKe,
             omsetKotor,
-            stokModal,
             tabungan,
             pengeluaran,
             catatanPengeluaran
@@ -816,7 +873,6 @@
           siklus,
           hariKe,
           omsetKotor,
-          stokModal,
           tabungan,
           pengeluaran,
           catatanPengeluaran
@@ -866,7 +922,6 @@
       document.getElementById('input-omset').value = '';
       document.getElementById('input-pengeluaran').value = '';
       document.getElementById('input-catatan-pengeluaran').value = '';
-      document.getElementById('preview-stok').innerText = 'Rp 0';
       document.getElementById('preview-tabungan').innerText = 'Rp 0';
 
       document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Input Omset Harian';
@@ -886,7 +941,17 @@
       }
     }
 
-    // Render Tab Rekapitulasi
+    // Set Opsi Kontrak untuk Siklus Belum 30 Hari
+    function setKontrakOption(optionType) {
+      const selectSiklus = document.getElementById('filter-siklus');
+      const activeSiklus = selectSiklus ? parseInt(selectSiklus.value, 10) || 1 : 1;
+      cycleKontrakOptions[activeSiklus] = optionType;
+      localStorage.setItem('suramadu_kontrak_options', JSON.stringify(cycleKontrakOptions));
+      renderRekap();
+      updateDashboardCharts();
+    }
+
+    // Render Tab Rekapitulasi (Kalkulasi Opsi Kontrak < 30 Hari)
     function renderRekap() {
       const selectSiklus = document.getElementById('filter-siklus');
       if (!selectSiklus) return;
@@ -907,31 +972,55 @@
       const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
 
       let totalOmset = 0;
-      let totalStok = 0;
       let totalTabungan = 0;
       let totalPengeluaran = 0;
 
       filteredRecords.forEach(r => {
         totalOmset += (r.omsetKotor || 0);
-        totalStok += (r.stokModal || Math.round((r.omsetKotor || 0) * 0.90));
         totalTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * 0.10));
         totalPengeluaran += (r.pengeluaran || 0);
       });
 
-      const biayaKontrak = settings.gajiPerKaryawan || 0;
-      const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
+      const totalHariBerjalan = filteredRecords.length;
+      const fullKontrak = settings.gajiPerKaryawan || 0;
+      
+      const boxOpsiKontrak = document.getElementById('box-opsi-kontrak');
+      let effectiveKontrak = fullKontrak;
 
+      if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
+        if (boxOpsiKontrak) boxOpsiKontrak.classList.remove('hidden');
+        document.getElementById('txt-total-hari-siklus').innerText = totalHariBerjalan;
+
+        const currentOpt = cycleKontrakOptions[activeSiklus] || 'prorata';
+
+        const btnZero = document.getElementById('btn-kontrak-zero');
+        const btnProrata = document.getElementById('btn-kontrak-prorata');
+
+        if (currentOpt === 'zero') {
+          effectiveKontrak = 0;
+          btnZero.className = 'py-1.5 px-2 rounded-lg font-bold border text-center transition cursor-pointer bg-amber-600 text-white border-amber-500';
+          btnProrata.className = 'py-1.5 px-2 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700';
+        } else {
+          // Opsi 2 Prorata (default)
+          effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
+          btnProrata.className = 'py-1.5 px-2 rounded-lg font-bold border text-center transition cursor-pointer bg-amber-600 text-white border-amber-500';
+          btnZero.className = 'py-1.5 px-2 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700';
+        }
+      } else {
+        if (boxOpsiKontrak) boxOpsiKontrak.classList.add('hidden');
+      }
+
+      const sisaDanaBagiHasil = totalTabungan - effectiveKontrak;
       const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const bossTotalPendapatan = halfShare + biayaKontrak;
+      const bossTotalPendapatan = halfShare + effectiveKontrak;
       const totalKaryawanShare = halfShare;
       
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
       const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
 
       document.getElementById('rekap-omset').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
-      document.getElementById('rekap-stok').innerText = 'Rp ' + totalStok.toLocaleString('id-ID');
       document.getElementById('rekap-tabungan').innerText = 'Rp ' + totalTabungan.toLocaleString('id-ID');
-      document.getElementById('rekap-kontrak-operasional').innerText = 'Rp ' + biayaKontrak.toLocaleString('id-ID');
+      document.getElementById('rekap-kontrak-operasional').innerText = 'Rp ' + effectiveKontrak.toLocaleString('id-ID');
       document.getElementById('rekap-total-pengeluaran').innerText = 'Rp ' + totalPengeluaran.toLocaleString('id-ID');
       
       const sisaEl = document.getElementById('rekap-sisa-bagihasil');
@@ -956,23 +1045,26 @@
         </div>
       `;
 
-      // Render Tabel Riwayat
+      // Render Tabel Riwayat dengan Nomor & Nama Hari
       const tbody = document.getElementById('tabel-catatan');
       tbody.innerHTML = '';
 
       if (filteredRecords.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="p-3 text-center text-slate-500">Belum ada catatan untuk siklus ini.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-slate-500">Belum ada catatan untuk siklus ini.</td></tr>';
         return;
       }
 
-      filteredRecords.forEach(r => {
+      filteredRecords.forEach((r, idx) => {
         const expNominal = r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-';
         const expLabel = r.catatanPengeluaran ? `<br><span class="text-[9px] text-purple-300">(${r.catatanPengeluaran})</span>` : '';
-        
+        const namaHari = getHariNameFromDate(r.tanggal);
+        const displayHari = namaHari ? `${namaHari} (Hari ${r.hariKe})` : `Hari ${r.hariKe}`;
+
         tbody.innerHTML += `
           <tr>
-            <td class="p-2 font-medium">Hari ${r.hariKe}</td>
-            <td class="p-2 text-slate-400">${r.tanggal}</td>
+            <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
+            <td class="p-2 text-slate-300">${r.tanggal}</td>
+            <td class="p-2 font-medium text-blue-300">${displayHari}</td>
             <td class="p-2 text-right font-semibold text-green-400">Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}</td>
             <td class="p-2 text-right text-purple-400">${expNominal}${expLabel}</td>
             <td class="p-2 text-center space-x-1">
@@ -988,7 +1080,7 @@
       });
     }
 
-    // Dashboard Update & Grafik Chart.js
+    // Dashboard Update & Grafik Chart.js (Default Max 15 Juta)
     function updateDashboardCharts() {
       if (typeof Chart === 'undefined') return;
 
@@ -1020,11 +1112,20 @@
         cycleTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * 0.10));
       });
 
-      const biayaKontrak = settings.gajiPerKaryawan || 0;
-      const sisaDanaBagiHasil = cycleTabungan - biayaKontrak;
+      const totalHariBerjalan = filtered.length;
+      const fullKontrak = settings.gajiPerKaryawan || 0;
+      let effectiveKontrak = fullKontrak;
+
+      if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
+        const currentOpt = cycleKontrakOptions[selectedCycle] || 'prorata';
+        if (currentOpt === 'zero') effectiveKontrak = 0;
+        else effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
+      }
+
+      const sisaDanaBagiHasil = cycleTabungan - effectiveKontrak;
       const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
       
-      const bossTotal = halfShare + biayaKontrak;
+      const bossTotal = halfShare + effectiveKontrak;
       const karyawanPerPerson = Math.round(halfShare / 2);
 
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
@@ -1039,12 +1140,12 @@
       document.getElementById('dash-total-omset').innerText = 'Rp ' + cycleOmset.toLocaleString('id-ID');
       document.getElementById('dash-total-tabungan').innerText = 'Rp ' + cycleTabungan.toLocaleString('id-ID');
 
-      // 1. Chart Omset Harian
+      // 1. Chart Omset Harian (Default Max 15 Juta, jika omset > 15 Juta Grafik Mengikuti)
       const labelsDaily = filtered.map(r => `Hari ${r.hariKe}`);
       const dataDaily = filtered.map(r => r.omsetKotor || 0);
 
       const maxOmsetVal = dataDaily.length > 0 ? Math.max(...dataDaily) : 0;
-      const yMaxTarget = Math.max(20000000, maxOmsetVal);
+      const yMaxTarget = Math.max(15000000, maxOmsetVal);
 
       const ctxDaily = document.getElementById('chartDaily').getContext('2d');
       if (dailyChartInstance) dailyChartInstance.destroy();
@@ -1072,7 +1173,7 @@
           scales: {
             x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
             y: {
-              min: 5000000,
+              min: 0,
               max: yMaxTarget,
               ticks: {
                 color: '#94a3b8',
@@ -1131,14 +1232,13 @@
         return;
       }
 
-      const headers = ['ID', 'Tanggal', 'Siklus', 'HariKe', 'OmsetKotor', 'StokModal', 'Tabungan', 'Pengeluaran', 'CatatanPengeluaran'];
+      const headers = ['ID', 'Tanggal', 'Siklus', 'HariKe', 'OmsetKotor', 'Tabungan', 'Pengeluaran', 'CatatanPengeluaran'];
       const rows = records.map(r => [
         r.id,
         r.tanggal,
         r.siklus,
         r.hariKe,
         r.omsetKotor,
-        r.stokModal || Math.round(r.omsetKotor * 0.9),
         r.tabungan || Math.round(r.omsetKotor * 0.1),
         r.pengeluaran || 0,
         `"${(r.catatanPengeluaran || '').replace(/"/g, '""')}"`
@@ -1172,18 +1272,17 @@
           const importedRecords = [];
           for (let i = 1; i < lines.length; i++) {
             const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
-            if (cols.length >= 5) {
-              const omsetKotor = parseInt(cols[4], 10) || 0;
+            if (cols.length >= 4) {
+              const omsetKotor = parseInt(cols[4] || cols[3], 10) || 0;
               importedRecords.push({
                 id: cols[0] || (Date.now() + i).toString(),
                 tanggal: cols[1],
                 siklus: parseInt(cols[2], 10) || 1,
                 hariKe: parseInt(cols[3], 10) || 1,
                 omsetKotor: omsetKotor,
-                stokModal: cols[5] ? parseInt(cols[5], 10) : Math.round(omsetKotor * 0.9),
-                tabungan: cols[6] ? parseInt(cols[6], 10) : Math.round(omsetKotor * 0.1),
-                pengeluaran: cols[7] ? parseInt(cols[7], 10) : 0,
-                catatanPengeluaran: cols[8] || ''
+                tabungan: Math.round(omsetKotor * 0.1),
+                pengeluaran: cols[6] ? parseInt(cols[6], 10) : 0,
+                catatanPengeluaran: cols[7] || ''
               });
             }
           }
@@ -1233,10 +1332,9 @@
       document.getElementById('lock-title').innerText = appTitle;
 
       if (settings.logoUrl) {
-        const logoImg = document.getElementById('header-logo');
-        if (logoImg) logoImg.src = settings.logoUrl;
-        const lockImg = document.getElementById('lock-logo');
-        if (lockImg) lockImg.src = settings.logoUrl;
+        document.getElementById('header-logo').src = settings.logoUrl;
+        document.getElementById('lock-logo').src = settings.logoUrl;
+        document.getElementById('setting-logo-preview').src = settings.logoUrl;
       }
     }
 
@@ -1252,7 +1350,8 @@
       settings.jumlahKaryawan = parseInt(document.getElementById('setting-karyawan').value, 10) || 2;
       settings.pin = document.getElementById('setting-pin').value.trim() || '1909';
       settings.scriptUrl = document.getElementById('setting-script-url').value.trim();
-      settings.logoUrl = document.getElementById('setting-logo-url').value.trim();
+      const altUrl = document.getElementById('setting-logo-url').value.trim();
+      if (altUrl) settings.logoUrl = altUrl;
 
       localStorage.setItem('suramadu_settings', JSON.stringify(settings));
       loadSettingsUI();
@@ -1301,11 +1400,11 @@
 
     function generateDummyData() {
       records = [
-        { id: '101', tanggal: '2026-11-01', siklus: 1, hariKe: 1, omsetKotor: 12000000, stokModal: 10800000, tabungan: 1200000, pengeluaran: 50000, catatanPengeluaran: 'Token Listrik' },
-        { id: '102', tanggal: '2026-11-02', siklus: 1, hariKe: 2, omsetKotor: 15000000, stokModal: 13500000, tabungan: 1500000, pengeluaran: 0, catatanPengeluaran: '' },
-        { id: '103', tanggal: '2026-11-03', siklus: 1, hariKe: 3, omsetKotor: 9500000,  stokModal: 8550000,  tabungan: 950000, pengeluaran: 100000, catatanPengeluaran: 'WiFi Indihome' },
-        { id: '104', tanggal: '2026-11-04', siklus: 1, hariKe: 4, omsetKotor: 18000000, stokModal: 16200000, tabungan: 1800000, pengeluaran: 0, catatanPengeluaran: '' },
-        { id: '105', tanggal: '2026-11-05', siklus: 1, hariKe: 5, omsetKotor: 21000000, stokModal: 18900000, tabungan: 2100000, pengeluaran: 0, catatanPengeluaran: '' }
+        { id: '101', tanggal: '2026-11-01', siklus: 1, hariKe: 1, omsetKotor: 12000000, tabungan: 1200000, pengeluaran: 50000, catatanPengeluaran: 'Token Listrik' },
+        { id: '102', tanggal: '2026-11-02', siklus: 1, hariKe: 2, omsetKotor: 16500000, tabungan: 1650000, pengeluaran: 0, catatanPengeluaran: '' },
+        { id: '103', tanggal: '2026-11-03', siklus: 1, hariKe: 3, omsetKotor: 9500000,  tabungan: 950000, pengeluaran: 100000, catatanPengeluaran: 'WiFi Indihome' },
+        { id: '104', tanggal: '2026-11-04', siklus: 1, hariKe: 4, omsetKotor: 18000000, tabungan: 1800000, pengeluaran: 0, catatanPengeluaran: '' },
+        { id: '105', tanggal: '2026-11-05', siklus: 1, hariKe: 5, omsetKotor: 14000000, tabungan: 1400000, pengeluaran: 0, catatanPengeluaran: '' }
       ];
       localStorage.setItem('suramadu_records', JSON.stringify(records));
       alert('Data uji coba berhasil dimasukkan!');
@@ -1325,7 +1424,7 @@
       }
     }
 
-    // PDF Generator Resmi (DI-PAKSA EXACT 1 LEMBAR KERTAS F4 [215.9 x 330.2 mm])
+    // PDF Generator Resmi (F4 1 Lembar - Tanpa Stok 90%, Ada Nomor & Hari Berjalan)
     function downloadPDF() {
       if (typeof window.jspdf === 'undefined') {
         alert('Library PDF sedang dimuat, coba beberapa detik lagi.');
@@ -1333,29 +1432,36 @@
       }
 
       const { jsPDF } = window.jspdf;
-      // Ukuran Kertas F4 dalam mm: 215.9 x 330.2
+      // Ukuran Kertas F4: 215.9 x 330.2 mm
       const doc = new jsPDF('p', 'mm', [215.9, 330.2]);
 
       const activeSiklus = parseInt(document.getElementById('filter-siklus').value, 10) || 1;
       const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
 
       let totalOmset = 0;
-      let totalStok = 0;
       let totalTabungan = 0;
       let totalPengeluaran = 0;
 
       filteredRecords.forEach(r => {
         totalOmset += (r.omsetKotor || 0);
-        totalStok += (r.stokModal || Math.round((r.omsetKotor || 0) * 0.90));
         totalTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * 0.10));
         totalPengeluaran += (r.pengeluaran || 0);
       });
 
-      const biayaKontrak = settings.gajiPerKaryawan || 0;
-      const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
+      const totalHariBerjalan = filteredRecords.length;
+      const fullKontrak = settings.gajiPerKaryawan || 0;
+      let effectiveKontrak = fullKontrak;
+
+      if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
+        const currentOpt = cycleKontrakOptions[activeSiklus] || 'prorata';
+        if (currentOpt === 'zero') effectiveKontrak = 0;
+        else effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
+      }
+
+      const sisaDanaBagiHasil = totalTabungan - effectiveKontrak;
       
       const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const bossTotalPendapatan = halfShare + biayaKontrak;
+      const bossTotalPendapatan = halfShare + effectiveKontrak;
       const totalKaryawanShare = halfShare;
       const perKaryawanShare = Math.round(totalKaryawanShare / 2);
 
@@ -1370,7 +1476,7 @@
       const endDate = filteredRecords.length > 0 ? filteredRecords[filteredRecords.length - 1].tanggal : '-';
       const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
-      // 1. Kop Header Resmi (Teks "Sate & kuliner khas Madura" TELAH DIHAPUS)
+      // 1. Kop Header Resmi
       doc.setFont("helvetica", "bold");
       doc.setFontSize(15);
       doc.setTextColor(15, 23, 42);
@@ -1392,81 +1498,71 @@
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
       doc.setTextColor(100);
-      doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${filteredRecords.length} Hari) • Dicetak: ${printDateStr}`, 14, 35);
+      doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${totalHariBerjalan} Hari) • Dicetak: ${printDateStr}`, 14, 35);
 
-      // 3. Grid Summary Box (4 Box Ringkasan)
+      // 3. Grid Summary Box (3 Box Ringkasan - Stok 90% Dihapus)
       const boxY = 39;
-      const boxW = 44;
+      const boxW = 59;
       const boxH = 16;
 
       // Box 1: Omset Kotor
       doc.setFillColor(241, 245, 249);
       doc.rect(14, boxY, boxW, boxH, 'F');
-      doc.setFontSize(6.5);
+      doc.setFontSize(7);
       doc.setTextColor(100);
       doc.text("TOTAL OMSET KOTOR", 17, boxY + 4.5);
-      doc.setFontSize(9.5);
+      doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(15, 23, 42);
       doc.text(`Rp ${totalOmset.toLocaleString('id-ID')}`, 17, boxY + 11.5);
 
-      // Box 2: Stok Barang 90%
+      // Box 2: Tabungan 10%
       doc.setFillColor(241, 245, 249);
-      doc.rect(61, boxY, boxW, boxH, 'F');
-      doc.setFontSize(6.5);
+      doc.rect(76, boxY, boxW, boxH, 'F');
+      doc.setFontSize(7);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100);
-      doc.text("STOK BARANG (90%)", 64, boxY + 4.5);
-      doc.setFontSize(9.5);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(37, 99, 235);
-      doc.text(`Rp ${totalStok.toLocaleString('id-ID')}`, 64, boxY + 11.5);
-
-      // Box 3: Tabungan 10%
-      doc.setFillColor(241, 245, 249);
-      doc.rect(108, boxY, boxW, boxH, 'F');
-      doc.setFontSize(6.5);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(100);
-      doc.text("TABUNGAN (10%)", 111, boxY + 4.5);
-      doc.setFontSize(9.5);
+      doc.text("TABUNGAN (10% OMSET)", 79, boxY + 4.5);
+      doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(217, 119, 6);
-      doc.text(`Rp ${totalTabungan.toLocaleString('id-ID')}`, 111, boxY + 11.5);
+      doc.text(`Rp ${totalTabungan.toLocaleString('id-ID')}`, 79, boxY + 11.5);
 
-      // Box 4: Total Pendapatan Boss (50% + Kontrak)
+      // Box 3: Total Pendapatan Boss (50% + Kontrak)
       doc.setFillColor(239, 246, 255);
-      doc.rect(155, boxY, boxW + 2, boxH, 'F');
-      doc.setFontSize(6.5);
+      doc.rect(138, boxY, boxW + 4, boxH, 'F');
+      doc.setFontSize(7);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(29, 78, 216);
-      doc.text("PENDAPATAN BOSS (50%+KTRK)", 157, boxY + 4.5);
-      doc.setFontSize(9.5);
+      doc.text("TOTAL PENDAPATAN BOSS", 141, boxY + 4.5);
+      doc.setFontSize(10);
       doc.setTextColor(29, 78, 216);
-      doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 157, boxY + 11.5);
+      doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 141, boxY + 11.5);
 
-      // 4. Tabel Rincian Omset Harian
-      const tableBody = filteredRecords.map((r, i) => [
-        (i + 1).toString(),
-        r.tanggal,
-        `Hari ${r.hariKe}`,
-        `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
-        `Rp ${(r.stokModal || Math.round(r.omsetKotor * 0.9)).toLocaleString('id-ID')}`,
-        `Rp ${(r.tabungan || Math.round(r.omsetKotor * 0.1)).toLocaleString('id-ID')}`,
-        r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
-      ]);
+      // 4. Tabel Rincian Omset Harian (Ada No & Hari Berjalan mengikuti Tanggal)
+      const tableBody = filteredRecords.map((r, i) => {
+        const namaHari = getHariNameFromDate(r.tanggal);
+        const displayHari = namaHari ? `${namaHari} (Hari ${r.hariKe})` : `Hari ${r.hariKe}`;
+        return [
+          (i + 1).toString(),
+          r.tanggal,
+          displayHari,
+          `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
+          `Rp ${(r.tabungan || Math.round(r.omsetKotor * 0.1)).toLocaleString('id-ID')}`,
+          r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
+        ];
+      });
 
       tableBody.push([
         '', '', 'TOTAL',
         `Rp ${totalOmset.toLocaleString('id-ID')}`,
-        `Rp ${totalStok.toLocaleString('id-ID')}`,
         `Rp ${totalTabungan.toLocaleString('id-ID')}`,
         `Rp ${totalPengeluaran.toLocaleString('id-ID')}`
       ]);
 
       doc.autoTable({
         startY: boxY + 19,
-        head: [['No', 'Tanggal', 'Hari', 'Omset Kotor', 'Stok (90%)', 'Tabungan (10%)', 'Pengeluaran']],
+        head: [['No', 'Tanggal', 'Hari Berjalan', 'Omset Kotor', 'Tabungan (10%)', 'Pengeluaran']],
         body: tableBody,
         theme: 'striped',
         margin: { left: 14, right: 14 },
@@ -1483,9 +1579,13 @@
       doc.setTextColor(15, 23, 42);
       doc.text("Formulasi Bagi Hasil & Alokasi Pendapatan", 14, formY);
 
+      const infoKontrakKet = (totalHariBerjalan < 30 && totalHariBerjalan > 0)
+        ? ` (Siklus ${totalHariBerjalan} Hari)`
+        : '';
+
       const rowsBagiHasilPDF = [
         ["Total Tabungan Masuk Bagi Hasil (10% Omset)", `Rp ${totalTabungan.toLocaleString('id-ID')}`],
-        ["Biaya Kontrak / Operasional Siklus", `Rp ${biayaKontrak.toLocaleString('id-ID')}`],
+        [`Biaya Kontrak / Operasional Siklus${infoKontrakKet}`, `Rp ${effectiveKontrak.toLocaleString('id-ID')}`],
         ["Sisa Dana Bagi Hasil Bersih (Tabungan - Kontrak)", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`],
         [`Total Pendapatan Pemilik / Boss (50% Bagi Hasil + Kontrak)`, `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
         [`  -> Bagi Hasil ${k1Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`],
