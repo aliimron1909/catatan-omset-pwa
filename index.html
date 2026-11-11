@@ -102,7 +102,7 @@
     <!-- TAB 1: DASHBOARD GRAFIK & PENDAPATAN -->
     <section id="tab-dashboard" class="tab-section space-y-4" style="display: block;">
       
-      <!-- Filter Siklus Dashboard -->
+      <!-- Filter Siklus Dashboard (Default: Siklus Berjalan Terbaru) -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 flex items-center justify-between">
         <label class="text-xs font-semibold text-slate-300">Tampilkan Siklus:</label>
         <select id="dash-siklus-filter" onchange="updateDashboardCharts()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-blue-400 font-bold outline-none">
@@ -143,7 +143,7 @@
         </div>
       </div>
 
-      <!-- Chart 1: Daily Omset (Default Max 15 Juta) -->
+      <!-- Chart 1: Daily Omset -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-semibold uppercase text-blue-400 tracking-wider">Grafik Omset Harian</h3>
@@ -221,7 +221,7 @@
           </div>
         </div>
 
-        <!-- Realtime Auto Calculation (Tanpa Stok 90%) -->
+        <!-- Realtime Auto Calculation -->
         <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-xs">
           <div class="flex justify-between">
             <span class="text-slate-400">Tabungan Masuk Bagi Hasil (10% Omset):</span>
@@ -242,7 +242,7 @@
     <!-- TAB 3: REKAPITULASI & PDF -->
     <section id="tab-rekap" class="tab-section space-y-4" style="display: none;">
       
-      <!-- Filter Siklus & Opsi Siklus Belum 30 Hari -->
+      <!-- Filter Siklus (Default: Siklus Berjalan Terbaru) -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
         <div class="flex items-center justify-between">
           <label class="text-sm font-medium text-slate-300">Pilih Siklus Operasional:</label>
@@ -274,7 +274,7 @@
         </button>
       </div>
 
-      <!-- Ringkasan Perhitungan & Bagi Hasil (Tanpa Stok 90%) -->
+      <!-- Ringkasan Perhitungan & Bagi Hasil -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
         <h3 class="text-xs uppercase tracking-wider font-semibold text-slate-400">Ringkasan & Bagi Hasil Siklus</h3>
         
@@ -323,9 +323,12 @@
         </button>
       </div>
 
-      <!-- Riwayat Tabel Harian -->
+      <!-- Riwayat Tabel Harian (Dibalik: Terbaru di Atas) -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
-        <h3 class="text-xs uppercase tracking-wider font-semibold text-slate-400">Riwayat Catatan Harian</h3>
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs uppercase tracking-wider font-semibold text-slate-400">Riwayat Catatan Harian</h3>
+          <span class="text-[10px] text-blue-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">Urutan: Terbaru di atas</span>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-300">
             <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
@@ -368,7 +371,7 @@
         </div>
       </div>
 
-      <!-- Settings Profil Warung & Upload Foto -->
+      <!-- Settings Profil Warung -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
           <i class="fa-solid fa-gear"></i> Pengaturan Profil, Foto & Kontrak
@@ -541,7 +544,7 @@
     const HARI_NAMES = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
     let records = [];
-    let cycleKontrakOptions = {}; // Simpan opsi pemotongan per siklus ('zero', 'prorata', 'full')
+    let cycleKontrakOptions = {};
     let settings = { ...DEFAULT_SETTINGS };
     let enteredPin = '';
     let dailyChartInstance = null;
@@ -615,30 +618,24 @@
       document.getElementById('lock-screen').style.display = 'flex';
     }
 
-    // WebAuthn Passkey & Sidik Jari
+    // Perbaikan WebAuthn Passkey & Sidik Jari (Tanpa Pop-up Error Berulang)
     async function authenticateBiometrics() {
       if (!window.PublicKeyCredential || !navigator.credentials) {
         alert('Perangkat atau browser Anda tidak mendukung fitur biometrik/sidik jari. Silakan gunakan PIN.');
         return;
       }
 
-      try {
-        const isAvailable = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-        if (!isAvailable) {
-          alert('Sensor sidik jari belum diaktifkan atau tidak tersedia di HP Anda.');
-          return;
-        }
-      } catch (e) {}
-
       const isRegistered = localStorage.getItem('suramadu_passkey_registered');
 
-      if (!isRegistered) {
+      // Jika belum pernah terdaftar di HP ini, minta pendaftaran langsung secara ramah
+      if (!isRegistered || isRegistered !== 'true') {
         if (confirm('Sidik jari belum terdaftar untuk aplikasi ini di HP Anda.\n\nApakah Anda ingin mendaftarkan Sidik Jari sekarang?')) {
           await registerBiometrics();
         }
         return;
       }
 
+      // Jika sudah pernah terdaftar, panggil verifikasi sidik jari
       try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
@@ -662,7 +659,7 @@
         if (err.name === 'NotAllowedError') {
           alert('Verifikasi sidik jari dibatalkan.');
         } else {
-          if (confirm('Sidik Jari tidak ditemukan atau gagal diverifikasi.\n\nApakah Anda ingin mendaftarkan ulang Sidik Jari di HP ini?')) {
+          if (confirm('Verifikasi sidik jari tidak ditemukan atau belum terdaftar.\n\nDaftarkan ulang Sidik Jari di HP ini sekarang?')) {
             await registerBiometrics();
           }
         }
@@ -951,13 +948,15 @@
       updateDashboardCharts();
     }
 
-    // Render Tab Rekapitulasi (Kalkulasi Opsi Kontrak < 30 Hari)
+    // Render Tab Rekapitulasi (Default Siklus Berjalan Terbaru & Tabel Terbaru di Atas)
     function renderRekap() {
       const selectSiklus = document.getElementById('filter-siklus');
       if (!selectSiklus) return;
 
-      const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => b - a);
-      const currentSelected = selectSiklus.value ? parseInt(selectSiklus.value, 10) : (allSiklus[0] || 1);
+      const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => a - b);
+      const maxSiklus = allSiklus.length > 0 ? allSiklus[allSiklus.length - 1] : 1; // Default Siklus Berjalan Terbaru
+      
+      const currentSelected = selectSiklus.value ? parseInt(selectSiklus.value, 10) : maxSiklus;
       
       selectSiklus.innerHTML = '';
       if (allSiklus.length === 0) {
@@ -968,7 +967,7 @@
         });
       }
 
-      const activeSiklus = parseInt(selectSiklus.value, 10) || 1;
+      const activeSiklus = parseInt(selectSiklus.value, 10) || maxSiklus;
       const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
 
       let totalOmset = 0;
@@ -1001,7 +1000,6 @@
           btnZero.className = 'py-1.5 px-2 rounded-lg font-bold border text-center transition cursor-pointer bg-amber-600 text-white border-amber-500';
           btnProrata.className = 'py-1.5 px-2 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700';
         } else {
-          // Opsi 2 Prorata (default)
           effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
           btnProrata.className = 'py-1.5 px-2 rounded-lg font-bold border text-center transition cursor-pointer bg-amber-600 text-white border-amber-500';
           btnZero.className = 'py-1.5 px-2 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700';
@@ -1045,7 +1043,7 @@
         </div>
       `;
 
-      // Render Tabel Riwayat dengan Nomor & Nama Hari
+      // Render Tabel Riwayat (URUTAN DIBALIK: YANG TERBARU DI ATAS)
       const tbody = document.getElementById('tabel-catatan');
       tbody.innerHTML = '';
 
@@ -1054,7 +1052,9 @@
         return;
       }
 
-      filteredRecords.forEach((r, idx) => {
+      const sortedNewestFirst = [...filteredRecords].sort((a, b) => b.hariKe - a.hariKe);
+
+      sortedNewestFirst.forEach((r, idx) => {
         const expNominal = r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-';
         const expLabel = r.catatanPengeluaran ? `<br><span class="text-[9px] text-purple-300">(${r.catatanPengeluaran})</span>` : '';
         const namaHari = getHariNameFromDate(r.tanggal);
@@ -1062,7 +1062,7 @@
 
         tbody.innerHTML += `
           <tr>
-            <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
+            <td class="p-2 text-center font-bold text-slate-400">${filteredRecords.length - idx}</td>
             <td class="p-2 text-slate-300">${r.tanggal}</td>
             <td class="p-2 font-medium text-blue-300">${displayHari}</td>
             <td class="p-2 text-right font-semibold text-green-400">Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}</td>
@@ -1080,14 +1080,15 @@
       });
     }
 
-    // Dashboard Update & Grafik Chart.js (Default Max 15 Juta)
+    // Dashboard Update & Grafik Chart.js (Default Siklus Berjalan Terbaru & Max 15 Juta)
     function updateDashboardCharts() {
       if (typeof Chart === 'undefined') return;
 
       const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => a - b);
+      const maxSiklus = allSiklus.length > 0 ? allSiklus[allSiklus.length - 1] : 1; // Default Siklus Berjalan Terbaru
       
       const dashSelect = document.getElementById('dash-siklus-filter');
-      const activeDashSiklus = dashSelect && dashSelect.value ? parseInt(dashSelect.value, 10) : (allSiklus[allSiklus.length - 1] || 1);
+      const activeDashSiklus = dashSelect && dashSelect.value ? parseInt(dashSelect.value, 10) : maxSiklus;
       
       if (dashSelect) {
         dashSelect.innerHTML = '';
@@ -1100,7 +1101,7 @@
         }
       }
 
-      const selectedCycle = dashSelect ? parseInt(dashSelect.value, 10) || 1 : 1;
+      const selectedCycle = dashSelect ? parseInt(dashSelect.value, 10) || maxSiklus : maxSiklus;
       document.getElementById('dash-siklus-badge').innerText = `Siklus ${selectedCycle}`;
 
       const filtered = records.filter(r => (parseInt(r.siklus, 10) || 1) === selectedCycle).sort((a, b) => a.hariKe - b.hariKe);
@@ -1140,7 +1141,7 @@
       document.getElementById('dash-total-omset').innerText = 'Rp ' + cycleOmset.toLocaleString('id-ID');
       document.getElementById('dash-total-tabungan').innerText = 'Rp ' + cycleTabungan.toLocaleString('id-ID');
 
-      // 1. Chart Omset Harian (Default Max 15 Juta, jika omset > 15 Juta Grafik Mengikuti)
+      // 1. Chart Omset Harian (Default Max 15 Juta)
       const labelsDaily = filtered.map(r => `Hari ${r.hariKe}`);
       const dataDaily = filtered.map(r => r.omsetKotor || 0);
 
@@ -1424,7 +1425,7 @@
       }
     }
 
-    // PDF Generator Resmi (F4 1 Lembar - Tanpa Stok 90%, Ada Nomor & Hari Berjalan)
+    // PDF Generator Resmi (F4 1 Lembar - Formulasi 2 Kolom Berdampingan Rapi)
     function downloadPDF() {
       if (typeof window.jspdf === 'undefined') {
         alert('Library PDF sedang dimuat, coba beberapa detik lagi.');
@@ -1500,7 +1501,7 @@
       doc.setTextColor(100);
       doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${totalHariBerjalan} Hari) • Dicetak: ${printDateStr}`, 14, 35);
 
-      // 3. Grid Summary Box (3 Box Ringkasan - Stok 90% Dihapus)
+      // 3. Grid Summary Box (3 Box Ringkasan)
       const boxY = 39;
       const boxW = 59;
       const boxH = 16;
@@ -1539,7 +1540,7 @@
       doc.setTextColor(29, 78, 216);
       doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 141, boxY + 11.5);
 
-      // 4. Tabel Rincian Omset Harian (Ada No & Hari Berjalan mengikuti Tanggal)
+      // 4. Tabel Rincian Omset Harian
       const tableBody = filteredRecords.map((r, i) => {
         const namaHari = getHariNameFromDate(r.tanggal);
         const displayHari = namaHari ? `${namaHari} (Hari ${r.hariKe})` : `Hari ${r.hariKe}`;
@@ -1571,8 +1572,8 @@
         footStyles: { fillColor: [241, 245, 249], textColor: [15, 23, 42], fontStyle: 'bold' }
       });
 
-      // 5. Tabel Formulasi Bagi Hasil & Pendapatan
-      const formY = doc.lastAutoTable.finalY + 5;
+      // 5. Formulasi Bagi Hasil & Alokasi Pendapatan (DIUBAH MENJADI 2 KOLOM BERDAMPINGAN RAPI)
+      const formY = doc.lastAutoTable.finalY + 6;
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.5);
@@ -1580,29 +1581,51 @@
       doc.text("Formulasi Bagi Hasil & Alokasi Pendapatan", 14, formY);
 
       const infoKontrakKet = (totalHariBerjalan < 30 && totalHariBerjalan > 0)
-        ? ` (Siklus ${totalHariBerjalan} Hari)`
+        ? ` (${totalHariBerjalan}/30 Hr)`
         : '';
 
-      const rowsBagiHasilPDF = [
-        ["Total Tabungan Masuk Bagi Hasil (10% Omset)", `Rp ${totalTabungan.toLocaleString('id-ID')}`],
-        [`Biaya Kontrak / Operasional Siklus${infoKontrakKet}`, `Rp ${effectiveKontrak.toLocaleString('id-ID')}`],
-        ["Sisa Dana Bagi Hasil Bersih (Tabungan - Kontrak)", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`],
-        [`Total Pendapatan Pemilik / Boss (50% Bagi Hasil + Kontrak)`, `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
-        [`  -> Bagi Hasil ${k1Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`],
-        [`  -> Bagi Hasil ${k2Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`]
+      const leftTableData = [
+        ["Total Tabungan (10% Omset)", `Rp ${totalTabungan.toLocaleString('id-ID')}`],
+        [`Biaya Kontrak${infoKontrakKet}`, `Rp ${effectiveKontrak.toLocaleString('id-ID')}`],
+        ["Sisa Bagi Hasil Bersih", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
       ];
 
+      const rightTableData = [
+        [`Pendapatan Boss (50%+Kontrak)`, `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
+        [`Bagi Hasil ${k1Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`],
+        [`Bagi Hasil ${k2Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`]
+      ];
+
+      // Tabel Kolom 1 (Perhitungan Dana)
       doc.autoTable({
-        startY: formY + 2,
-        body: rowsBagiHasilPDF,
-        theme: 'plain',
-        margin: { left: 14, right: 14 },
-        styles: { fontSize: 7.5, cellPadding: 1.3 },
+        startY: formY + 3,
+        head: [['PERHITUNGAN DANA', 'NOMINAL']],
+        body: leftTableData,
+        theme: 'grid',
+        margin: { left: 14, right: 108 },
+        styles: { fontSize: 7.5, cellPadding: 1.4 },
+        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
         columnStyles: { 0: { fontStyle: 'bold', textColor: [51, 65, 85] }, 1: { halign: 'right', fontStyle: 'bold' } }
       });
 
+      const leftFinalY = doc.lastAutoTable.finalY;
+
+      // Tabel Kolom 2 (Distribusi Bagi Hasil)
+      doc.autoTable({
+        startY: formY + 3,
+        head: [['DISTRIBUSI BAGI HASIL', 'NOMINAL']],
+        body: rightTableData,
+        theme: 'grid',
+        margin: { left: 108, right: 14 },
+        styles: { fontSize: 7.5, cellPadding: 1.4 },
+        headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontStyle: 'bold' },
+        columnStyles: { 0: { fontStyle: 'bold', textColor: [51, 65, 85] }, 1: { halign: 'right', fontStyle: 'bold' } }
+      });
+
+      const rightFinalY = doc.lastAutoTable.finalY;
+
       // 6. Kolom Tanda Tangan
-      const sigY = doc.lastAutoTable.finalY + 12;
+      const sigY = Math.max(leftFinalY, rightFinalY) + 12;
       doc.setFontSize(8.5);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(15, 23, 42);
