@@ -20,68 +20,9 @@
 
   <style>
     body { -webkit-tap-highlight-color: transparent; }
-    .pin-digit {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 2px solid #64748b;
-      transition: all 0.2s;
-    }
-    .pin-digit.filled {
-      background-color: #3b82f6;
-      border-color: #60a5fa;
-      box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
-    }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-28">
-
-  <!-- LOCK SCREEN MODAL -->
-  <div id="lock-screen" class="fixed inset-0 bg-slate-950 z-[100] flex flex-col items-center justify-center p-6 text-center">
-    <div class="mb-5 space-y-2">
-      <img id="lock-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-16 h-16 mx-auto rounded-2xl shadow-lg border border-slate-700 p-1 bg-slate-800 object-cover" alt="Logo">
-      <h2 id="lock-title" class="text-xl font-bold text-white tracking-wide">Warung Suramadu</h2>
-      <p class="text-xs text-slate-400">Masukkan PIN Keamanan untuk Akses</p>
-    </div>
-
-    <!-- PIN Indicator Dots -->
-    <div class="flex space-x-4 mb-6">
-      <div id="dot-0" class="pin-digit"></div>
-      <div id="dot-1" class="pin-digit"></div>
-      <div id="dot-2" class="pin-digit"></div>
-      <div id="dot-3" class="pin-digit"></div>
-    </div>
-
-    <!-- Numpad 3x4 -->
-    <div class="grid grid-cols-3 gap-3.5 w-64 mb-5">
-      <button type="button" onclick="pressPin('1')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">1</button>
-      <button type="button" onclick="pressPin('2')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">2</button>
-      <button type="button" onclick="pressPin('3')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">3</button>
-      <button type="button" onclick="pressPin('4')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">4</button>
-      <button type="button" onclick="pressPin('5')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">5</button>
-      <button type="button" onclick="pressPin('6')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">6</button>
-      <button type="button" onclick="pressPin('7')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">7</button>
-      <button type="button" onclick="pressPin('8')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">8</button>
-      <button type="button" onclick="pressPin('9')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">9</button>
-      
-      <button type="button" onclick="clearPin()" class="h-13 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-medium text-xs rounded-2xl border border-slate-800 transition">Hapus</button>
-      <button type="button" onclick="pressPin('0')" class="h-13 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">0</button>
-      <button type="button" onclick="backspacePin()" class="h-13 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-bold text-lg rounded-2xl border border-slate-800 transition"><i class="fa-solid fa-backspace"></i></button>
-    </div>
-
-    <!-- Opsi Biometrik / Sidik Jari -->
-    <div class="flex flex-col gap-2 w-64">
-      <button type="button" onclick="authenticateBiometrics()" class="w-full flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-semibold py-2.5 px-3 bg-blue-950/60 border border-blue-800/60 rounded-xl transition active:scale-95 cursor-pointer">
-        <i class="fa-solid fa-fingerprint text-base"></i>
-        <span>Masuk dengan Sidik Jari</span>
-      </button>
-
-      <button type="button" onclick="registerBiometrics()" class="w-full flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-300 text-[11px] py-1.5 px-3 bg-slate-900 border border-slate-800 rounded-lg transition active:scale-95 cursor-pointer">
-        <i class="fa-solid fa-key text-[10px]"></i>
-        <span>Daftar / Setel Ulang Sidik Jari</span>
-      </button>
-    </div>
-  </div>
 
   <!-- Header App -->
   <header class="bg-slate-800/90 backdrop-blur sticky top-0 z-50 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
@@ -93,9 +34,6 @@
       </div>
     </div>
     <div class="flex items-center space-x-2">
-      <button type="button" onclick="lockApp()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 p-2 rounded-lg text-xs cursor-pointer" title="Kunci Aplikasi">
-        <i class="fa-solid fa-lock"></i>
-      </button>
       <button type="button" onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition cursor-pointer">
         <i class="fa-solid fa-rotate text-xs"></i>
         <span>Sync</span>
@@ -438,11 +376,6 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">PIN Keamanan Aplikasi (4-Digit)</label>
-          <input type="password" id="setting-pin" maxlength="4" placeholder="1909" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none tracking-widest font-mono">
-        </div>
-
-        <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">URL Web App Google Apps Script (Opsional)</label>
           <input type="text" id="setting-script-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:border-blue-500 outline-none">
         </div>
@@ -541,7 +474,6 @@
       namaKaryawan2: 'Karyawan 2',
       gajiPerKaryawan: 1500000,
       jumlahKaryawan: 2,
-      pin: '1909',
       scriptUrl: '',
       logoUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
     };
@@ -551,7 +483,6 @@
     let records = [];
     let cycleKontrakOptions = {};
     let settings = { ...DEFAULT_SETTINGS };
-    let enteredPin = '';
     let dailyChartInstance = null;
     let cycleChartInstance = null;
 
@@ -577,151 +508,6 @@
           settings = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(savedSettings));
         }
       } catch (e) { settings = { ...DEFAULT_SETTINGS }; }
-    }
-
-    // Security & Lock Screen Logic
-    function pressPin(digit) {
-      if (enteredPin.length < 4) {
-        enteredPin += digit;
-        updatePinDots();
-        if (enteredPin.length === 4) {
-          setTimeout(verifyPin, 150);
-        }
-      }
-    }
-
-    function clearPin() {
-      enteredPin = '';
-      updatePinDots();
-    }
-
-    function backspacePin() {
-      enteredPin = enteredPin.slice(0, -1);
-      updatePinDots();
-    }
-
-    function updatePinDots() {
-      for (let i = 0; i < 4; i++) {
-        const dot = document.getElementById(`dot-${i}`);
-        if (dot) {
-          if (i < enteredPin.length) dot.classList.add('filled');
-          else dot.classList.remove('filled');
-        }
-      }
-    }
-
-    function verifyPin() {
-      const correctPin = settings.pin || '1909';
-      if (enteredPin === correctPin) {
-        document.getElementById('lock-screen').style.display = 'none';
-        enteredPin = '';
-        updatePinDots();
-        updateDashboardCharts(false);
-      } else {
-        alert('PIN Salah! Silakan coba lagi.');
-        clearPin();
-      }
-    }
-
-    function lockApp() {
-      clearPin();
-      document.getElementById('lock-screen').style.display = 'flex';
-    }
-
-    // Penanganan Biometrik / Sidik Jari (Smart Fallback Tanpa Pop-up Error)
-    async function authenticateBiometrics() {
-      if (!window.PublicKeyCredential || !navigator.credentials) {
-        alert('Perangkat atau browser Anda tidak mendukung fitur biometrik/sidik jari. Silakan gunakan PIN.');
-        return;
-      }
-
-      const isRegistered = localStorage.getItem('suramadu_passkey_registered');
-
-      // Jika durasi registrasi belum ada di browser ini, langsung alihkan ke registerBiometrics()
-      if (isRegistered !== 'true') {
-        await registerBiometrics();
-        return;
-      }
-
-      // Jika sudah terdaftar di memori, coba lakukan verifikasi get()
-      try {
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-
-        const credential = await navigator.credentials.get({
-          publicKey: {
-            challenge: challenge,
-            timeout: 60000,
-            userVerification: 'required'
-          }
-        });
-
-        if (credential) {
-          document.getElementById('lock-screen').style.display = 'none';
-          enteredPin = '';
-          updatePinDots();
-          updateDashboardCharts(false);
-        }
-      } catch (err) {
-        console.error('Biometric auth error:', err);
-        // Jika kunci sandi di Android ternyata belum ada / terhapus, otomatis alihkan ke registerBiometrics()
-        localStorage.removeItem('suramadu_passkey_registered');
-        if (err.name !== 'NotAllowedError') {
-          await registerBiometrics();
-        }
-      }
-    }
-
-    async function registerBiometrics() {
-      if (!window.PublicKeyCredential || !navigator.credentials) {
-        alert('Browser/HP ini tidak mendukung pendaftaran biometrik WebAuthn.');
-        return;
-      }
-
-      try {
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-        const userId = new Uint8Array(16);
-        window.crypto.getRandomValues(userId);
-
-        const credential = await navigator.credentials.create({
-          publicKey: {
-            challenge: challenge,
-            rp: {
-              name: settings.namaWarung || "Warung Suramadu",
-              id: window.location.hostname
-            },
-            user: {
-              id: userId,
-              name: "user_" + Date.now(),
-              displayName: settings.namaBoss || "Pemilik Warung"
-            },
-            pubKeyCredParams: [
-              { alg: -7, type: "public-key" },
-              { alg: -257, type: "public-key" }
-            ],
-            authenticatorSelection: {
-              authenticatorAttachment: "platform",
-              userVerification: "required"
-            },
-            timeout: 60000
-          }
-        });
-
-        if (credential) {
-          localStorage.setItem('suramadu_passkey_registered', 'true');
-          alert('✅ Sidik Jari berhasil didaftarkan! Aplikasi terbuka.');
-          document.getElementById('lock-screen').style.display = 'none';
-          enteredPin = '';
-          updatePinDots();
-          updateDashboardCharts(false);
-        }
-      } catch (err) {
-        console.error('Biometric reg error:', err);
-        if (err.name !== 'NotAllowedError') {
-          alert('Gagal mendaftarkan sidik jari. Silakan gunakan PIN 4-digit.');
-        }
-      }
     }
 
     // Auto Set Siklus & Hari Ke- dari Data Tersimpan
@@ -812,7 +598,6 @@
         settings.logoUrl = base64Img;
         document.getElementById('setting-logo-preview').src = base64Img;
         document.getElementById('header-logo').src = base64Img;
-        document.getElementById('lock-logo').src = base64Img;
         localStorage.setItem('suramadu_settings', JSON.stringify(settings));
         alert('Foto Profil / Logo berhasil diperbarui!');
       };
@@ -1338,17 +1123,14 @@
       const gajiRate = settings.gajiPerKaryawan || 0;
       document.getElementById('setting-gaji').value = 'Rp ' + gajiRate.toLocaleString('id-ID');
       document.getElementById('setting-karyawan').value = settings.jumlahKaryawan || 2;
-      document.getElementById('setting-pin').value = settings.pin || '1909';
       document.getElementById('setting-script-url').value = settings.scriptUrl || '';
       document.getElementById('setting-logo-url').value = settings.logoUrl || '';
 
       const appTitle = settings.namaWarung || 'Warung Suramadu';
       document.getElementById('header-app-title').innerText = appTitle;
-      document.getElementById('lock-title').innerText = appTitle;
 
       if (settings.logoUrl) {
         document.getElementById('header-logo').src = settings.logoUrl;
-        document.getElementById('lock-logo').src = settings.logoUrl;
         document.getElementById('setting-logo-preview').src = settings.logoUrl;
       }
     }
@@ -1363,7 +1145,6 @@
 
       settings.gajiPerKaryawan = parseRupiah(document.getElementById('setting-gaji').value);
       settings.jumlahKaryawan = parseInt(document.getElementById('setting-karyawan').value, 10) || 2;
-      settings.pin = document.getElementById('setting-pin').value.trim() || '1909';
       settings.scriptUrl = document.getElementById('setting-script-url').value.trim();
       const altUrl = document.getElementById('setting-logo-url').value.trim();
       if (altUrl) settings.logoUrl = altUrl;
