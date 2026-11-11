@@ -1192,13 +1192,13 @@
       const dashSelect = document.getElementById('dash-siklus-filter');
       let targetSiklus = maxSiklus;
       if (isUserChange && dashSelect && dashSelect.value) {
-        targetSiklus = parseInt(dashSelect.value, 10) || maxSiklus;
+        targetSiklus = dashSelect.value === 'all' ? 'all' : (parseInt(dashSelect.value, 10) || maxSiklus);
       }
 
       if (dashSelect) {
-        dashSelect.innerHTML = '';
+        dashSelect.innerHTML = `<option value="all" ${targetSiklus === 'all' ? 'selected' : ''}>Semua Siklus</option>`;
         if (allSiklus.length === 0) {
-          dashSelect.innerHTML = '<option value="1">Siklus 1</option>';
+          dashSelect.innerHTML += `<option value="1" ${targetSiklus !== 'all' ? 'selected' : ''}>Siklus 1</option>`;
         } else {
           allSiklus.forEach(s => {
             dashSelect.innerHTML += `<option value="${s}" ${s === targetSiklus ? 'selected' : ''}>Siklus ${s}</option>`;
@@ -1206,37 +1206,75 @@
         }
       }
 
-      const selectedCycle = dashSelect ? parseInt(dashSelect.value, 10) || targetSiklus : targetSiklus;
-      document.getElementById('dash-siklus-badge').innerText = `Siklus ${selectedCycle}`;
+      const rawVal = dashSelect ? dashSelect.value : String(targetSiklus);
+      const isAllCycles = rawVal === 'all';
+      const selectedCycle = isAllCycles ? 'all' : (parseInt(rawVal, 10) || targetSiklus);
 
-      const filtered = records.filter(r => (parseInt(r.siklus, 10) || 1) === selectedCycle).sort((a, b) => a.hariKe - b.hariKe);
+      document.getElementById('dash-siklus-badge').innerText = isAllCycles ? 'Semua Siklus' : `Siklus ${selectedCycle}`;
+
+      const filtered = isAllCycles
+        ? [...records].sort((a, b) => ((parseInt(a.siklus, 10) || 1) - (parseInt(b.siklus, 10) || 1)) || ((parseInt(a.hariKe, 10) || 1) - (parseInt(b.hariKe, 10) || 1)))
+        : records.filter(r => (parseInt(r.siklus, 10) || 1) === selectedCycle).sort((a, b) => a.hariKe - b.hariKe);
 
       const percentTab = settings.persentaseTabungan || 10;
       document.getElementById('dash-tabungan-percent-label').innerText = percentTab;
 
+      const fullKontrak = settings.gajiPerKaryawan || 0;
       let cycleOmset = 0;
       let cycleTabungan = 0;
-      filtered.forEach(r => {
-        cycleOmset += (r.omsetKotor || 0);
-        cycleTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
-      });
+      let bossTotal = 0;
+      let karyawanPerPerson = 0;
 
-      const totalHariBerjalan = filtered.length;
-      const fullKontrak = settings.gajiPerKaryawan || 0;
-      let effectiveKontrak = fullKontrak;
+      if (isAllCycles) {
+        const cyclesToCalc = allSiklus.length > 0 ? allSiklus : [1];
+        cyclesToCalc.forEach(s => {
+          const recsS = records.filter(r => (parseInt(r.siklus, 10) || 1) === s);
+          let omsetS = 0;
+          let tabunganS = 0;
+          recsS.forEach(r => {
+            omsetS += (r.omsetKotor || 0);
+            tabunganS += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
+          });
 
-      if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
-        const currentOpt = cycleKontrakOptions[selectedCycle] || 'prorata';
-        if (currentOpt === 'zero') effectiveKontrak = 0;
-        else if (currentOpt === 'full') effectiveKontrak = fullKontrak;
-        else effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
+          const hariS = recsS.length;
+          let kontrakS = hariS > 0 ? fullKontrak : 0;
+          if (hariS < 30 && hariS > 0) {
+            const optS = cycleKontrakOptions[s] || 'prorata';
+            if (optS === 'zero') kontrakS = 0;
+            else if (optS === 'full') kontrakS = fullKontrak;
+            else kontrakS = Math.round((fullKontrak / 30) * hariS);
+          }
+
+          const sisaS = tabunganS - kontrakS;
+          const halfS = Math.max(0, Math.round(sisaS * 0.50));
+
+          cycleOmset += omsetS;
+          cycleTabungan += tabunganS;
+          bossTotal += (halfS + kontrakS);
+          karyawanPerPerson += Math.round(halfS / 2);
+        });
+      } else {
+        filtered.forEach(r => {
+          cycleOmset += (r.omsetKotor || 0);
+          cycleTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
+        });
+
+        const totalHariBerjalan = filtered.length;
+        let effectiveKontrak = fullKontrak;
+
+        if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
+          const currentOpt = cycleKontrakOptions[selectedCycle] || 'prorata';
+          if (currentOpt === 'zero') effectiveKontrak = 0;
+          else if (currentOpt === 'full') effectiveKontrak = fullKontrak;
+          else effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
+        }
+
+        const sisaDanaBagiHasil = cycleTabungan - effectiveKontrak;
+        const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+        
+        bossTotal = halfShare + effectiveKontrak;
+        karyawanPerPerson = Math.round(halfShare / 2);
       }
-
-      const sisaDanaBagiHasil = cycleTabungan - effectiveKontrak;
-      const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      
-      const bossTotal = halfShare + effectiveKontrak;
-      const karyawanPerPerson = Math.round(halfShare / 2);
 
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
       const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
@@ -1250,7 +1288,7 @@
       document.getElementById('dash-total-omset').innerText = 'Rp ' + cycleOmset.toLocaleString('id-ID');
       document.getElementById('dash-total-tabungan').innerText = 'Rp ' + cycleTabungan.toLocaleString('id-ID');
 
-      const labelsDaily = filtered.map(r => `Hari ${r.hariKe}`);
+      const labelsDaily = filtered.map(r => isAllCycles ? `S${r.siklus || 1} H${r.hariKe}` : `Hari ${r.hariKe}`);
       const dataDaily = filtered.map(r => r.omsetKotor || 0);
 
       const maxOmsetVal = dataDaily.length > 0 ? Math.max(...dataDaily) : 0;
