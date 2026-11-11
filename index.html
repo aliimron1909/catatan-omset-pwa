@@ -508,6 +508,8 @@
 
     // Helper Menentukan Tanggal Input Selanjutnya (+1 hari dari input terakhir / hari berjalan)
     function getNextInputDate() {
+        // Helper Menentukan Tanggal Input (Tatap hari ini jika sudah di-input, atau +1 hari jika belum)
+    function getNextInputDate() {
       const todayStr = new Date().toISOString().split('T')[0];
       if (!records || records.length === 0) return todayStr;
 
@@ -521,10 +523,15 @@
 
       if (!maxDateStr) return todayStr;
 
+      // Jika tanggal input terakhir sudah sama dengan atau melebihi hari ini, tetap di tanggal hari ini
+      if (maxDateStr >= todayStr) {
+        return todayStr;
+      }
+
       const d = new Date(maxDateStr + 'T00:00:00');
       if (isNaN(d.getTime())) return todayStr;
 
-      // Tambah 1 hari dari input terakhir
+      // Tambah 1 hari jika input terakhir masih di bawah hari ini
       d.setDate(d.getDate() + 1);
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -533,7 +540,7 @@
     }
 
     // Helper Mengecek Apakah Tanggal di Form Input Sudah Pernah Di-input
-    function checkDateAlreadyInput() {
+        function checkDateAlreadyInput() {
       const editingId = document.getElementById('editing-id').value;
       const inputTanggal = document.getElementById('input-tanggal');
       const boxBanner = document.getElementById('box-already-input');
@@ -545,15 +552,20 @@
         return;
       }
 
-      // Cari apakah tanggal yang dipilih sudah ada di records (dan bukan record yang sedang di-edit)
       const existingRecord = records.find(r => cleanDateStr(r.tanggal) === selectedDateStr && r.id !== editingId);
 
       if (existingRecord) {
         const tglFormatted = formatDateDDMMYYYY(existingRecord.tanggal);
         const textEl = document.getElementById('already-input-text');
         const omsetEl = document.getElementById('already-input-omset');
+        
         if (textEl) textEl.innerText = `Tanggal ${tglFormatted} sudah di-input`;
         if (omsetEl) omsetEl.innerText = `Rp ${(existingRecord.omsetKotor || 0).toLocaleString('id-ID')}`;
+        
+        // Sesuaikan siklus dan hari ke data yang sudah ada
+        document.getElementById('input-siklus').value = existingRecord.siklus;
+        document.getElementById('input-hari').value = existingRecord.hariKe;
+
         boxBanner.setAttribute('data-record-id', existingRecord.id);
         boxBanner.classList.remove('hidden');
       } else {
@@ -653,17 +665,43 @@
       } catch (e) { settings = { ...DEFAULT_SETTINGS }; }
     }
 
-     function autoSetSiklusDanHari() {
+         function autoSetSiklusDanHari() {
       const editingId = document.getElementById('editing-id').value;
       if (editingId) return;
 
-      // Otomatis set tanggal (1 hari setelah input terakhir / hari berjalan)
       const inputTanggal = document.getElementById('input-tanggal');
       if (inputTanggal) {
         inputTanggal.value = getNextInputDate();
       }
 
+      if (!records || records.length === 0) {
+        document.getElementById('input-siklus').value = 1;
+        document.getElementById('input-hari').value = 1;
+        checkDateAlreadyInput();
+        return;
+      }
+
+      const maxSiklus = getMaxSiklus();
+      const recordsInMaxSiklus = records.filter(r => (parseInt(r.siklus, 10) || 1) === maxSiklus);
+      
+      if (recordsInMaxSiklus.length === 0) {
+        document.getElementById('input-siklus').value = maxSiklus;
+        document.getElementById('input-hari').value = 1;
+        checkDateAlreadyInput();
+        return;
+      }
+
+      const maxHari = Math.max(...recordsInMaxSiklus.map(r => parseInt(r.hariKe, 10) || 1));
+      if (maxHari < 30) {
+        document.getElementById('input-siklus').value = maxSiklus;
+        document.getElementById('input-hari').value = maxHari + 1;
+      } else {
+        document.getElementById('input-siklus').value = maxSiklus + 1;
+        document.getElementById('input-hari').value = 1;
+      }
+
       checkDateAlreadyInput();
+    }
 
       if (!records || records.length === 0) {
         document.getElementById('input-siklus').value = 1;
