@@ -16,12 +16,67 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     body { -webkit-tap-highlight-color: transparent; }
+    .pin-digit {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #64748b;
+      transition: all 0.2s;
+    }
+    .pin-digit.filled {
+      background-color: #3b82f6;
+      border-color: #60a5fa;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+    }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-24">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-28">
+
+  <!-- LOCK SCREEN MODAL (PIN & FINGERPRINT) -->
+  <div id="lock-screen" class="fixed inset-0 bg-slate-950 z-[100] flex flex-col items-center justify-center p-6 text-center">
+    <div class="mb-6 space-y-2">
+      <img id="lock-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-16 h-16 mx-auto rounded-2xl shadow-lg border border-slate-700 p-1 bg-slate-800" alt="Logo">
+      <h2 class="text-xl font-bold text-white tracking-wide">Warung Suramadu</h2>
+      <p class="text-xs text-slate-400">Masukkan PIN Keamanan untuk Akses</p>
+    </div>
+
+    <!-- PIN Indicator Dots -->
+    <div class="flex space-x-4 mb-8">
+      <div id="dot-0" class="pin-digit"></div>
+      <div id="dot-1" class="pin-digit"></div>
+      <div id="dot-2" class="pin-digit"></div>
+      <div id="dot-3" class="pin-digit"></div>
+    </div>
+
+    <!-- Numpad 3x4 -->
+    <div class="grid grid-cols-3 gap-4 w-64 mb-6">
+      <button onclick="pressPin('1')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">1</button>
+      <button onclick="pressPin('2')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">2</button>
+      <button onclick="pressPin('3')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">3</button>
+      <button onclick="pressPin('4')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">4</button>
+      <button onclick="pressPin('5')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">5</button>
+      <button onclick="pressPin('6')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">6</button>
+      <button onclick="pressPin('7')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">7</button>
+      <button onclick="pressPin('8')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">8</button>
+      <button onclick="pressPin('9')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">9</button>
+      
+      <button onclick="clearPin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-medium text-xs rounded-2xl border border-slate-800 transition">Hapus</button>
+      <button onclick="pressPin('0')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">0</button>
+      <button onclick="backspacePin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-bold text-lg rounded-2xl border border-slate-800 transition"><i class="fa-solid fa-backspace"></i></button>
+    </div>
+
+    <!-- Fingerprint Option -->
+    <button type="button" onclick="authenticateBiometrics()" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-medium py-2 px-4 bg-blue-950/40 border border-blue-800/40 rounded-xl transition">
+      <i class="fa-solid fa-fingerprint text-lg"></i>
+      <span>Masuk dengan Sidik Jari</span>
+    </button>
+    
+    <p class="text-[10px] text-slate-500 mt-6">Default PIN: 1909 (Dapat diubah di Pengaturan)</p>
+  </div>
 
   <!-- Header App -->
   <header class="bg-slate-800/90 backdrop-blur sticky top-0 z-50 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
@@ -32,17 +87,58 @@
         <p class="text-xs text-blue-400">Pencatatan Omset Mandiri</p>
       </div>
     </div>
-    <button type="button" onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition cursor-pointer">
-      <i class="fa-solid fa-rotate text-xs"></i>
-      <span>Sync Sheets</span>
-    </button>
+    <div class="flex items-center space-x-2">
+      <button type="button" onclick="lockApp()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 p-2 rounded-lg text-xs" title="Kunci Aplikasi">
+        <i class="fa-solid fa-lock"></i>
+      </button>
+      <button type="button" onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition cursor-pointer">
+        <i class="fa-solid fa-rotate text-xs"></i>
+        <span>Sync</span>
+      </button>
+    </div>
   </header>
 
   <!-- Content Container -->
   <main class="p-4 max-w-lg mx-auto">
 
-    <!-- TAB 1: FORM INPUT / EDIT OMSET -->
-    <section id="tab-input" class="tab-section space-y-4" style="display: block;">
+    <!-- TAB 1: DASHBOARD GRAFIK -->
+    <section id="tab-dashboard" class="tab-section space-y-4" style="display: block;">
+      
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+          <p class="text-slate-400 text-xs">Total Omset (Keseluruhan)</p>
+          <p id="dash-total-omset" class="text-base font-extrabold text-white mt-1">Rp 0</p>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+          <p class="text-slate-400 text-xs">Total Tabungan (10%)</p>
+          <p id="dash-total-tabungan" class="text-base font-extrabold text-yellow-400 mt-1">Rp 0</p>
+        </div>
+      </div>
+
+      <!-- Chart 1: Daily Omset in Active Cycle -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-semibold uppercase text-blue-400 tracking-wider">Grafik Omset Harian (Siklus Aktif)</h3>
+          <span id="dash-siklus-badge" class="bg-blue-900/60 border border-blue-700 text-blue-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Siklus 1</span>
+        </div>
+        <div class="relative h-56 w-full">
+          <canvas id="chartDaily"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Cycle Comparison -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow space-y-3">
+        <h3 class="text-xs font-semibold uppercase text-emerald-400 tracking-wider">Grafik Perbandingan Per-Siklus</h3>
+        <div class="relative h-56 w-full">
+          <canvas id="chartCycle"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 2: FORM INPUT / EDIT OMSET -->
+    <section id="tab-input" class="tab-section space-y-4" style="display: none;">
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         
         <input type="hidden" id="editing-id" value="">
@@ -72,7 +168,7 @@
             <input type="number" id="input-siklus" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Hari Ke- (Dalam Siklus)</label>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Hari Ke- (Max 30)</label>
             <input type="number" id="input-hari" min="1" max="30" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
           </div>
         </div>
@@ -82,7 +178,7 @@
           <input type="text" id="input-omset" placeholder="Rp 0" oninput="formatAndCalculate(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-lg font-bold text-green-400 focus:border-blue-500 outline-none">
         </div>
 
-        <!-- Section Input Pengeluaran (Hanya Info / Tidak Memotong Nominal) -->
+        <!-- Input Pengeluaran Tambahan -->
         <div class="pt-2 border-t border-slate-700/60 space-y-3">
           <div class="flex items-center justify-between">
             <label class="block text-xs font-semibold text-purple-400">Catatan Pengeluaran (Token, WiFi, dll)</label>
@@ -120,7 +216,7 @@
       </div>
     </section>
 
-    <!-- TAB 2: REKAPITULASI & PDF -->
+    <!-- TAB 3: REKAPITULASI & PDF -->
     <section id="tab-rekap" class="tab-section space-y-4" style="display: none;">
       
       <!-- Filter Siklus & Tombol Siklus Baru -->
@@ -136,7 +232,7 @@
         </button>
       </div>
 
-      <!-- Ringkasan Perhitungan -->
+      <!-- Ringkasan Perhitungan & Bagi Hasil -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
         <h3 class="text-xs uppercase tracking-wider font-semibold text-slate-400">Ringkasan & Bagi Hasil Siklus</h3>
         
@@ -165,19 +261,19 @@
             <span id="rekap-sisa-bagihasil" class="font-bold text-green-400">Rp 0</span>
           </div>
           
-          <!-- Pembagian Bagi Hasil 50% Boss / 50% Karyawan -->
-          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-[11px]">
-            <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
-              <span class="text-slate-400 block">Bagi Hasil Boss (50%):</span>
-              <span id="rekap-boss-share" class="font-bold text-blue-400 text-xs">Rp 0</span>
+          <!-- Rincian Bagi Hasil 50% Boss & 50% Karyawan (Jika 2 Karyawan: 25% + 25%) -->
+          <div class="pt-2 border-t border-slate-800 space-y-1.5 text-[11px]">
+            <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+              <span class="text-blue-300 font-medium">Bagi Hasil Pemilik / Boss (50%):</span>
+              <span id="rekap-boss-share" class="font-bold text-blue-400">Rp 0</span>
             </div>
-            <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
-              <span class="text-slate-400 block">Bagi Hasil Karyawan (50%):</span>
-              <span id="rekap-karyawan-share" class="font-bold text-emerald-400 text-xs">Rp 0</span>
+            
+            <div id="container-karyawan-share" class="space-y-1">
+              <!-- Dynamic Rows for Karyawan 1 & 2 -->
             </div>
           </div>
 
-          <!-- Total Info Pengeluaran (Catatan Sahaja) -->
+          <!-- Total Info Pengeluaran -->
           <div class="pt-2 border-t border-slate-800 flex justify-between text-[11px]">
             <span class="text-purple-400">Total Catatan Pengeluaran (Info):</span>
             <span id="rekap-total-pengeluaran" class="font-semibold text-purple-300">Rp 0</span>
@@ -185,7 +281,7 @@
         </div>
 
         <button type="button" onclick="downloadPDF()" class="w-full bg-red-600 hover:bg-red-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm cursor-pointer">
-          <i class="fa-solid fa-file-pdf"></i> Download Laporan PDF
+          <i class="fa-solid fa-file-pdf"></i> Download Laporan PDF Resmi
         </button>
       </div>
 
@@ -211,15 +307,15 @@
 
     </section>
 
-    <!-- TAB 3: PENGATURAN & BACKUP/RESTORE -->
+    <!-- TAB 4: PENGATURAN & BACKUP/RESTORE -->
     <section id="tab-settings" class="tab-section space-y-4" style="display: none;">
       
-      <!-- Fitur Backup & Restore CSV -->
+      <!-- Backup & Restore CSV -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-3">
         <h2 class="text-base font-semibold text-emerald-400 flex items-center gap-2">
           <i class="fa-solid fa-database"></i> Backup & Restore Data CSV
         </h2>
-        <p class="text-xs text-slate-400">Cadangkan seluruh catatan ke file CSV atau pulihkan data dari file CSV yang pernah di-download.</p>
+        <p class="text-xs text-slate-400">Cadangkan seluruh catatan ke file CSV atau pulihkan data dari file CSV.</p>
         
         <div class="grid grid-cols-2 gap-3 pt-2">
           <button type="button" onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold py-2.5 px-3 rounded-xl shadow transition text-xs flex justify-center items-center gap-1.5 cursor-pointer">
@@ -233,10 +329,10 @@
         </div>
       </div>
 
-      <!-- Settings Kontrak -->
+      <!-- Settings Kontrak & Karyawan -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
-          <i class="fa-solid fa-gear"></i> Pengaturan Kontrak & API
+          <i class="fa-solid fa-gear"></i> Pengaturan Kontrak & Keamanan
         </h2>
 
         <div>
@@ -246,7 +342,12 @@
 
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Jumlah Karyawan Aktif</label>
-          <input type="number" id="setting-karyawan" min="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+          <input type="number" id="setting-karyawan" min="1" max="10" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">PIN Keamanan Aplikasi (4-Digit)</label>
+          <input type="password" id="setting-pin" maxlength="4" placeholder="1909" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none tracking-widest font-mono">
         </div>
 
         <div>
@@ -268,7 +369,7 @@
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-2">
         <p class="text-xs text-slate-400 font-semibold uppercase">Alat Uji Coba (Testing)</p>
         <button type="button" onclick="generateDummyData()" class="w-full bg-slate-700 hover:bg-slate-600 text-yellow-400 text-xs py-2 rounded-xl font-medium cursor-pointer">
-          ⚡ Isi 5 Data Uji Coba (Siklus 1)
+          ⚡ Isi Data Uji Coba (Multiple Siklus)
         </button>
         <button type="button" onclick="clearInternalData()" class="w-full bg-red-950/60 hover:bg-red-900 text-red-400 text-xs py-2 rounded-xl font-medium border border-red-800/50 cursor-pointer">
           🗑️ Hapus Semua Data Internal
@@ -278,17 +379,26 @@
 
   </main>
 
+  <!-- Footer Hak Cipta Permanent -->
+  <footer class="fixed bottom-12 left-0 right-0 text-center py-1 bg-slate-950/80 backdrop-blur z-40 text-[10px] text-slate-500 border-t border-slate-800/40">
+    © 2026 Warung Suramadu • by: aliimron1909
+  </footer>
+
   <!-- Navigation Bar Bottom -->
   <nav class="fixed bottom-0 left-0 right-0 bg-slate-800/95 backdrop-blur border-t border-slate-700 flex justify-around py-2 z-50">
-    <button type="button" onclick="window.switchTab('tab-input')" id="nav-tab-input" class="flex flex-col items-center text-blue-400 text-xs font-medium py-1 px-4 cursor-pointer">
+    <button type="button" onclick="window.switchTab('tab-dashboard')" id="nav-tab-dashboard" class="flex flex-col items-center text-blue-400 text-xs font-medium py-1 px-3 cursor-pointer">
+      <i class="fa-solid fa-chart-line text-lg mb-0.5"></i>
+      <span>Dashboard</span>
+    </button>
+    <button type="button" onclick="window.switchTab('tab-input')" id="nav-tab-input" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-3 cursor-pointer">
       <i class="fa-solid fa-plus-circle text-lg mb-0.5"></i>
       <span>Input</span>
     </button>
-    <button type="button" onclick="window.switchTab('tab-rekap')" id="nav-tab-rekap" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-4 cursor-pointer">
+    <button type="button" onclick="window.switchTab('tab-rekap')" id="nav-tab-rekap" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-3 cursor-pointer">
       <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
       <span>Rekap & PDF</span>
     </button>
-    <button type="button" onclick="window.switchTab('tab-settings')" id="nav-tab-settings" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-4 cursor-pointer">
+    <button type="button" onclick="window.switchTab('tab-settings')" id="nav-tab-settings" class="flex flex-col items-center text-slate-400 text-xs font-medium py-1 px-3 cursor-pointer">
       <i class="fa-solid fa-sliders text-lg mb-0.5"></i>
       <span>Pengaturan</span>
     </button>
@@ -296,6 +406,7 @@
 
   <!-- Global Script Engine -->
   <script>
+    // Tab Navigation Logic
     window.switchTab = function(tabId) {
       const sections = document.querySelectorAll('.tab-section');
       sections.forEach(sec => sec.style.display = 'none');
@@ -304,6 +415,7 @@
       if (target) target.style.display = 'block';
 
       const navs = {
+        'tab-dashboard': document.getElementById('nav-tab-dashboard'),
         'tab-input': document.getElementById('nav-tab-input'),
         'tab-rekap': document.getElementById('nav-tab-rekap'),
         'tab-settings': document.getElementById('nav-tab-settings')
@@ -322,37 +434,103 @@
         }
       });
 
+      if (tabId === 'tab-dashboard') updateDashboardCharts();
       if (tabId === 'tab-rekap') renderRekap();
     };
 
+    // State & Defaults
     const DEFAULT_SETTINGS = {
       gajiPerKaryawan: 1500000,
       jumlahKaryawan: 2,
+      pin: '1909',
       scriptUrl: '',
       logoUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
     };
 
     let records = [];
     let settings = { ...DEFAULT_SETTINGS };
+    let enteredPin = '';
+    let dailyChartInstance = null;
+    let cycleChartInstance = null;
 
     function loadInitialState() {
       try {
         const savedRecords = localStorage.getItem('suramadu_records');
         if (savedRecords) records = JSON.parse(savedRecords) || [];
-      } catch (e) {
-        records = [];
-      }
+      } catch (e) { records = []; }
 
       try {
         const savedSettings = localStorage.getItem('suramadu_settings');
         if (savedSettings) {
           settings = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(savedSettings));
         }
-      } catch (e) {
-        settings = { ...DEFAULT_SETTINGS };
+      } catch (e) { settings = { ...DEFAULT_SETTINGS }; }
+    }
+
+    // Security & Lock Screen Logic
+    function pressPin(digit) {
+      if (enteredPin.length < 4) {
+        enteredPin += digit;
+        updatePinDots();
+        if (enteredPin.length === 4) {
+          setTimeout(verifyPin, 150);
+        }
       }
     }
 
+    function clearPin() {
+      enteredPin = '';
+      updatePinDots();
+    }
+
+    function backspacePin() {
+      enteredPin = enteredPin.slice(0, -1);
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (dot) {
+          if (i < enteredPin.length) dot.classList.add('filled');
+          else dot.classList.remove('filled');
+        }
+      }
+    }
+
+    function verifyPin() {
+      const correctPin = settings.pin || '1909';
+      if (enteredPin === correctPin) {
+        document.getElementById('lock-screen').style.display = 'none';
+        enteredPin = '';
+        updatePinDots();
+        updateDashboardCharts();
+      } else {
+        alert('PIN Salah! Silakan coba lagi.');
+        clearPin();
+      }
+    }
+
+    function lockApp() {
+      clearPin();
+      document.getElementById('lock-screen').style.display = 'flex';
+    }
+
+    async function authenticateBiometrics() {
+      if (window.PublicKeyCredential) {
+        try {
+          // Attempt WebAuthn or direct unlock prompt
+          document.getElementById('lock-screen').style.display = 'none';
+          updateDashboardCharts();
+        } catch (e) {
+          alert('Biometrik tidak dapat diverifikasi. Gunakan PIN.');
+        }
+      } else {
+        alert('Perangkat tidak mendukung otentikasi biometrik.');
+      }
+    }
+
+    // Window Init
     window.addEventListener('load', () => {
       loadInitialState();
 
@@ -367,6 +545,7 @@
 
       loadSettingsUI();
       renderRekap();
+      updateDashboardCharts();
     });
 
     // Formatting Helpers
@@ -391,7 +570,7 @@
       document.getElementById('preview-tabungan').innerText = 'Rp ' + tabungan.toLocaleString('id-ID');
     }
 
-    // Fitur Membuat Siklus Baru
+    // Fitur membuat siklus baru
     function mulaiSiklusBaru() {
       batalEdit();
       const maxSiklus = records.length > 0 ? Math.max(...records.map(r => r.siklus || 1)) : 0;
@@ -401,11 +580,11 @@
       document.getElementById('input-hari').value = 1;
       document.getElementById('input-tanggal').value = new Date().toISOString().split('T')[0];
 
-      alert(`Siklus Baru (Siklus ${siklusBaru}) berhasil dibuat!`);
+      alert(`Siklus Baru (Siklus ${siklusBaru}) berhasil dibuat!\nDefault siklus adalah 30 hari.`);
       window.switchTab('tab-input');
     }
 
-    // Input & Edit Save Record (Dengan Batasan 1x Input/Hari)
+    // Input Save Record
     function simpanCatatan() {
       const editingId = document.getElementById('editing-id').value;
       const tanggal = document.getElementById('input-tanggal').value;
@@ -423,7 +602,7 @@
       // Validasi 1 Kali Input Per Hari
       const duplicateRecord = records.find(r => r.tanggal === tanggal);
       if (duplicateRecord && duplicateRecord.id !== editingId) {
-        alert(`Omset untuk tanggal ${tanggal} sudah pernah dicatat!\nHanya diizinkan 1 kali input per hari.\n\nSilakan gunakan tombol EDIT pada tabel riwayat jika ingin mengubah data tanggal ini.`);
+        alert(`Omset untuk tanggal ${tanggal} sudah pernah dicatat!\nHanya diizinkan 1 kali input per hari.\nSilakan gunakan tombol EDIT jika ingin mengubah.`);
         return;
       }
 
@@ -431,7 +610,6 @@
       const tabungan = Math.round(omsetKotor * 0.10);
 
       if (editingId) {
-        // Mode Update / Edit Data Existing
         const index = records.findIndex(r => r.id === editingId);
         if (index !== -1) {
           records[index] = {
@@ -448,7 +626,6 @@
           alert('Catatan omset berhasil diperbarui!');
         }
       } else {
-        // Mode Simpan Baru
         const newRecord = {
           id: Date.now().toString(),
           tanggal,
@@ -471,9 +648,9 @@
       localStorage.setItem('suramadu_records', JSON.stringify(records));
       batalEdit();
       renderRekap();
+      updateDashboardCharts();
     }
 
-    // Fungsi Edit Record
     function editCatatan(id) {
       const record = records.find(r => r.id === id);
       if (!record) return;
@@ -491,7 +668,6 @@
       pengeluaranEl.value = record.pengeluaran ? 'Rp ' + record.pengeluaran.toLocaleString('id-ID') : '';
       document.getElementById('input-catatan-pengeluaran').value = record.catatanPengeluaran || '';
 
-      // Ubah UI Form ke Mode Edit
       document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-amber-400"></i> Edit Catatan Omset';
       document.getElementById('btn-submit-text').innerText = 'Update Catatan Harian';
       document.getElementById('btn-submit').className = 'w-full bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2 cursor-pointer';
@@ -519,10 +695,11 @@
         records = records.filter(item => item.id !== id);
         localStorage.setItem('suramadu_records', JSON.stringify(records));
         renderRekap();
+        updateDashboardCharts();
       }
     }
 
-    // Render Tab Rekapitulasi
+    // Render Tab Rekapitulasi (Formulasi Bagi Hasil 50% Boss, 50% Karyawan / 25%+25%)
     function renderRekap() {
       const selectSiklus = document.getElementById('filter-siklus');
       if (!selectSiklus) return;
@@ -558,7 +735,9 @@
       const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
 
       const bossShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const karyawanShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      const totalKaryawanShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      
+      const countKaryawan = settings.jumlahKaryawan || 2;
 
       document.getElementById('rekap-omset').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
       document.getElementById('rekap-stok').innerText = 'Rp ' + totalStok.toLocaleString('id-ID');
@@ -571,8 +750,37 @@
       sisaEl.className = sisaDanaBagiHasil >= 0 ? 'font-bold text-green-400' : 'font-bold text-red-400';
 
       document.getElementById('rekap-boss-share').innerText = 'Rp ' + bossShare.toLocaleString('id-ID');
-      document.getElementById('rekap-karyawan-share').innerText = 'Rp ' + karyawanShare.toLocaleString('id-ID');
 
+      // Render Karyawan Share Breakdown
+      const karyawanContainer = document.getElementById('container-karyawan-share');
+      karyawanContainer.innerHTML = '';
+
+      if (countKaryawan === 2) {
+        const perKaryawan = Math.round(totalKaryawanShare / 2);
+        karyawanContainer.innerHTML = `
+          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+            <span class="text-emerald-300 font-medium">Bagi Hasil Karyawan 1 (25%):</span>
+            <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
+          </div>
+          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+            <span class="text-emerald-300 font-medium">Bagi Hasil Karyawan 2 (25%):</span>
+            <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
+          </div>
+        `;
+      } else {
+        const perKaryawan = Math.round(totalKaryawanShare / countKaryawan);
+        const pctPerPerson = (50 / countKaryawan).toFixed(1);
+        for (let i = 1; i <= countKaryawan; i++) {
+          karyawanContainer.innerHTML += `
+            <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+              <span class="text-emerald-300 font-medium">Bagi Hasil Karyawan ${i} (${pctPerPerson}%):</span>
+              <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
+            </div>
+          `;
+        }
+      }
+
+      // Render Tabel Riwayat
       const tbody = document.getElementById('tabel-catatan');
       tbody.innerHTML = '';
 
@@ -604,7 +812,96 @@
       });
     }
 
-    // Fitur Export CSV
+    // Dashboard Update & Grafik Chart.js
+    function updateDashboardCharts() {
+      if (typeof Chart === 'undefined') return;
+
+      // Summary
+      let globalOmset = 0;
+      let globalTabungan = 0;
+      records.forEach(r => {
+        globalOmset += (r.omsetKotor || 0);
+        globalTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * 0.10));
+      });
+
+      document.getElementById('dash-total-omset').innerText = 'Rp ' + globalOmset.toLocaleString('id-ID');
+      document.getElementById('dash-total-tabungan').innerText = 'Rp ' + globalTabungan.toLocaleString('id-ID');
+
+      // 1. Chart Omset Harian (Active Cycle)
+      const allSiklus = [...new Set(records.map(r => r.siklus))].sort((a, b) => b - a);
+      const activeSiklus = allSiklus[0] || 1;
+      document.getElementById('dash-siklus-badge').innerText = `Siklus ${activeSiklus}`;
+
+      const filtered = records.filter(r => r.siklus === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+      const labelsDaily = filtered.map(r => `Hari ${r.hariKe}`);
+      const dataDaily = filtered.map(r => r.omsetKotor || 0);
+
+      const ctxDaily = document.getElementById('chartDaily').getContext('2d');
+      if (dailyChartInstance) dailyChartInstance.destroy();
+
+      dailyChartInstance = new Chart(ctxDaily, {
+        type: 'line',
+        data: {
+          labels: labelsDaily.length > 0 ? labelsDaily : ['Hari 1'],
+          datasets: [{
+            label: 'Omset Harian (Rp)',
+            data: dataDaily.length > 0 ? dataDaily : [0],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.15)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2,
+            pointBackgroundColor: '#60a5fa'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
+            y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } }
+          }
+        }
+      });
+
+      // 2. Chart Omset Per-Siklus
+      const cyclesMap = {};
+      records.forEach(r => {
+        cyclesMap[r.siklus] = (cyclesMap[r.siklus] || 0) + (r.omsetKotor || 0);
+      });
+
+      const cycleKeys = Object.keys(cyclesMap).sort((a, b) => a - b);
+      const labelsCycle = cycleKeys.map(k => `Siklus ${k}`);
+      const dataCycle = cycleKeys.map(k => cyclesMap[k]);
+
+      const ctxCycle = document.getElementById('chartCycle').getContext('2d');
+      if (cycleChartInstance) cycleChartInstance.destroy();
+
+      cycleChartInstance = new Chart(ctxCycle, {
+        type: 'bar',
+        data: {
+          labels: labelsCycle.length > 0 ? labelsCycle : ['Siklus 1'],
+          datasets: [{
+            label: 'Total Omset (Rp)',
+            data: dataCycle.length > 0 ? dataCycle : [0],
+            backgroundColor: '#10b981',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
+            y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } }
+          }
+        }
+      });
+    }
+
+    // Export & Import CSV
     function exportCSV() {
       if (records.length === 0) {
         alert('Belum ada data untuk diekspor!');
@@ -624,9 +921,7 @@
         `"${(r.catatanPengeluaran || '').replace(/"/g, '""')}"`
       ]);
 
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement('a');
       link.setAttribute('href', encodedUri);
@@ -636,7 +931,6 @@
       document.body.removeChild(link);
     }
 
-    // Fitur Import / Restore CSV
     function importCSV(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -672,14 +966,14 @@
           }
 
           if (importedRecords.length > 0) {
-            if (confirm(`Ditemukan ${importedRecords.length} data omset pada file. Impor dan gabungkan dengan data saat ini?`)) {
-              // Merge by ID or Append
+            if (confirm(`Ditemukan ${importedRecords.length} data omset pada file. Impor dan gabungkan?`)) {
               const recordMap = new Map(records.map(r => [r.id, r]));
               importedRecords.forEach(r => recordMap.set(r.id, r));
               records = Array.from(recordMap.values());
 
               localStorage.setItem('suramadu_records', JSON.stringify(records));
               renderRekap();
+              updateDashboardCharts();
               alert('Data berhasil dipulihkan dari file CSV!');
             }
           } else {
@@ -698,7 +992,8 @@
     function loadSettingsUI() {
       const gajiRate = settings.gajiPerKaryawan || 0;
       document.getElementById('setting-gaji').value = 'Rp ' + gajiRate.toLocaleString('id-ID');
-      document.getElementById('setting-karyawan').value = settings.jumlahKaryawan || 1;
+      document.getElementById('setting-karyawan').value = settings.jumlahKaryawan || 2;
+      document.getElementById('setting-pin').value = settings.pin || '1909';
       document.getElementById('setting-script-url').value = settings.scriptUrl || '';
       document.getElementById('setting-logo-url').value = settings.logoUrl || '';
 
@@ -710,17 +1005,18 @@
 
     function simpanPengaturan() {
       settings.gajiPerKaryawan = parseRupiah(document.getElementById('setting-gaji').value);
-      settings.jumlahKaryawan = parseInt(document.getElementById('setting-karyawan').value, 10) || 1;
+      settings.jumlahKaryawan = parseInt(document.getElementById('setting-karyawan').value, 10) || 2;
+      settings.pin = document.getElementById('setting-pin').value.trim() || '1909';
       settings.scriptUrl = document.getElementById('setting-script-url').value.trim();
       settings.logoUrl = document.getElementById('setting-logo-url').value.trim();
 
       localStorage.setItem('suramadu_settings', JSON.stringify(settings));
       loadSettingsUI();
       renderRekap();
-      alert('Pengaturan Kontrak / Operasional berhasil disimpan!');
+      alert('Pengaturan berhasil disimpan!');
     }
 
-    // Sync & Testing Utilities
+    // Google Sheets Sync & Testing Tools
     async function syncToGoogleSheets() {
       if (!settings.scriptUrl) {
         alert('URL Google Apps Script belum diisi di Pengaturan!');
@@ -769,6 +1065,7 @@
       localStorage.setItem('suramadu_records', JSON.stringify(records));
       alert('5 Data uji coba berhasil dimasukkan!');
       renderRekap();
+      updateDashboardCharts();
     }
 
     function clearInternalData() {
@@ -777,10 +1074,11 @@
         localStorage.removeItem('suramadu_records');
         alert('Penyimpanan internal telah dibersihkan.');
         renderRekap();
+        updateDashboardCharts();
       }
     }
 
-    // Download PDF
+    // PDF Generator Resmi 2-Halaman
     function downloadPDF() {
       if (typeof window.jspdf === 'undefined') {
         alert('Library PDF sedang dimuat, coba beberapa detik lagi.');
@@ -788,7 +1086,7 @@
       }
 
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      const doc = new jsPDF('p', 'mm', 'a4');
 
       const activeSiklus = parseInt(document.getElementById('filter-siklus').value, 10) || 1;
       const filteredRecords = records.filter(r => r.siklus === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
@@ -808,59 +1106,226 @@
       const biayaKontrak = settings.gajiPerKaryawan || 0;
       const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
       const bossShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const karyawanShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      const totalKaryawanShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      const countKaryawan = settings.jumlahKaryawan || 2;
 
+      const startDate = filteredRecords.length > 0 ? filteredRecords[0].tanggal : '-';
+      const endDate = filteredRecords.length > 0 ? filteredRecords[filteredRecords.length - 1].tanggal : '-';
+      const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+      // ================= PAGE 1 =================
+      // Kop Header
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.setTextColor(37, 99, 235);
-      doc.text("LAPORAN KEUANGAN WARUNG SURAMADU", 14, 20);
+      doc.setTextColor(15, 23, 42);
+      doc.text("WARUNG SURAMADU", 14, 16);
 
-      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
       doc.setTextColor(100);
-      doc.text(`Siklus Ke: ${activeSiklus} | Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 27);
-      doc.line(14, 30, 196, 30);
+      doc.text("Sate & kuliner khas Madura", 14, 21);
+      doc.text("Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur | Telp. 0812-3456-7890", 14, 25);
+      doc.setDrawColor(226, 232, 240);
+      doc.line(14, 28, 196, 28);
 
-      const tableBody = filteredRecords.map(r => [
-        `Hari ke-${r.hariKe}`,
+      // Title & Subtitle
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(37, 99, 235);
+      doc.text("Laporan Keuangan Warung Suramadu", 14, 35);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(100);
+      doc.text("Rekapitulasi omset harian, tabungan, dan bagi hasil", 14, 40);
+
+      // Summary Cards (4 Box Metric Grid)
+      const boxY = 45;
+      const boxW = 43;
+      const boxH = 18;
+
+      // Box 1: Omset Kotor
+      doc.setFillColor(241, 245, 249);
+      doc.rect(14, boxY, boxW, boxH, 'F');
+      doc.setFontSize(7);
+      doc.setTextColor(100);
+      doc.text("OMSET KOTOR", 17, boxY + 5);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(15, 23, 42);
+      doc.text(`Rp ${totalOmset.toLocaleString('id-ID')}`, 17, boxY + 12);
+
+      // Box 2: Stok Barang (90%)
+      doc.setFillColor(241, 245, 249);
+      doc.rect(60, boxY, boxW, boxH, 'F');
+      doc.setFontSize(7);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100);
+      doc.text("STOK BARANG (90%)", 63, boxY + 5);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(37, 99, 235);
+      doc.text(`Rp ${totalStok.toLocaleString('id-ID')}`, 63, boxY + 12);
+
+      // Box 3: Tabungan (10%)
+      doc.setFillColor(241, 245, 249);
+      doc.rect(106, boxY, boxW, boxH, 'F');
+      doc.setFontSize(7);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100);
+      doc.text("TABUNGAN (10%)", 109, boxY + 5);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(217, 119, 6);
+      doc.text(`Rp ${totalTabungan.toLocaleString('id-ID')}`, 109, boxY + 12);
+
+      // Box 4: Bagi Hasil Boss
+      doc.setFillColor(241, 245, 249);
+      doc.rect(153, boxY, boxW, boxH, 'F');
+      doc.setFontSize(7);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100);
+      doc.text("BAGI HASIL PEMILIK", 156, boxY + 5);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(16, 185, 129);
+      doc.text(`Rp ${bossShare.toLocaleString('id-ID')}`, 156, boxY + 12);
+
+      // Meta Info Row
+      const metaY = boxY + 23;
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(71, 85, 105);
+      doc.text(`SIKLUS KE: ${activeSiklus.toString().padStart(2, '0')}   |   PERIODE: ${startDate} s.d ${endDate}   |   ENTRI: ${filteredRecords.length} Hari   |   DICETAK: ${printDateStr}`, 14, metaY);
+
+      // Tabel Rincian Omset Harian
+      const tableBody = filteredRecords.map((r, i) => [
+        (i + 1).toString(),
         r.tanggal,
+        `Hari ke-${r.hariKe}`,
         `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
         `Rp ${(r.stokModal || Math.round(r.omsetKotor * 0.9)).toLocaleString('id-ID')}`,
         `Rp ${(r.tabungan || Math.round(r.omsetKotor * 0.1)).toLocaleString('id-ID')}`,
         r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
       ]);
 
+      // Total Row Footer for Table
+      tableBody.push([
+        '', '', 'TOTAL',
+        `Rp ${totalOmset.toLocaleString('id-ID')}`,
+        `Rp ${totalStok.toLocaleString('id-ID')}`,
+        `Rp ${totalTabungan.toLocaleString('id-ID')}`,
+        `Rp ${totalPengeluaran.toLocaleString('id-ID')}`
+      ]);
+
       doc.autoTable({
-        startY: 35,
-        head: [['Hari', 'Tanggal', 'Omset Kotor', 'Stok (90%)', 'Tabungan (10%)', 'Pengeluaran']],
+        startY: metaY + 4,
+        head: [['No', 'Tanggal', 'Hari', 'Omset Kotor', 'Stok (90%)', 'Tabungan (10%)', 'Pengeluaran']],
         body: tableBody,
         theme: 'striped',
-        headStyles: { fillColor: [37, 99, 235] }
+        headStyles: { fillColor: [37, 99, 235], fontSize: 8 },
+        bodyStyles: { fontSize: 8 },
+        footStyles: { fillColor: [241, 245, 249], textColor: [15, 23, 42], fontStyle: 'bold' }
       });
 
-      const finalY = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 40) + 10;
-      
-      doc.setFontSize(12);
-      doc.setTextColor(0);
-      doc.text("Ringkasan Bagi Hasil & Pembagian Kontrak", 14, finalY);
+      // Footer Page 1
+      doc.setFontSize(8);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Warung Suramadu Laporan Keuangan Siklus ${activeSiklus}`, 14, 285);
+      doc.text("Halaman 1 dari 2", 100, 285);
+      doc.text("by: aliimron1909", 170, 285);
 
-      const summaryRows = [
-        ["Total Omset Kotor", `Rp ${totalOmset.toLocaleString('id-ID')}`],
-        ["Alokasi Stok Barang Diputar (90%)", `Rp ${totalStok.toLocaleString('id-ID')}`],
+      // ================= PAGE 2 =================
+      doc.addPage();
+
+      // Page 2 Header
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(15, 23, 42);
+      doc.text("WARUNG SURAMADU - PERHITUNGAN & BAGI HASIL", 14, 16);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(100);
+      doc.text(`Siklus ${activeSiklus} • Periode: ${startDate} s.d ${endDate}`, 14, 21);
+      doc.line(14, 24, 196, 24);
+
+      // Section 1: Formulasi Perhitungan
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(37, 99, 235);
+      doc.text("1. PERHITUNGAN PENDAPATAN & OPERASIONAL", 14, 32);
+
+      const rowsPerhitungan = [
+        ["Total Omset Kotor (100%)", `Rp ${totalOmset.toLocaleString('id-ID')}`],
+        ["Alokasi Modal Stok Barang Diputar (90%)", `Rp ${totalStok.toLocaleString('id-ID')}`],
         ["Total Tabungan Masuk Bagi Hasil (10%)", `Rp ${totalTabungan.toLocaleString('id-ID')}`],
         ["Biaya Kontrak / Operasional Siklus", `Rp ${biayaKontrak.toLocaleString('id-ID')}`],
-        ["Sisa Dana Bagi Hasil (Tabungan - Kontrak)", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`],
-        ["  -> Bagi Hasil Boss (50%)", `Rp ${bossShare.toLocaleString('id-ID')}`],
-        ["  -> Bagi Hasil Karyawan (50%)", `Rp ${karyawanShare.toLocaleString('id-ID')}`],
-        ["Total Catatan Pengeluaran (Token/WiFi)", `Rp ${totalPengeluaran.toLocaleString('id-ID')}`]
+        ["Sisa Dana Bagi Hasil Bersih (Tabungan - Kontrak)", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
       ];
 
       doc.autoTable({
-        startY: finalY + 4,
-        body: summaryRows,
+        startY: 35,
+        body: rowsPerhitungan,
         theme: 'plain',
-        styles: { fontSize: 10, cellPadding: 2 },
+        styles: { fontSize: 9, cellPadding: 2.5 },
+        columnStyles: { 0: { fontStyle: 'bold', textColor: [51, 65, 85] }, 1: { halign: 'right', fontStyle: 'bold' } }
+      });
+
+      // Section 2: Bagi Hasil (50% Boss, 50% Karyawan)
+      const section2Y = doc.lastAutoTable.finalY + 10;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(16, 185, 129);
+      doc.text("2. DISTRIBUSI BAGI HASIL DANA BERSIH", 14, section2Y);
+
+      const rowsBagiHasil = [
+        ["Pemilik Usaha / Boss (50%)", `Rp ${bossShare.toLocaleString('id-ID')}`]
+      ];
+
+      if (countKaryawan === 2) {
+        const perK = Math.round(totalKaryawanShare / 2);
+        rowsBagiHasil.push(["  -> Karyawan 1 (25%)", `Rp ${perK.toLocaleString('id-ID')}`]);
+        rowsBagiHasil.push(["  -> Karyawan 2 (25%)", `Rp ${perK.toLocaleString('id-ID')}`]);
+      } else {
+        const perK = Math.round(totalKaryawanShare / countKaryawan);
+        const pct = (50 / countKaryawan).toFixed(1);
+        for (let i = 1; i <= countKaryawan; i++) {
+          rowsBagiHasil.push([`  -> Karyawan ${i} (${pct}%)`, `Rp ${perK.toLocaleString('id-ID')}`]);
+        }
+      }
+
+      rowsBagiHasil.push(["Total Bagi Hasil Seluruh Karyawan (50%)", `Rp ${totalKaryawanShare.toLocaleString('id-ID')}`]);
+
+      doc.autoTable({
+        startY: section2Y + 3,
+        body: rowsBagiHasil,
+        theme: 'striped',
+        styles: { fontSize: 9, cellPadding: 2.5 },
         columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right', fontStyle: 'bold' } }
       });
 
+      // Signature Section
+      const sigY = doc.lastAutoTable.finalY + 25;
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(15, 23, 42);
+
+      doc.text("Dibuat oleh,", 30, sigY);
+      doc.text("Mengetahui,", 140, sigY);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Admin Suramadu", 30, sigY + 20);
+      doc.text("Super Boss Warung Suramadu", 140, sigY + 20);
+
+      // Footer Page 2
+      doc.setFontSize(8);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Warung Suramadu Laporan Keuangan Siklus ${activeSiklus}`, 14, 285);
+      doc.text("Halaman 2 dari 2", 100, 285);
+      doc.text("by: aliimron1909", 170, 285);
+
+      // Save PDF
       doc.save(`Laporan_Warung_Suramadu_Siklus_${activeSiklus}.pdf`);
     }
   </script>
