@@ -110,7 +110,7 @@
         </select>
       </div>
 
-      <!-- Pendapatan Ringkasan Cards (Boss 50%+Kontrak, Karyawan 1, Karyawan 2) -->
+      <!-- Pendapatan Ringkasan Cards -->
       <div class="space-y-2">
         <div class="bg-gradient-to-r from-blue-900/80 to-slate-800 p-4 rounded-2xl border border-blue-700/60 shadow">
           <div class="flex justify-between items-center">
@@ -143,7 +143,7 @@
         </div>
       </div>
 
-      <!-- Chart 1: Daily Omset in Selected Cycle (Dengan Filter Siklus & Skala 5Jt - 20Jt) -->
+      <!-- Chart 1: Daily Omset -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-semibold uppercase text-blue-400 tracking-wider">Grafik Omset Harian</h3>
@@ -288,7 +288,7 @@
             <span id="rekap-sisa-bagihasil" class="font-bold text-green-400">Rp 0</span>
           </div>
           
-          <!-- Rincian Bagi Hasil Pendapatan Boss (50% + Kontrak) & Karyawan -->
+          <!-- Rincian Bagi Hasil -->
           <div class="pt-2 border-t border-slate-800 space-y-1.5 text-[11px]">
             <div class="flex justify-between bg-blue-950/60 p-2 rounded-lg border border-blue-800/80">
               <span class="text-blue-300 font-bold">Total Pendapatan Boss (50% + Kontrak):</span>
@@ -296,7 +296,7 @@
             </div>
             
             <div id="container-karyawan-share" class="space-y-1">
-              <!-- Dynamic Rows for Karyawan 1 & 2 -->
+              <!-- Dynamic Rows -->
             </div>
           </div>
 
@@ -334,7 +334,7 @@
 
     </section>
 
-    <!-- TAB 4: PENGATURAN & PROFIL WARUNG -->
+    <!-- TAB 4: PENGATURAN -->
     <section id="tab-settings" class="tab-section space-y-4" style="display: none;">
       
       <!-- Backup & Restore CSV -->
@@ -356,7 +356,7 @@
         </div>
       </div>
 
-      <!-- Settings Profil Warung, Kontrak & Karyawan -->
+      <!-- Settings Profil Warung -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
           <i class="fa-solid fa-gear"></i> Pengaturan Profil, Kontrak & PDF
@@ -580,19 +580,31 @@
       document.getElementById('lock-screen').style.display = 'flex';
     }
 
-    // Perbaikan Biometric / Sidik Jari (Tidak langsung otomatis masuk tanpa prompt)
+    // WebAuthn Passkey & Sidik Jari (Pendaftaran & Autentikasi yang diperbaiki)
     async function authenticateBiometrics() {
       if (!window.PublicKeyCredential || !navigator.credentials) {
-        alert('Perangkat atau browser ini tidak mendukung fitur biometrik/sidik jari. Gunakan PIN.');
+        alert('Perangkat atau browser Anda tidak mendukung fitur biometrik/sidik jari. Silakan gunakan PIN.');
         return;
       }
+
       try {
         const isAvailable = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
         if (!isAvailable) {
-          alert('Sensor sidik jari / biometrik belum diaktifkan di HP Anda.');
+          alert('Sensor sidik jari belum diaktifkan atau tidak tersedia di HP Anda.');
           return;
         }
+      } catch (e) {}
 
+      const isRegistered = localStorage.getItem('suramadu_passkey_registered');
+
+      if (!isRegistered) {
+        if (confirm('Sidik jari belum terdaftar untuk aplikasi ini di HP Anda.\n\nApakah Anda ingin mendaftarkan Sidik Jari sekarang?')) {
+          await registerBiometrics();
+        }
+        return;
+      }
+
+      try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
 
@@ -600,8 +612,7 @@
           publicKey: {
             challenge: challenge,
             timeout: 60000,
-            userVerification: 'required',
-            allowCredentials: []
+            userVerification: 'required'
           }
         });
 
@@ -612,10 +623,62 @@
           updateDashboardCharts();
         }
       } catch (err) {
+        console.error('Biometric auth error:', err);
         if (err.name === 'NotAllowedError') {
-          alert('Autentikasi sidik jari dibatalkan.');
+          alert('Verifikasi sidik jari dibatalkan.');
         } else {
-          alert('Sensor sidik jari tidak dapat memverifikasi browser ini. Silakan masukkan PIN 4-digit.');
+          if (confirm('Sidik Jari tidak ditemukan atau gagal diverifikasi.\n\nApakah Anda ingin mendaftarkan ulang Sidik Jari di HP ini?')) {
+            await registerBiometrics();
+          }
+        }
+      }
+    }
+
+    async function registerBiometrics() {
+      try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+        const userId = new Uint8Array(16);
+        window.crypto.getRandomValues(userId);
+
+        const credential = await navigator.credentials.create({
+          publicKey: {
+            challenge: challenge,
+            rp: {
+              name: settings.namaWarung || "Warung Suramadu",
+              id: window.location.hostname
+            },
+            user: {
+              id: userId,
+              name: "user_" + Date.now(),
+              displayName: settings.namaBoss || "Pemilik Warung"
+            },
+            pubKeyCredParams: [
+              { alg: -7, type: "public-key" },
+              { alg: -257, type: "public-key" }
+            ],
+            authenticatorSelection: {
+              authenticatorAttachment: "platform",
+              userVerification: "required"
+            },
+            timeout: 60000
+          }
+        });
+
+        if (credential) {
+          localStorage.setItem('suramadu_passkey_registered', 'true');
+          alert('✅ Sidik Jari berhasil didaftarkan! Sekarang Anda bisa masuk menggunakan sidik jari.');
+          document.getElementById('lock-screen').style.display = 'none';
+          enteredPin = '';
+          updatePinDots();
+          updateDashboardCharts();
+        }
+      } catch (err) {
+        console.error('Biometric reg error:', err);
+        if (err.name === 'NotAllowedError') {
+          alert('Pendaftaran sidik jari dibatalkan.');
+        } else {
+          alert('Gagal mendaftarkan sidik jari: ' + (err.message || 'Pastikan sensor sidik jari aktif di HP Anda.'));
         }
       }
     }
@@ -623,7 +686,7 @@
     // Auto Set Siklus & Hari Ke- dari Data Tersimpan
     function autoSetSiklusDanHari() {
       const editingId = document.getElementById('editing-id').value;
-      if (editingId) return; // Jangan timpa jika sedang mode edit
+      if (editingId) return;
 
       if (!records || records.length === 0) {
         document.getElementById('input-siklus').value = 1;
@@ -823,7 +886,7 @@
       }
     }
 
-    // Render Tab Rekapitulasi (Formulasi Boss = 50% Bagi Hasil + Kontrak)
+    // Render Tab Rekapitulasi
     function renderRekap() {
       const selectSiklus = document.getElementById('filter-siklus');
       if (!selectSiklus) return;
@@ -859,7 +922,7 @@
       const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
 
       const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const bossTotalPendapatan = halfShare + biayaKontrak; // Pendapatan Boss = 50% + Kontrak
+      const bossTotalPendapatan = halfShare + biayaKontrak;
       const totalKaryawanShare = halfShare;
       
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
@@ -925,13 +988,12 @@
       });
     }
 
-    // Dashboard Update & Grafik Chart.js (Skala Harian 5 Juta - 20 Juta)
+    // Dashboard Update & Grafik Chart.js
     function updateDashboardCharts() {
       if (typeof Chart === 'undefined') return;
 
       const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => a - b);
       
-      // Update Siklus Filter Dropdown di Dashboard
       const dashSelect = document.getElementById('dash-siklus-filter');
       const activeDashSiklus = dashSelect && dashSelect.value ? parseInt(dashSelect.value, 10) : (allSiklus[allSiklus.length - 1] || 1);
       
@@ -949,7 +1011,6 @@
       const selectedCycle = dashSelect ? parseInt(dashSelect.value, 10) || 1 : 1;
       document.getElementById('dash-siklus-badge').innerText = `Siklus ${selectedCycle}`;
 
-      // Hitung Pendapatan Siklus Terpilih
       const filtered = records.filter(r => (parseInt(r.siklus, 10) || 1) === selectedCycle).sort((a, b) => a.hariKe - b.hariKe);
 
       let cycleOmset = 0;
@@ -963,8 +1024,8 @@
       const sisaDanaBagiHasil = cycleTabungan - biayaKontrak;
       const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
       
-      const bossTotal = halfShare + biayaKontrak; // 50% + Kontrak
-      const karyawanPerPerson = Math.round(halfShare / 2); // 25% masing-masing
+      const bossTotal = halfShare + biayaKontrak;
+      const karyawanPerPerson = Math.round(halfShare / 2);
 
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
       const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
@@ -978,7 +1039,7 @@
       document.getElementById('dash-total-omset').innerText = 'Rp ' + cycleOmset.toLocaleString('id-ID');
       document.getElementById('dash-total-tabungan').innerText = 'Rp ' + cycleTabungan.toLocaleString('id-ID');
 
-      // 1. Chart Omset Harian (Siklus Terpilih) - Terendah 5 Juta, Tertinggi 20 Juta
+      // 1. Chart Omset Harian
       const labelsDaily = filtered.map(r => `Hari ${r.hariKe}`);
       const dataDaily = filtered.map(r => r.omsetKotor || 0);
 
@@ -1294,7 +1355,7 @@
       const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
       
       const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const bossTotalPendapatan = halfShare + biayaKontrak; // Pendapatan Boss = 50% + Kontrak
+      const bossTotalPendapatan = halfShare + biayaKontrak;
       const totalKaryawanShare = halfShare;
       const perKaryawanShare = Math.round(totalKaryawanShare / 2);
 
@@ -1309,33 +1370,32 @@
       const endDate = filteredRecords.length > 0 ? filteredRecords[filteredRecords.length - 1].tanggal : '-';
       const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
-      // 1. Kop Header Resmi
+      // 1. Kop Header Resmi (Teks "Sate & kuliner khas Madura" TELAH DIHAPUS)
       doc.setFont("helvetica", "bold");
       doc.setFontSize(15);
       doc.setTextColor(15, 23, 42);
-      doc.text(namaWarung.toUpperCase(), 14, 15);
+      doc.text(namaWarung.toUpperCase(), 14, 16);
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
       doc.setTextColor(100);
-      doc.text("Sate & kuliner khas Madura", 14, 20);
-      doc.text(`${alamatWarung} | Telp. ${hpWarung}`, 14, 24);
+      doc.text(`${alamatWarung} | Telp. ${hpWarung}`, 14, 21);
       doc.setDrawColor(203, 213, 225);
-      doc.line(14, 27, 201, 27);
+      doc.line(14, 24, 201, 24);
 
       // 2. Title Laporan
       doc.setFont("helvetica", "bold");
       doc.setFontSize(13);
       doc.setTextColor(37, 99, 235);
-      doc.text(`LAPORAN KEUANGAN ${namaWarung.toUpperCase()}`, 14, 33);
+      doc.text(`LAPORAN KEUANGAN ${namaWarung.toUpperCase()}`, 14, 30);
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
       doc.setTextColor(100);
-      doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${filteredRecords.length} Hari) • Dicetak: ${printDateStr}`, 14, 38);
+      doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${filteredRecords.length} Hari) • Dicetak: ${printDateStr}`, 14, 35);
 
       // 3. Grid Summary Box (4 Box Ringkasan)
-      const boxY = 42;
+      const boxY = 39;
       const boxW = 44;
       const boxH = 16;
 
@@ -1385,7 +1445,7 @@
       doc.setTextColor(29, 78, 216);
       doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 157, boxY + 11.5);
 
-      // 4. Tabel Rincian Omset Harian (Kompak agar 1 Lembar F4)
+      // 4. Tabel Rincian Omset Harian
       const tableBody = filteredRecords.map((r, i) => [
         (i + 1).toString(),
         r.tanggal,
@@ -1405,7 +1465,7 @@
       ]);
 
       doc.autoTable({
-        startY: boxY + 20,
+        startY: boxY + 19,
         head: [['No', 'Tanggal', 'Hari', 'Omset Kotor', 'Stok (90%)', 'Tabungan (10%)', 'Pengeluaran']],
         body: tableBody,
         theme: 'striped',
@@ -1466,7 +1526,7 @@
       doc.setTextColor(100);
       doc.text("(Pemilik Usaha / Boss)", 145, sigY + 20);
 
-      // 7. Footer Hak Cipta Permanent di Bawah
+      // 7. Footer Hak Cipta Permanent
       doc.setFontSize(7.5);
       doc.setTextColor(148, 163, 184);
       doc.text(`${namaWarung} • Laporan Keuangan Siklus ${activeSiklus}`, 14, 322);
