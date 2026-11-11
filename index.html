@@ -1386,9 +1386,9 @@
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
       const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
 
-      const startDate = filteredRecords.length > 0 ? cleanDateStr(filteredRecords[0].tanggal) : '-';
-const endDate = filteredRecords.length > 0 ? cleanDateStr(filteredRecords[filteredRecords.length - 1].tanggal) : '-';
-      const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const startDate = filteredRecords.length > 0 ? formatDateDDMMYYYY(filteredRecords[0].tanggal) : '-';
+      const endDate = filteredRecords.length > 0 ? formatDateDDMMYYYY(filteredRecords[filteredRecords.length - 1].tanggal) : '-';
+      const printDateStr = formatDateDDMMYYYY(new Date());
 
       const primaryNavy = [30, 58, 138];
       const accentBlue = [37, 99, 235];
@@ -1455,19 +1455,19 @@ const endDate = filteredRecords.length > 0 ? cleanDateStr(filteredRecords[filter
       doc.setTextColor(...primaryNavy);
       doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 141, boxY + 11.5);
 
-      const tableBody = filteredRecords.map((r, i) => {
-  const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
-  const tglClean = cleanDateStr(r.tanggal);
-  
-  return [
-    (i + 1).toString(),
-    tglClean, // Tanggal ringkas (contoh: 2026-10-29)
-    namaHariOnly,
-    `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
-    `Rp ${(r.tabungan || Math.round(r.omsetKotor * (percentTab / 100))).toLocaleString('id-ID')}`,
-    r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
-  ];
-});
+     const tableBody = filteredRecords.map((r, i) => {
+     const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
+     const tglFormatted = formatDateDDMMYYYY(r.tanggal);
+
+     return [
+       (i + 1).toString(),
+       tglFormatted,
+       namaHariOnly,
+       `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
+       `Rp ${(r.tabungan || Math.round(r.omsetKotor * (percentTab / 100))).toLocaleString('id-ID')}`,
+       r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
+     ];
+   });
 
       tableBody.push([
         '', '', 'TOTAL',
