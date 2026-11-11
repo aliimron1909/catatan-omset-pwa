@@ -1,4 +1,4 @@
-const CACHE_NAME = 'suramadu-omset-v9';
+const CACHE_NAME = 'suramadu-omset-v10';
 const LOCAL_ASSETS = [
   './',
   './index.html',
