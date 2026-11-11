@@ -412,7 +412,7 @@
 
   <!-- Footer Hak Cipta Permanent -->
   <footer class="fixed bottom-12 left-0 right-0 text-center py-1 bg-slate-950/80 backdrop-blur z-40 text-[10px] text-slate-500 border-t border-slate-800/40">
-    © 2026 Warung Suramadu • by: aliimron1909
+    © 2026 Warung Suramadu • by: rf_family
   </footer>
 
   <!-- Navigation Bar Bottom -->
@@ -438,6 +438,49 @@
   <!-- Global Script Engine -->
   <script>
     const DEFAULT_STORE_ICON = "./icon.svg";
+
+    // Helper Format Tanggal menjadi DD-MM-YYYY (Contoh: 11-11-2026)
+    function formatDateDDMMYYYY(dateStr) {
+      if (!dateStr) return '-';
+      const d = new Date(dateStr);
+      if (!isNaN(d.getTime())) {
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}-${month}-${year}`;
+      }
+      const parts = String(dateStr).split('T')[0].split('-');
+      if (parts.length === 3 && parts[0].length === 4) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      return String(dateStr);
+    }
+
+    // Helper Menentukan Tanggal Input Selanjutnya (+1 hari dari input terakhir / hari berjalan)
+    function getNextInputDate() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (!records || records.length === 0) return todayStr;
+
+      let maxDateStr = '';
+      records.forEach(r => {
+        if (r.tanggal) {
+          const clean = cleanDateStr(r.tanggal);
+          if (!maxDateStr || clean > maxDateStr) maxDateStr = clean;
+        }
+      });
+
+      if (!maxDateStr) return todayStr;
+
+      const d = new Date(maxDateStr + 'T00:00:00');
+      if (isNaN(d.getTime())) return todayStr;
+
+      // Tambah 1 hari dari input terakhir
+      d.setDate(d.getDate() + 1);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
 
     // Tab Navigation Logic
     window.switchTab = function(tabId) {
@@ -521,9 +564,15 @@
       } catch (e) { settings = { ...DEFAULT_SETTINGS }; }
     }
 
-    function autoSetSiklusDanHari() {
+     function autoSetSiklusDanHari() {
       const editingId = document.getElementById('editing-id').value;
       if (editingId) return;
+
+      // Otomatis set tanggal (1 hari setelah input terakhir / hari berjalan)
+      const inputTanggal = document.getElementById('input-tanggal');
+      if (inputTanggal) {
+        inputTanggal.value = getNextInputDate();
+      }
 
       if (!records || records.length === 0) {
         document.getElementById('input-siklus').value = 1;
@@ -885,15 +934,16 @@
       const sortedNewestFirst = [...filteredRecords].sort((a, b) => b.hariKe - a.hariKe);
 
       sortedNewestFirst.forEach((r, idx) => {
+        
         const expNominal = r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-';
         const expLabel = r.catatanPengeluaran ? `<br><span class="text-[9px] text-purple-300">(${r.catatanPengeluaran})</span>` : '';
+        const tglFormatted = formatDateDDMMYYYY(r.tanggal);
         const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
-        const cleanTanggal = cleanDateStr(r.tanggal);
 
         tbody.innerHTML += `
           <tr>
             <td class="p-2 text-center font-bold text-slate-400">${filteredRecords.length - idx}</td>
-            <td class="p-2 text-slate-300">${cleanTanggal}</td>
+            <td class="p-2 text-slate-300">${tglFormatted}</td>
             <td class="p-2 font-medium text-blue-300">${namaHariOnly}</td>
             <td class="p-2 text-right font-semibold text-green-400">Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}</td>
             <td class="p-2 text-right text-purple-400">${expNominal}${expLabel}</td>
