@@ -1,8 +1,9 @@
-const CACHE_NAME = 'suramadu-omset-v15';
+const CACHE_NAME = 'suramadu-omset-v16';
 const LOCAL_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './icon.svg',
   'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
