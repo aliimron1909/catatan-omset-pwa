@@ -1457,17 +1457,18 @@
 
      const tableBody = filteredRecords.map((r, i) => {
      const namaHariOnly = getHariNameFromDate(r.tanggal) || '-';
-     const tglFormatted = formatDateDDMMYYYY(r.tanggal);
+     const tglFormatted = formatDateDDMMYYYY(r.tanggal); // Mengubah tanggal ke DD-MM-YYYY
 
      return [
        (i + 1).toString(),
-       tglFormatted,
+       tglFormatted, // Menggunakan tanggal DD-MM-YYYY
        namaHariOnly,
        `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
        `Rp ${(r.tabungan || Math.round(r.omsetKotor * (percentTab / 100))).toLocaleString('id-ID')}`,
        r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
      ];
    });
+
 
       tableBody.push([
         '', '', 'TOTAL',
