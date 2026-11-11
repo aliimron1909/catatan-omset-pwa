@@ -70,7 +70,7 @@
     </div>
 
     <!-- Fingerprint Option -->
-    <button type="button" onclick="authenticateBiometrics()" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-medium py-2.5 px-4 bg-blue-950/50 border border-blue-800/50 rounded-xl transition active:scale-95">
+    <button type="button" onclick="authenticateBiometrics()" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-medium py-2.5 px-4 bg-blue-950/50 border border-blue-800/50 rounded-xl transition active:scale-95 cursor-pointer">
       <i class="fa-solid fa-fingerprint text-lg"></i>
       <span>Masuk dengan Sidik Jari</span>
     </button>
@@ -86,7 +86,7 @@
       </div>
     </div>
     <div class="flex items-center space-x-2">
-      <button type="button" onclick="lockApp()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 p-2 rounded-lg text-xs" title="Kunci Aplikasi">
+      <button type="button" onclick="lockApp()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 p-2 rounded-lg text-xs cursor-pointer" title="Kunci Aplikasi">
         <i class="fa-solid fa-lock"></i>
       </button>
       <button type="button" onclick="syncToGoogleSheets()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-xs px-3 py-1.5 rounded-lg font-medium flex items-center space-x-1 shadow transition cursor-pointer">
@@ -102,11 +102,10 @@
     <!-- TAB 1: DASHBOARD GRAFIK & PENDAPATAN -->
     <section id="tab-dashboard" class="tab-section space-y-4" style="display: block;">
       
-      <!-- Filter Siklus Dashboard (Default: Siklus Berjalan Terbaru) -->
+      <!-- Filter Siklus Dashboard -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 flex items-center justify-between">
         <label class="text-xs font-semibold text-slate-300">Tampilkan Siklus:</label>
-        <select id="dash-siklus-filter" onchange="updateDashboardCharts()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-blue-400 font-bold outline-none">
-          <option value="1">Siklus 1</option>
+        <select id="dash-siklus-filter" onchange="updateDashboardCharts(true)" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-blue-400 font-bold outline-none">
         </select>
       </div>
 
@@ -242,12 +241,11 @@
     <!-- TAB 3: REKAPITULASI & PDF -->
     <section id="tab-rekap" class="tab-section space-y-4" style="display: none;">
       
-      <!-- Filter Siklus (Default: Siklus Berjalan Terbaru) -->
+      <!-- Filter Siklus -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
         <div class="flex items-center justify-between">
           <label class="text-sm font-medium text-slate-300">Pilih Siklus Operasional:</label>
-          <select id="filter-siklus" onchange="renderRekap()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-blue-400 font-semibold outline-none">
-            <option value="1">Siklus 1</option>
+          <select id="filter-siklus" onchange="renderRekap(true)" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-blue-400 font-semibold outline-none">
           </select>
         </div>
 
@@ -323,11 +321,11 @@
         </button>
       </div>
 
-      <!-- Riwayat Tabel Harian (Dibalik: Terbaru di Atas) -->
+      <!-- Riwayat Tabel Harian -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-xs uppercase tracking-wider font-semibold text-slate-400">Riwayat Catatan Harian</h3>
-          <span class="text-[10px] text-blue-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">Urutan: Terbaru di atas</span>
+          <span class="text-[10px] text-blue-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">Terbaru di atas</span>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-300">
@@ -522,8 +520,8 @@
       });
 
       if (tabId === 'tab-input') autoSetSiklusDanHari();
-      if (tabId === 'tab-dashboard') updateDashboardCharts();
-      if (tabId === 'tab-rekap') renderRekap();
+      if (tabId === 'tab-dashboard') updateDashboardCharts(false);
+      if (tabId === 'tab-rekap') renderRekap(false);
     };
 
     // State & Defaults
@@ -549,6 +547,11 @@
     let enteredPin = '';
     let dailyChartInstance = null;
     let cycleChartInstance = null;
+
+    function getMaxSiklus() {
+      if (!records || records.length === 0) return 1;
+      return Math.max(...records.map(r => parseInt(r.siklus, 10) || 1));
+    }
 
     function loadInitialState() {
       try {
@@ -606,7 +609,7 @@
         document.getElementById('lock-screen').style.display = 'none';
         enteredPin = '';
         updatePinDots();
-        updateDashboardCharts();
+        updateDashboardCharts(false);
       } else {
         alert('PIN Salah! Silakan coba lagi.');
         clearPin();
@@ -618,7 +621,7 @@
       document.getElementById('lock-screen').style.display = 'flex';
     }
 
-    // Perbaikan WebAuthn Passkey & Sidik Jari (Tanpa Pop-up Error Berulang)
+    // Perbaikan Tuntas Biometrik / Sidik Jari (Tanpa Pop-up Error Abu-Abu)
     async function authenticateBiometrics() {
       if (!window.PublicKeyCredential || !navigator.credentials) {
         alert('Perangkat atau browser Anda tidak mendukung fitur biometrik/sidik jari. Silakan gunakan PIN.');
@@ -627,15 +630,15 @@
 
       const isRegistered = localStorage.getItem('suramadu_passkey_registered');
 
-      // Jika belum pernah terdaftar di HP ini, minta pendaftaran langsung secara ramah
+      // Jika belum terdaftar di local storage, LANGSUNG panggil pendaftaran bawaan Android
       if (!isRegistered || isRegistered !== 'true') {
-        if (confirm('Sidik jari belum terdaftar untuk aplikasi ini di HP Anda.\n\nApakah Anda ingin mendaftarkan Sidik Jari sekarang?')) {
+        if (confirm('Sidik jari belum terdaftar untuk aplikasi ini di HP Anda.\n\nKlik OK untuk memindai & mendaftarkan sidik jari Anda.')) {
           await registerBiometrics();
         }
         return;
       }
 
-      // Jika sudah pernah terdaftar, panggil verifikasi sidik jari
+      // Jika sudah terdaftar, panggil verifikasi
       try {
         const challenge = new Uint8Array(32);
         window.crypto.getRandomValues(challenge);
@@ -652,16 +655,18 @@
           document.getElementById('lock-screen').style.display = 'none';
           enteredPin = '';
           updatePinDots();
-          updateDashboardCharts();
+          updateDashboardCharts(false);
         }
       } catch (err) {
         console.error('Biometric auth error:', err);
         if (err.name === 'NotAllowedError') {
-          alert('Verifikasi sidik jari dibatalkan.');
-        } else {
-          if (confirm('Verifikasi sidik jari tidak ditemukan atau belum terdaftar.\n\nDaftarkan ulang Sidik Jari di HP ini sekarang?')) {
-            await registerBiometrics();
-          }
+          // User menekan batal pada dialog HP
+          return;
+        }
+        // Jika kredensial tidak ditemukan di sistem HP
+        if (confirm('Verifikasi sidik jari tidak ditemukan atau terhapus di HP ini.\n\nDaftarkan ulang sidik jari sekarang?')) {
+          localStorage.removeItem('suramadu_passkey_registered');
+          await registerBiometrics();
         }
       }
     }
@@ -699,18 +704,16 @@
 
         if (credential) {
           localStorage.setItem('suramadu_passkey_registered', 'true');
-          alert('✅ Sidik Jari berhasil didaftarkan! Sekarang Anda bisa masuk menggunakan sidik jari.');
+          alert('✅ Sidik Jari berhasil didaftarkan! Layar kunci otomatis terbuka.');
           document.getElementById('lock-screen').style.display = 'none';
           enteredPin = '';
           updatePinDots();
-          updateDashboardCharts();
+          updateDashboardCharts(false);
         }
       } catch (err) {
         console.error('Biometric reg error:', err);
-        if (err.name === 'NotAllowedError') {
-          alert('Pendaftaran sidik jari dibatalkan.');
-        } else {
-          alert('Gagal mendaftarkan sidik jari: ' + (err.message || 'Pastikan sensor sidik jari aktif di HP Anda.'));
+        if (err.name !== 'NotAllowedError') {
+          alert('Gagal mendaftarkan sidik jari. Silakan gunakan PIN 4-digit.');
         }
       }
     }
@@ -726,7 +729,7 @@
         return;
       }
 
-      const maxSiklus = Math.max(...records.map(r => parseInt(r.siklus, 10) || 1));
+      const maxSiklus = getMaxSiklus();
       const recordsInMaxSiklus = records.filter(r => (parseInt(r.siklus, 10) || 1) === maxSiklus);
       
       if (recordsInMaxSiklus.length === 0) {
@@ -768,8 +771,8 @@
 
       loadSettingsUI();
       autoSetSiklusDanHari();
-      renderRekap();
-      updateDashboardCharts();
+      renderRekap(false);
+      updateDashboardCharts(false);
     });
 
     // Formatting Helpers
@@ -885,8 +888,8 @@
       localStorage.setItem('suramadu_records', JSON.stringify(records));
       batalEdit();
       autoSetSiklusDanHari();
-      renderRekap();
-      updateDashboardCharts();
+      renderRekap(false);
+      updateDashboardCharts(false);
     }
 
     function editCatatan(id) {
@@ -932,8 +935,8 @@
       if (confirm('Hapus catatan ini?')) {
         records = records.filter(item => item.id !== id);
         localStorage.setItem('suramadu_records', JSON.stringify(records));
-        renderRekap();
-        updateDashboardCharts();
+        renderRekap(false);
+        updateDashboardCharts(false);
         autoSetSiklusDanHari();
       }
     }
@@ -941,33 +944,37 @@
     // Set Opsi Kontrak untuk Siklus Belum 30 Hari
     function setKontrakOption(optionType) {
       const selectSiklus = document.getElementById('filter-siklus');
-      const activeSiklus = selectSiklus ? parseInt(selectSiklus.value, 10) || 1 : 1;
+      const activeSiklus = selectSiklus ? parseInt(selectSiklus.value, 10) || getMaxSiklus() : getMaxSiklus();
       cycleKontrakOptions[activeSiklus] = optionType;
       localStorage.setItem('suramadu_kontrak_options', JSON.stringify(cycleKontrakOptions));
-      renderRekap();
-      updateDashboardCharts();
+      renderRekap(true);
+      updateDashboardCharts(true);
     }
 
-    // Render Tab Rekapitulasi (Default Siklus Berjalan Terbaru & Tabel Terbaru di Atas)
-    function renderRekap() {
+    // Render Tab Rekapitulasi (Default Siklus Berjalan Terbaru & Terbaru di Atas)
+    function renderRekap(isUserChange = false) {
       const selectSiklus = document.getElementById('filter-siklus');
       if (!selectSiklus) return;
 
       const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => a - b);
-      const maxSiklus = allSiklus.length > 0 ? allSiklus[allSiklus.length - 1] : 1; // Default Siklus Berjalan Terbaru
+      const maxSiklus = getMaxSiklus();
       
-      const currentSelected = selectSiklus.value ? parseInt(selectSiklus.value, 10) : maxSiklus;
-      
+      // Jika bukan interaksi manual pengguna, paksa terpilih Siklus Berjalan (maxSiklus)
+      let targetSiklus = maxSiklus;
+      if (isUserChange && selectSiklus.value) {
+        targetSiklus = parseInt(selectSiklus.value, 10) || maxSiklus;
+      }
+
       selectSiklus.innerHTML = '';
       if (allSiklus.length === 0) {
         selectSiklus.innerHTML = '<option value="1">Siklus 1</option>';
       } else {
         allSiklus.forEach(s => {
-          selectSiklus.innerHTML += `<option value="${s}" ${s === currentSelected ? 'selected' : ''}>Siklus ${s}</option>`;
+          selectSiklus.innerHTML += `<option value="${s}" ${s === targetSiklus ? 'selected' : ''}>Siklus ${s}</option>`;
         });
       }
 
-      const activeSiklus = parseInt(selectSiklus.value, 10) || maxSiklus;
+      const activeSiklus = parseInt(selectSiklus.value, 10) || targetSiklus;
       const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
 
       let totalOmset = 0;
@@ -1043,7 +1050,7 @@
         </div>
       `;
 
-      // Render Tabel Riwayat (URUTAN DIBALIK: YANG TERBARU DI ATAS)
+      // Render Tabel Riwayat (URUTAN DIBALIK: TERBARU DI ATAS)
       const tbody = document.getElementById('tabel-catatan');
       tbody.innerHTML = '';
 
@@ -1081,27 +1088,30 @@
     }
 
     // Dashboard Update & Grafik Chart.js (Default Siklus Berjalan Terbaru & Max 15 Juta)
-    function updateDashboardCharts() {
+    function updateDashboardCharts(isUserChange = false) {
       if (typeof Chart === 'undefined') return;
 
       const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => a - b);
-      const maxSiklus = allSiklus.length > 0 ? allSiklus[allSiklus.length - 1] : 1; // Default Siklus Berjalan Terbaru
+      const maxSiklus = getMaxSiklus();
       
       const dashSelect = document.getElementById('dash-siklus-filter');
-      const activeDashSiklus = dashSelect && dashSelect.value ? parseInt(dashSelect.value, 10) : maxSiklus;
-      
+      let targetSiklus = maxSiklus;
+      if (isUserChange && dashSelect && dashSelect.value) {
+        targetSiklus = parseInt(dashSelect.value, 10) || maxSiklus;
+      }
+
       if (dashSelect) {
         dashSelect.innerHTML = '';
         if (allSiklus.length === 0) {
           dashSelect.innerHTML = '<option value="1">Siklus 1</option>';
         } else {
           allSiklus.forEach(s => {
-            dashSelect.innerHTML += `<option value="${s}" ${s === activeDashSiklus ? 'selected' : ''}>Siklus ${s}</option>`;
+            dashSelect.innerHTML += `<option value="${s}" ${s === targetSiklus ? 'selected' : ''}>Siklus ${s}</option>`;
           });
         }
       }
 
-      const selectedCycle = dashSelect ? parseInt(dashSelect.value, 10) || maxSiklus : maxSiklus;
+      const selectedCycle = dashSelect ? parseInt(dashSelect.value, 10) || targetSiklus : targetSiklus;
       document.getElementById('dash-siklus-badge').innerText = `Siklus ${selectedCycle}`;
 
       const filtered = records.filter(r => (parseInt(r.siklus, 10) || 1) === selectedCycle).sort((a, b) => a.hariKe - b.hariKe);
@@ -1296,8 +1306,8 @@
 
               localStorage.setItem('suramadu_records', JSON.stringify(records));
               autoSetSiklusDanHari();
-              renderRekap();
-              updateDashboardCharts();
+              renderRekap(false);
+              updateDashboardCharts(false);
               alert('Data berhasil dipulihkan dari file CSV!');
             }
           } else {
@@ -1356,8 +1366,8 @@
 
       localStorage.setItem('suramadu_settings', JSON.stringify(settings));
       loadSettingsUI();
-      renderRekap();
-      updateDashboardCharts();
+      renderRekap(false);
+      updateDashboardCharts(false);
       alert('Pengaturan Profil Warung & Kontrak berhasil disimpan!');
     }
 
@@ -1410,8 +1420,8 @@
       localStorage.setItem('suramadu_records', JSON.stringify(records));
       alert('Data uji coba berhasil dimasukkan!');
       autoSetSiklusDanHari();
-      renderRekap();
-      updateDashboardCharts();
+      renderRekap(false);
+      updateDashboardCharts(false);
     }
 
     function clearInternalData() {
@@ -1420,12 +1430,12 @@
         localStorage.removeItem('suramadu_records');
         alert('Penyimpanan internal telah dibersihkan.');
         autoSetSiklusDanHari();
-        renderRekap();
-        updateDashboardCharts();
+        renderRekap(false);
+        updateDashboardCharts(false);
       }
     }
 
-    // PDF Generator Resmi (F4 1 Lembar - Formulasi 2 Kolom Berdampingan Rapi)
+    // PDF Generator Resmi (F4 1 Lembar - Tema Warna Selaras & Harmonis)
     function downloadPDF() {
       if (typeof window.jspdf === 'undefined') {
         alert('Library PDF sedang dimuat, coba beberapa detik lagi.');
@@ -1436,7 +1446,7 @@
       // Ukuran Kertas F4: 215.9 x 330.2 mm
       const doc = new jsPDF('p', 'mm', [215.9, 330.2]);
 
-      const activeSiklus = parseInt(document.getElementById('filter-siklus').value, 10) || 1;
+      const activeSiklus = parseInt(document.getElementById('filter-siklus').value, 10) || getMaxSiklus();
       const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
 
       let totalOmset = 0;
@@ -1477,23 +1487,30 @@
       const endDate = filteredRecords.length > 0 ? filteredRecords[filteredRecords.length - 1].tanggal : '-';
       const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
+      // Skema Warna Harmonis (Executive Navy Theme)
+      const primaryNavy = [30, 58, 138];    // #1e3a8a (Warna Utama & Header)
+      const accentBlue = [37, 99, 235];     // #2563eb (Aksen Biru)
+      const textDark = [15, 23, 42];        // #0f172a (Teks Utama)
+      const bgCard = [248, 250, 252];       // #f8fafc (Kartu Soft)
+      const borderCard = [203, 213, 225];   // #cbd5e1 (Garis Pemisah)
+
       // 1. Kop Header Resmi
       doc.setFont("helvetica", "bold");
       doc.setFontSize(15);
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(...primaryNavy);
       doc.text(namaWarung.toUpperCase(), 14, 16);
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
       doc.setTextColor(100);
       doc.text(`${alamatWarung} | Telp. ${hpWarung}`, 14, 21);
-      doc.setDrawColor(203, 213, 225);
+      doc.setDrawColor(...borderCard);
       doc.line(14, 24, 201, 24);
 
       // 2. Title Laporan
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(13);
-      doc.setTextColor(37, 99, 235);
+      doc.setFontSize(12.5);
+      doc.setTextColor(...primaryNavy);
       doc.text(`LAPORAN KEUANGAN ${namaWarung.toUpperCase()}`, 14, 30);
 
       doc.setFont("helvetica", "normal");
@@ -1501,46 +1518,48 @@
       doc.setTextColor(100);
       doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${totalHariBerjalan} Hari) • Dicetak: ${printDateStr}`, 14, 35);
 
-      // 3. Grid Summary Box (3 Box Ringkasan)
+      // 3. Grid Summary Box (3 Box Ringkasan - Warna Harmonis)
       const boxY = 39;
       const boxW = 59;
       const boxH = 16;
 
       // Box 1: Omset Kotor
-      doc.setFillColor(241, 245, 249);
-      doc.rect(14, boxY, boxW, boxH, 'F');
+      doc.setFillColor(...bgCard);
+      doc.setDrawColor(...borderCard);
+      doc.roundedRect(14, boxY, boxW, boxH, 1.5, 1.5, 'FD');
       doc.setFontSize(7);
       doc.setTextColor(100);
       doc.text("TOTAL OMSET KOTOR", 17, boxY + 4.5);
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(...textDark);
       doc.text(`Rp ${totalOmset.toLocaleString('id-ID')}`, 17, boxY + 11.5);
 
       // Box 2: Tabungan 10%
-      doc.setFillColor(241, 245, 249);
-      doc.rect(76, boxY, boxW, boxH, 'F');
+      doc.setFillColor(...bgCard);
+      doc.roundedRect(76, boxY, boxW, boxH, 1.5, 1.5, 'FD');
       doc.setFontSize(7);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100);
       doc.text("TABUNGAN (10% OMSET)", 79, boxY + 4.5);
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(217, 119, 6);
+      doc.setTextColor(...primaryNavy);
       doc.text(`Rp ${totalTabungan.toLocaleString('id-ID')}`, 79, boxY + 11.5);
 
-      // Box 3: Total Pendapatan Boss (50% + Kontrak)
-      doc.setFillColor(239, 246, 255);
-      doc.rect(138, boxY, boxW + 4, boxH, 'F');
+      // Box 3: Total Pendapatan Boss
+      doc.setFillColor(239, 246, 255); // Blue Tint
+      doc.setDrawColor(...accentBlue);
+      doc.roundedRect(138, boxY, boxW + 4, boxH, 1.5, 1.5, 'FD');
       doc.setFontSize(7);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(29, 78, 216);
+      doc.setTextColor(...primaryNavy);
       doc.text("TOTAL PENDAPATAN BOSS", 141, boxY + 4.5);
       doc.setFontSize(10);
-      doc.setTextColor(29, 78, 216);
+      doc.setTextColor(...primaryNavy);
       doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 141, boxY + 11.5);
 
-      // 4. Tabel Rincian Omset Harian
+      // 4. Tabel Rincian Omset Harian (Header Deep Navy Selaras)
       const tableBody = filteredRecords.map((r, i) => {
         const namaHari = getHariNameFromDate(r.tanggal);
         const displayHari = namaHari ? `${namaHari} (Hari ${r.hariKe})` : `Hari ${r.hariKe}`;
@@ -1568,16 +1587,16 @@
         theme: 'striped',
         margin: { left: 14, right: 14 },
         styles: { fontSize: 7.5, cellPadding: 1.2 },
-        headStyles: { fillColor: [37, 99, 235], fontSize: 7.5, fontStyle: 'bold' },
-        footStyles: { fillColor: [241, 245, 249], textColor: [15, 23, 42], fontStyle: 'bold' }
+        headStyles: { fillColor: primaryNavy, textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
+        footStyles: { fillColor: [239, 246, 255], textColor: primaryNavy, fontStyle: 'bold' }
       });
 
-      // 5. Formulasi Bagi Hasil & Alokasi Pendapatan (DIUBAH MENJADI 2 KOLOM BERDAMPINGAN RAPI)
+      // 5. Formulasi Bagi Hasil & Alokasi Pendapatan (2 Kolom Berdampingan Selaras)
       const formY = doc.lastAutoTable.finalY + 6;
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.5);
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(...primaryNavy);
       doc.text("Formulasi Bagi Hasil & Alokasi Pendapatan", 14, formY);
 
       const infoKontrakKet = (totalHariBerjalan < 30 && totalHariBerjalan > 0)
@@ -1596,7 +1615,7 @@
         [`Bagi Hasil ${k2Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`]
       ];
 
-      // Tabel Kolom 1 (Perhitungan Dana)
+      // Tabel Kolom Kiri
       doc.autoTable({
         startY: formY + 3,
         head: [['PERHITUNGAN DANA', 'NOMINAL']],
@@ -1604,13 +1623,13 @@
         theme: 'grid',
         margin: { left: 14, right: 108 },
         styles: { fontSize: 7.5, cellPadding: 1.4 },
-        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
+        headStyles: { fillColor: primaryNavy, textColor: [255, 255, 255], fontStyle: 'bold' },
         columnStyles: { 0: { fontStyle: 'bold', textColor: [51, 65, 85] }, 1: { halign: 'right', fontStyle: 'bold' } }
       });
 
       const leftFinalY = doc.lastAutoTable.finalY;
 
-      // Tabel Kolom 2 (Distribusi Bagi Hasil)
+      // Tabel Kolom Kanan (Warna Selaras Primary Navy)
       doc.autoTable({
         startY: formY + 3,
         head: [['DISTRIBUSI BAGI HASIL', 'NOMINAL']],
@@ -1618,7 +1637,7 @@
         theme: 'grid',
         margin: { left: 108, right: 14 },
         styles: { fontSize: 7.5, cellPadding: 1.4 },
-        headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontStyle: 'bold' },
+        headStyles: { fillColor: primaryNavy, textColor: [255, 255, 255], fontStyle: 'bold' },
         columnStyles: { 0: { fontStyle: 'bold', textColor: [51, 65, 85] }, 1: { halign: 'right', fontStyle: 'bold' } }
       });
 
@@ -1628,7 +1647,7 @@
       const sigY = Math.max(leftFinalY, rightFinalY) + 12;
       doc.setFontSize(8.5);
       doc.setFont("helvetica", "normal");
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(...textDark);
 
       doc.text("Dibuat oleh,", 25, sigY);
       doc.text("Mengetahui,", 145, sigY);
@@ -1642,7 +1661,7 @@
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8.5);
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(...textDark);
       doc.text(namaBoss, 145, sigY + 16);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.5);
