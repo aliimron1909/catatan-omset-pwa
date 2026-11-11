@@ -768,7 +768,8 @@
       if (!record) return;
 
       document.getElementById('editing-id').value = record.id;
-      document.getElementById('input-tanggal').value = record.tanggal;
+      // Perbaikan: gunakan cleanDateStr agar format tanggal sesuai standar input date (YYYY-MM-DD)
+      document.getElementById('input-tanggal').value = cleanDateStr(record.tanggal);
       document.getElementById('input-siklus').value = record.siklus;
       document.getElementById('input-hari').value = record.hariKe;
       
@@ -1323,11 +1324,11 @@
     }
 
     function clearInternalData() {
-      if (confirm('Hapus seluruh catatan lokal?')) {
+      if (confirm('Hapus seluruh catatan lokal di HP ini? (Data di Google Sheets TETAP AMAN)')) {
         records = [];
         localStorage.removeItem('suramadu_records');
-        pushToSheets();
-        alert('Penyimpanan internal telah dibersihkan.');
+        // Panggilan pushToSheets() DIDELET/DIHAPUS agar Google Sheets tidak ikut terhapus
+        alert('Penyimpanan internal HP telah dibersihkan.');
         autoSetSiklusDanHari();
         renderRekap(false);
         updateDashboardCharts(false);
