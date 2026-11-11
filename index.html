@@ -701,31 +701,6 @@
       checkDateAlreadyInput();
     }
 
-      if (!records || records.length === 0) {
-        document.getElementById('input-siklus').value = 1;
-        document.getElementById('input-hari').value = 1;
-        return;
-      }
-
-      const maxSiklus = getMaxSiklus();
-      const recordsInMaxSiklus = records.filter(r => (parseInt(r.siklus, 10) || 1) === maxSiklus);
-      
-      if (recordsInMaxSiklus.length === 0) {
-        document.getElementById('input-siklus').value = maxSiklus;
-        document.getElementById('input-hari').value = 1;
-        return;
-      }
-
-      const maxHari = Math.max(...recordsInMaxSiklus.map(r => parseInt(r.hariKe, 10) || 1));
-      if (maxHari < 30) {
-        document.getElementById('input-siklus').value = maxSiklus;
-        document.getElementById('input-hari').value = maxHari + 1;
-      } else {
-        document.getElementById('input-siklus').value = maxSiklus + 1;
-        document.getElementById('input-hari').value = 1;
-      }
-    }
-
     // Helper Mengambil Nama Hari
     function getHariNameFromDate(dateStr) {
       if (!dateStr) return '';
