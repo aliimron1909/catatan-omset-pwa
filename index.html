@@ -36,11 +36,11 @@
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-28">
 
-  <!-- LOCK SCREEN MODAL (PIN & FINGERPRINT) -->
+  <!-- LOCK SCREEN MODAL -->
   <div id="lock-screen" class="fixed inset-0 bg-slate-950 z-[100] flex flex-col items-center justify-center p-6 text-center">
     <div class="mb-6 space-y-2">
       <img id="lock-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-16 h-16 mx-auto rounded-2xl shadow-lg border border-slate-700 p-1 bg-slate-800" alt="Logo">
-      <h2 class="text-xl font-bold text-white tracking-wide">Warung Suramadu</h2>
+      <h2 id="lock-title" class="text-xl font-bold text-white tracking-wide">Warung Suramadu</h2>
       <p class="text-xs text-slate-400">Masukkan PIN Keamanan untuk Akses</p>
     </div>
 
@@ -54,28 +54,26 @@
 
     <!-- Numpad 3x4 -->
     <div class="grid grid-cols-3 gap-4 w-64 mb-6">
-      <button onclick="pressPin('1')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">1</button>
-      <button onclick="pressPin('2')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">2</button>
-      <button onclick="pressPin('3')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">3</button>
-      <button onclick="pressPin('4')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">4</button>
-      <button onclick="pressPin('5')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">5</button>
-      <button onclick="pressPin('6')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">6</button>
-      <button onclick="pressPin('7')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">7</button>
-      <button onclick="pressPin('8')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">8</button>
-      <button onclick="pressPin('9')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">9</button>
+      <button type="button" onclick="pressPin('1')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">1</button>
+      <button type="button" onclick="pressPin('2')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">2</button>
+      <button type="button" onclick="pressPin('3')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">3</button>
+      <button type="button" onclick="pressPin('4')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">4</button>
+      <button type="button" onclick="pressPin('5')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">5</button>
+      <button type="button" onclick="pressPin('6')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">6</button>
+      <button type="button" onclick="pressPin('7')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">7</button>
+      <button type="button" onclick="pressPin('8')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">8</button>
+      <button type="button" onclick="pressPin('9')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">9</button>
       
-      <button onclick="clearPin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-medium text-xs rounded-2xl border border-slate-800 transition">Hapus</button>
-      <button onclick="pressPin('0')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">0</button>
-      <button onclick="backspacePin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-bold text-lg rounded-2xl border border-slate-800 transition"><i class="fa-solid fa-backspace"></i></button>
+      <button type="button" onclick="clearPin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-medium text-xs rounded-2xl border border-slate-800 transition">Hapus</button>
+      <button type="button" onclick="pressPin('0')" class="h-14 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xl rounded-2xl border border-slate-700 transition">0</button>
+      <button type="button" onclick="backspacePin()" class="h-14 bg-slate-800/50 hover:bg-slate-800 text-slate-400 font-bold text-lg rounded-2xl border border-slate-800 transition"><i class="fa-solid fa-backspace"></i></button>
     </div>
 
     <!-- Fingerprint Option -->
-    <button type="button" onclick="authenticateBiometrics()" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-medium py-2 px-4 bg-blue-950/40 border border-blue-800/40 rounded-xl transition">
+    <button type="button" onclick="authenticateBiometrics()" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-medium py-2.5 px-4 bg-blue-950/50 border border-blue-800/50 rounded-xl transition active:scale-95">
       <i class="fa-solid fa-fingerprint text-lg"></i>
       <span>Masuk dengan Sidik Jari</span>
     </button>
-    
-    <p class="text-[10px] text-slate-500 mt-6">Default PIN: 1909 (Dapat diubah di Pengaturan)</p>
   </div>
 
   <!-- Header App -->
@@ -83,7 +81,7 @@
     <div class="flex items-center space-x-3">
       <img id="header-logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-9 h-9 rounded-lg shadow" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
       <div>
-        <h1 class="font-bold text-lg leading-tight text-white">Warung Suramadu</h1>
+        <h1 id="header-app-title" class="font-bold text-lg leading-tight text-white">Warung Suramadu</h1>
         <p class="text-xs text-blue-400">Pencatatan Omset Mandiri</p>
       </div>
     </div>
@@ -101,25 +99,54 @@
   <!-- Content Container -->
   <main class="p-4 max-w-lg mx-auto">
 
-    <!-- TAB 1: DASHBOARD GRAFIK -->
+    <!-- TAB 1: DASHBOARD GRAFIK & PENDAPATAN -->
     <section id="tab-dashboard" class="tab-section space-y-4" style="display: block;">
       
-      <!-- Summary Cards -->
-      <div class="grid grid-cols-2 gap-3">
-        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
-          <p class="text-slate-400 text-xs">Total Omset (Keseluruhan)</p>
-          <p id="dash-total-omset" class="text-base font-extrabold text-white mt-1">Rp 0</p>
+      <!-- Filter Siklus Dashboard -->
+      <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 flex items-center justify-between">
+        <label class="text-xs font-semibold text-slate-300">Tampilkan Siklus:</label>
+        <select id="dash-siklus-filter" onchange="updateDashboardCharts()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-blue-400 font-bold outline-none">
+          <option value="1">Siklus 1</option>
+        </select>
+      </div>
+
+      <!-- Pendapatan Ringkasan Cards (Boss 50%+Kontrak, Karyawan 1, Karyawan 2) -->
+      <div class="space-y-2">
+        <div class="bg-gradient-to-r from-blue-900/80 to-slate-800 p-4 rounded-2xl border border-blue-700/60 shadow">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-semibold text-blue-300 uppercase tracking-wider">Total Pendapatan Boss</span>
+            <span class="text-[10px] bg-blue-950 px-2 py-0.5 rounded text-blue-400 border border-blue-800">50% Bagi Hasil + Kontrak</span>
+          </div>
+          <p id="dash-boss-total" class="text-xl font-black text-white mt-1">Rp 0</p>
         </div>
-        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
-          <p class="text-slate-400 text-xs">Total Tabungan (10%)</p>
-          <p id="dash-total-tabungan" class="text-base font-extrabold text-yellow-400 mt-1">Rp 0</p>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+            <span id="label-dash-karyawan1" class="text-slate-400 block font-medium truncate">Karyawan 1 (25%)</span>
+            <p id="dash-karyawan1-total" class="text-sm font-bold text-emerald-400 mt-0.5">Rp 0</p>
+          </div>
+          <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+            <span id="label-dash-karyawan2" class="text-slate-400 block font-medium truncate">Karyawan 2 (25%)</span>
+            <p id="dash-karyawan2-total" class="text-sm font-bold text-emerald-400 mt-0.5">Rp 0</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+            <span class="text-slate-400 block">Total Omset Kotor</span>
+            <p id="dash-total-omset" class="text-sm font-bold text-white mt-0.5">Rp 0</p>
+          </div>
+          <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+            <span class="text-slate-400 block">Total Tabungan (10%)</span>
+            <p id="dash-total-tabungan" class="text-sm font-bold text-yellow-400 mt-0.5">Rp 0</p>
+          </div>
         </div>
       </div>
 
-      <!-- Chart 1: Daily Omset in Active Cycle -->
+      <!-- Chart 1: Daily Omset in Selected Cycle (Dengan Filter Siklus & Skala 5Jt - 20Jt) -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow space-y-3">
         <div class="flex items-center justify-between">
-          <h3 class="text-xs font-semibold uppercase text-blue-400 tracking-wider">Grafik Omset Harian (Siklus Aktif)</h3>
+          <h3 class="text-xs font-semibold uppercase text-blue-400 tracking-wider">Grafik Omset Harian</h3>
           <span id="dash-siklus-badge" class="bg-blue-900/60 border border-blue-700 text-blue-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Siklus 1</span>
         </div>
         <div class="relative h-56 w-full">
@@ -164,18 +191,18 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Siklus Ke-</label>
-            <input type="number" id="input-siklus" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+            <label class="block text-xs font-medium text-slate-400 mb-1">Siklus Ke- (Otomatis)</label>
+            <input type="number" id="input-siklus" min="1" value="1" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Hari Ke- (Max 30)</label>
-            <input type="number" id="input-hari" min="1" max="30" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
+            <label class="block text-xs font-medium text-slate-400 mb-1">Hari Ke- (Otomatis)</label>
+            <input type="number" id="input-hari" min="1" max="30" value="1" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-blue-500 outline-none">
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Nominal Omset Kotor (Rp)</label>
-          <input type="text" id="input-omset" placeholder="Rp 0" oninput="formatAndCalculate(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-lg font-bold text-green-400 focus:border-blue-500 outline-none">
+          <input type="text" id="input-omset" placeholder="Rp 0" inputmode="numeric" pattern="[0-9]*" oninput="formatAndCalculate(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-lg font-bold text-green-400 focus:border-blue-500 outline-none">
         </div>
 
         <!-- Input Pengeluaran Tambahan -->
@@ -186,7 +213,7 @@
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <input type="text" id="input-pengeluaran" placeholder="Nominal (Rp)" oninput="formatRupiahInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-purple-300 focus:border-purple-500 outline-none">
+              <input type="text" id="input-pengeluaran" placeholder="Nominal (Rp)" inputmode="numeric" pattern="[0-9]*" oninput="formatRupiahInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-purple-300 focus:border-purple-500 outline-none">
             </div>
             <div>
               <input type="text" id="input-catatan-pengeluaran" placeholder="Ket: Listrik / WiFi" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 focus:border-purple-500 outline-none">
@@ -261,10 +288,10 @@
             <span id="rekap-sisa-bagihasil" class="font-bold text-green-400">Rp 0</span>
           </div>
           
-          <!-- Rincian Bagi Hasil 50% Boss & 50% Karyawan (Jika 2 Karyawan: 25% + 25%) -->
+          <!-- Rincian Bagi Hasil Pendapatan Boss (50% + Kontrak) & Karyawan -->
           <div class="pt-2 border-t border-slate-800 space-y-1.5 text-[11px]">
-            <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
-              <span class="text-blue-300 font-medium">Bagi Hasil Pemilik / Boss (50%):</span>
+            <div class="flex justify-between bg-blue-950/60 p-2 rounded-lg border border-blue-800/80">
+              <span class="text-blue-300 font-bold">Total Pendapatan Boss (50% + Kontrak):</span>
               <span id="rekap-boss-share" class="font-bold text-blue-400">Rp 0</span>
             </div>
             
@@ -281,7 +308,7 @@
         </div>
 
         <button type="button" onclick="downloadPDF()" class="w-full bg-red-600 hover:bg-red-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm cursor-pointer">
-          <i class="fa-solid fa-file-pdf"></i> Download Laporan PDF Resmi
+          <i class="fa-solid fa-file-pdf"></i> Download Laporan PDF (F4 1 Lembar)
         </button>
       </div>
 
@@ -307,7 +334,7 @@
 
     </section>
 
-    <!-- TAB 4: PENGATURAN & BACKUP/RESTORE -->
+    <!-- TAB 4: PENGATURAN & PROFIL WARUNG -->
     <section id="tab-settings" class="tab-section space-y-4" style="display: none;">
       
       <!-- Backup & Restore CSV -->
@@ -329,25 +356,55 @@
         </div>
       </div>
 
-      <!-- Settings Kontrak & Karyawan -->
+      <!-- Settings Profil Warung, Kontrak & Karyawan -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
-          <i class="fa-solid fa-gear"></i> Pengaturan Kontrak & Keamanan
+          <i class="fa-solid fa-gear"></i> Pengaturan Profil, Kontrak & PDF
         </h2>
 
         <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Nama Warung / Usaha</label>
+          <input type="text" id="setting-nama-warung" placeholder="Warung Suramadu" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Alamat Lengkap Warung</label>
+          <input type="text" id="setting-alamat-warung" placeholder="Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">No. HP / WhatsApp Warung</label>
+          <input type="text" id="setting-hp-warung" placeholder="0812-3456-7890" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Nama Pemilik Warung (Boss)</label>
+          <input type="text" id="setting-nama-boss" placeholder="Ali Imron" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Nama Karyawan 1 (Penanggung Jawab Laporan)</label>
+          <input type="text" id="setting-nama-karyawan1" placeholder="Karyawan 1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Nama Karyawan 2</label>
+          <input type="text" id="setting-nama-karyawan2" placeholder="Karyawan 2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+
+        <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Biaya Kontrak / Operasional (Rp / Siklus)</label>
-          <input type="text" id="setting-gaji" oninput="formatRupiahInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+          <input type="text" id="setting-gaji" inputmode="numeric" pattern="[0-9]*" oninput="formatRupiahInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
         </div>
 
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Jumlah Karyawan Aktif</label>
-          <input type="number" id="setting-karyawan" min="1" max="10" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+          <input type="number" id="setting-karyawan" min="1" max="10" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
         </div>
 
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">PIN Keamanan Aplikasi (4-Digit)</label>
-          <input type="password" id="setting-pin" maxlength="4" placeholder="1909" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none tracking-widest font-mono">
+          <input type="password" id="setting-pin" maxlength="4" placeholder="1909" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none tracking-widest font-mono">
         </div>
 
         <div>
@@ -434,12 +491,19 @@
         }
       });
 
+      if (tabId === 'tab-input') autoSetSiklusDanHari();
       if (tabId === 'tab-dashboard') updateDashboardCharts();
       if (tabId === 'tab-rekap') renderRekap();
     };
 
     // State & Defaults
     const DEFAULT_SETTINGS = {
+      namaWarung: 'Warung Suramadu',
+      alamatWarung: 'Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur',
+      hpWarung: '0812-3456-7890',
+      namaBoss: 'Ali Imron',
+      namaKaryawan1: 'Karyawan 1',
+      namaKaryawan2: 'Karyawan 2',
       gajiPerKaryawan: 1500000,
       jumlahKaryawan: 2,
       pin: '1909',
@@ -516,17 +580,73 @@
       document.getElementById('lock-screen').style.display = 'flex';
     }
 
+    // Perbaikan Biometric / Sidik Jari (Tidak langsung otomatis masuk tanpa prompt)
     async function authenticateBiometrics() {
-      if (window.PublicKeyCredential) {
-        try {
-          // Attempt WebAuthn or direct unlock prompt
-          document.getElementById('lock-screen').style.display = 'none';
-          updateDashboardCharts();
-        } catch (e) {
-          alert('Biometrik tidak dapat diverifikasi. Gunakan PIN.');
+      if (!window.PublicKeyCredential || !navigator.credentials) {
+        alert('Perangkat atau browser ini tidak mendukung fitur biometrik/sidik jari. Gunakan PIN.');
+        return;
+      }
+      try {
+        const isAvailable = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+        if (!isAvailable) {
+          alert('Sensor sidik jari / biometrik belum diaktifkan di HP Anda.');
+          return;
         }
+
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const credential = await navigator.credentials.get({
+          publicKey: {
+            challenge: challenge,
+            timeout: 60000,
+            userVerification: 'required',
+            allowCredentials: []
+          }
+        });
+
+        if (credential) {
+          document.getElementById('lock-screen').style.display = 'none';
+          enteredPin = '';
+          updatePinDots();
+          updateDashboardCharts();
+        }
+      } catch (err) {
+        if (err.name === 'NotAllowedError') {
+          alert('Autentikasi sidik jari dibatalkan.');
+        } else {
+          alert('Sensor sidik jari tidak dapat memverifikasi browser ini. Silakan masukkan PIN 4-digit.');
+        }
+      }
+    }
+
+    // Auto Set Siklus & Hari Ke- dari Data Tersimpan
+    function autoSetSiklusDanHari() {
+      const editingId = document.getElementById('editing-id').value;
+      if (editingId) return; // Jangan timpa jika sedang mode edit
+
+      if (!records || records.length === 0) {
+        document.getElementById('input-siklus').value = 1;
+        document.getElementById('input-hari').value = 1;
+        return;
+      }
+
+      const maxSiklus = Math.max(...records.map(r => parseInt(r.siklus, 10) || 1));
+      const recordsInMaxSiklus = records.filter(r => (parseInt(r.siklus, 10) || 1) === maxSiklus);
+      
+      if (recordsInMaxSiklus.length === 0) {
+        document.getElementById('input-siklus').value = maxSiklus;
+        document.getElementById('input-hari').value = 1;
+        return;
+      }
+
+      const maxHari = Math.max(...recordsInMaxSiklus.map(r => parseInt(r.hariKe, 10) || 1));
+      if (maxHari < 30) {
+        document.getElementById('input-siklus').value = maxSiklus;
+        document.getElementById('input-hari').value = maxHari + 1;
       } else {
-        alert('Perangkat tidak mendukung otentikasi biometrik.');
+        document.getElementById('input-siklus').value = maxSiklus + 1;
+        document.getElementById('input-hari').value = 1;
       }
     }
 
@@ -544,6 +664,7 @@
       }
 
       loadSettingsUI();
+      autoSetSiklusDanHari();
       renderRekap();
       updateDashboardCharts();
     });
@@ -573,7 +694,7 @@
     // Fitur membuat siklus baru
     function mulaiSiklusBaru() {
       batalEdit();
-      const maxSiklus = records.length > 0 ? Math.max(...records.map(r => r.siklus || 1)) : 0;
+      const maxSiklus = records.length > 0 ? Math.max(...records.map(r => parseInt(r.siklus, 10) || 1)) : 0;
       const siklusBaru = maxSiklus + 1;
       
       document.getElementById('input-siklus').value = siklusBaru;
@@ -647,6 +768,7 @@
 
       localStorage.setItem('suramadu_records', JSON.stringify(records));
       batalEdit();
+      autoSetSiklusDanHari();
       renderRekap();
       updateDashboardCharts();
     }
@@ -688,6 +810,7 @@
       document.getElementById('btn-submit-text').innerText = 'Simpan Catatan Harian';
       document.getElementById('btn-submit').className = 'w-full bg-green-600 hover:bg-green-500 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg transition flex justify-center items-center gap-2 cursor-pointer';
       document.getElementById('btn-cancel-edit').classList.add('hidden');
+      autoSetSiklusDanHari();
     }
 
     function hapusCatatan(id) {
@@ -696,15 +819,16 @@
         localStorage.setItem('suramadu_records', JSON.stringify(records));
         renderRekap();
         updateDashboardCharts();
+        autoSetSiklusDanHari();
       }
     }
 
-    // Render Tab Rekapitulasi (Formulasi Bagi Hasil 50% Boss, 50% Karyawan / 25%+25%)
+    // Render Tab Rekapitulasi (Formulasi Boss = 50% Bagi Hasil + Kontrak)
     function renderRekap() {
       const selectSiklus = document.getElementById('filter-siklus');
       if (!selectSiklus) return;
 
-      const allSiklus = [...new Set(records.map(r => r.siklus))].sort((a, b) => b - a);
+      const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => b - a);
       const currentSelected = selectSiklus.value ? parseInt(selectSiklus.value, 10) : (allSiklus[0] || 1);
       
       selectSiklus.innerHTML = '';
@@ -717,7 +841,7 @@
       }
 
       const activeSiklus = parseInt(selectSiklus.value, 10) || 1;
-      const filteredRecords = records.filter(r => r.siklus === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+      const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
 
       let totalOmset = 0;
       let totalStok = 0;
@@ -734,10 +858,12 @@
       const biayaKontrak = settings.gajiPerKaryawan || 0;
       const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
 
-      const bossShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const totalKaryawanShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      const bossTotalPendapatan = halfShare + biayaKontrak; // Pendapatan Boss = 50% + Kontrak
+      const totalKaryawanShare = halfShare;
       
-      const countKaryawan = settings.jumlahKaryawan || 2;
+      const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
+      const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
 
       document.getElementById('rekap-omset').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
       document.getElementById('rekap-stok').innerText = 'Rp ' + totalStok.toLocaleString('id-ID');
@@ -749,36 +875,23 @@
       sisaEl.innerText = 'Rp ' + sisaDanaBagiHasil.toLocaleString('id-ID');
       sisaEl.className = sisaDanaBagiHasil >= 0 ? 'font-bold text-green-400' : 'font-bold text-red-400';
 
-      document.getElementById('rekap-boss-share').innerText = 'Rp ' + bossShare.toLocaleString('id-ID');
+      document.getElementById('rekap-boss-share').innerText = 'Rp ' + bossTotalPendapatan.toLocaleString('id-ID');
 
-      // Render Karyawan Share Breakdown
+      // Render Karyawan 1 & 2 Share Breakdown
       const karyawanContainer = document.getElementById('container-karyawan-share');
       karyawanContainer.innerHTML = '';
 
-      if (countKaryawan === 2) {
-        const perKaryawan = Math.round(totalKaryawanShare / 2);
-        karyawanContainer.innerHTML = `
-          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
-            <span class="text-emerald-300 font-medium">Bagi Hasil Karyawan 1 (25%):</span>
-            <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
-          </div>
-          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
-            <span class="text-emerald-300 font-medium">Bagi Hasil Karyawan 2 (25%):</span>
-            <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
-          </div>
-        `;
-      } else {
-        const perKaryawan = Math.round(totalKaryawanShare / countKaryawan);
-        const pctPerPerson = (50 / countKaryawan).toFixed(1);
-        for (let i = 1; i <= countKaryawan; i++) {
-          karyawanContainer.innerHTML += `
-            <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
-              <span class="text-emerald-300 font-medium">Bagi Hasil Karyawan ${i} (${pctPerPerson}%):</span>
-              <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
-            </div>
-          `;
-        }
-      }
+      const perKaryawan = Math.round(totalKaryawanShare / 2);
+      karyawanContainer.innerHTML = `
+        <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+          <span class="text-emerald-300 font-medium">Bagi Hasil ${k1Name} (25%):</span>
+          <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+          <span class="text-emerald-300 font-medium">Bagi Hasil ${k2Name} (25%):</span>
+          <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
+        </div>
+      `;
 
       // Render Tabel Riwayat
       const tbody = document.getElementById('tabel-catatan');
@@ -812,29 +925,65 @@
       });
     }
 
-    // Dashboard Update & Grafik Chart.js
+    // Dashboard Update & Grafik Chart.js (Skala Harian 5 Juta - 20 Juta)
     function updateDashboardCharts() {
       if (typeof Chart === 'undefined') return;
 
-      // Summary
-      let globalOmset = 0;
-      let globalTabungan = 0;
-      records.forEach(r => {
-        globalOmset += (r.omsetKotor || 0);
-        globalTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * 0.10));
+      const allSiklus = [...new Set(records.map(r => parseInt(r.siklus, 10) || 1))].sort((a, b) => a - b);
+      
+      // Update Siklus Filter Dropdown di Dashboard
+      const dashSelect = document.getElementById('dash-siklus-filter');
+      const activeDashSiklus = dashSelect && dashSelect.value ? parseInt(dashSelect.value, 10) : (allSiklus[allSiklus.length - 1] || 1);
+      
+      if (dashSelect) {
+        dashSelect.innerHTML = '';
+        if (allSiklus.length === 0) {
+          dashSelect.innerHTML = '<option value="1">Siklus 1</option>';
+        } else {
+          allSiklus.forEach(s => {
+            dashSelect.innerHTML += `<option value="${s}" ${s === activeDashSiklus ? 'selected' : ''}>Siklus ${s}</option>`;
+          });
+        }
+      }
+
+      const selectedCycle = dashSelect ? parseInt(dashSelect.value, 10) || 1 : 1;
+      document.getElementById('dash-siklus-badge').innerText = `Siklus ${selectedCycle}`;
+
+      // Hitung Pendapatan Siklus Terpilih
+      const filtered = records.filter(r => (parseInt(r.siklus, 10) || 1) === selectedCycle).sort((a, b) => a.hariKe - b.hariKe);
+
+      let cycleOmset = 0;
+      let cycleTabungan = 0;
+      filtered.forEach(r => {
+        cycleOmset += (r.omsetKotor || 0);
+        cycleTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * 0.10));
       });
 
-      document.getElementById('dash-total-omset').innerText = 'Rp ' + globalOmset.toLocaleString('id-ID');
-      document.getElementById('dash-total-tabungan').innerText = 'Rp ' + globalTabungan.toLocaleString('id-ID');
+      const biayaKontrak = settings.gajiPerKaryawan || 0;
+      const sisaDanaBagiHasil = cycleTabungan - biayaKontrak;
+      const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      
+      const bossTotal = halfShare + biayaKontrak; // 50% + Kontrak
+      const karyawanPerPerson = Math.round(halfShare / 2); // 25% masing-masing
 
-      // 1. Chart Omset Harian (Active Cycle)
-      const allSiklus = [...new Set(records.map(r => r.siklus))].sort((a, b) => b - a);
-      const activeSiklus = allSiklus[0] || 1;
-      document.getElementById('dash-siklus-badge').innerText = `Siklus ${activeSiklus}`;
+      const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
+      const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
 
-      const filtered = records.filter(r => r.siklus === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+      document.getElementById('dash-boss-total').innerText = 'Rp ' + bossTotal.toLocaleString('id-ID');
+      document.getElementById('label-dash-karyawan1').innerText = `${k1Name} (25%)`;
+      document.getElementById('dash-karyawan1-total').innerText = 'Rp ' + karyawanPerPerson.toLocaleString('id-ID');
+      document.getElementById('label-dash-karyawan2').innerText = `${k2Name} (25%)`;
+      document.getElementById('dash-karyawan2-total').innerText = 'Rp ' + karyawanPerPerson.toLocaleString('id-ID');
+
+      document.getElementById('dash-total-omset').innerText = 'Rp ' + cycleOmset.toLocaleString('id-ID');
+      document.getElementById('dash-total-tabungan').innerText = 'Rp ' + cycleTabungan.toLocaleString('id-ID');
+
+      // 1. Chart Omset Harian (Siklus Terpilih) - Terendah 5 Juta, Tertinggi 20 Juta
       const labelsDaily = filtered.map(r => `Hari ${r.hariKe}`);
       const dataDaily = filtered.map(r => r.omsetKotor || 0);
+
+      const maxOmsetVal = dataDaily.length > 0 ? Math.max(...dataDaily) : 0;
+      const yMaxTarget = Math.max(20000000, maxOmsetVal);
 
       const ctxDaily = document.getElementById('chartDaily').getContext('2d');
       if (dailyChartInstance) dailyChartInstance.destroy();
@@ -851,7 +1000,8 @@
             fill: true,
             tension: 0.3,
             borderWidth: 2,
-            pointBackgroundColor: '#60a5fa'
+            pointBackgroundColor: '#60a5fa',
+            pointRadius: 4
           }]
         },
         options: {
@@ -860,7 +1010,18 @@
           plugins: { legend: { display: false } },
           scales: {
             x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
-            y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } }
+            y: {
+              min: 5000000,
+              max: yMaxTarget,
+              ticks: {
+                color: '#94a3b8',
+                font: { size: 10 },
+                callback: function(val) {
+                  return 'Rp ' + (val / 1000000) + ' Jt';
+                }
+              },
+              grid: { color: '#334155' }
+            }
           }
         }
       });
@@ -868,7 +1029,8 @@
       // 2. Chart Omset Per-Siklus
       const cyclesMap = {};
       records.forEach(r => {
-        cyclesMap[r.siklus] = (cyclesMap[r.siklus] || 0) + (r.omsetKotor || 0);
+        const s = parseInt(r.siklus, 10) || 1;
+        cyclesMap[s] = (cyclesMap[s] || 0) + (r.omsetKotor || 0);
       });
 
       const cycleKeys = Object.keys(cyclesMap).sort((a, b) => a - b);
@@ -925,7 +1087,7 @@
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement('a');
       link.setAttribute('href', encodedUri);
-      link.setAttribute('download', `Backup_Omset_Suramadu_${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute('download', `Backup_Omset_${(settings.namaWarung || 'Suramadu').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -972,6 +1134,7 @@
               records = Array.from(recordMap.values());
 
               localStorage.setItem('suramadu_records', JSON.stringify(records));
+              autoSetSiklusDanHari();
               renderRekap();
               updateDashboardCharts();
               alert('Data berhasil dipulihkan dari file CSV!');
@@ -988,8 +1151,15 @@
       event.target.value = '';
     }
 
-    // Settings UI
+    // Settings UI & Simpan
     function loadSettingsUI() {
+      document.getElementById('setting-nama-warung').value = settings.namaWarung || 'Warung Suramadu';
+      document.getElementById('setting-alamat-warung').value = settings.alamatWarung || 'Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur';
+      document.getElementById('setting-hp-warung').value = settings.hpWarung || '0812-3456-7890';
+      document.getElementById('setting-nama-boss').value = settings.namaBoss || 'Ali Imron';
+      document.getElementById('setting-nama-karyawan1').value = settings.namaKaryawan1 || 'Karyawan 1';
+      document.getElementById('setting-nama-karyawan2').value = settings.namaKaryawan2 || 'Karyawan 2';
+
       const gajiRate = settings.gajiPerKaryawan || 0;
       document.getElementById('setting-gaji').value = 'Rp ' + gajiRate.toLocaleString('id-ID');
       document.getElementById('setting-karyawan').value = settings.jumlahKaryawan || 2;
@@ -997,13 +1167,26 @@
       document.getElementById('setting-script-url').value = settings.scriptUrl || '';
       document.getElementById('setting-logo-url').value = settings.logoUrl || '';
 
+      const appTitle = settings.namaWarung || 'Warung Suramadu';
+      document.getElementById('header-app-title').innerText = appTitle;
+      document.getElementById('lock-title').innerText = appTitle;
+
       if (settings.logoUrl) {
         const logoImg = document.getElementById('header-logo');
         if (logoImg) logoImg.src = settings.logoUrl;
+        const lockImg = document.getElementById('lock-logo');
+        if (lockImg) lockImg.src = settings.logoUrl;
       }
     }
 
     function simpanPengaturan() {
+      settings.namaWarung = document.getElementById('setting-nama-warung').value.trim() || 'Warung Suramadu';
+      settings.alamatWarung = document.getElementById('setting-alamat-warung').value.trim() || 'Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur';
+      settings.hpWarung = document.getElementById('setting-hp-warung').value.trim() || '0812-3456-7890';
+      settings.namaBoss = document.getElementById('setting-nama-boss').value.trim() || 'Ali Imron';
+      settings.namaKaryawan1 = document.getElementById('setting-nama-karyawan1').value.trim() || 'Karyawan 1';
+      settings.namaKaryawan2 = document.getElementById('setting-nama-karyawan2').value.trim() || 'Karyawan 2';
+
       settings.gajiPerKaryawan = parseRupiah(document.getElementById('setting-gaji').value);
       settings.jumlahKaryawan = parseInt(document.getElementById('setting-karyawan').value, 10) || 2;
       settings.pin = document.getElementById('setting-pin').value.trim() || '1909';
@@ -1013,7 +1196,8 @@
       localStorage.setItem('suramadu_settings', JSON.stringify(settings));
       loadSettingsUI();
       renderRekap();
-      alert('Pengaturan berhasil disimpan!');
+      updateDashboardCharts();
+      alert('Pengaturan Profil Warung & Kontrak berhasil disimpan!');
     }
 
     // Google Sheets Sync & Testing Tools
@@ -1056,14 +1240,15 @@
 
     function generateDummyData() {
       records = [
-        { id: '101', tanggal: '2026-11-01', siklus: 1, hariKe: 1, omsetKotor: 1200000, stokModal: 1080000, tabungan: 120000, pengeluaran: 50000, catatanPengeluaran: 'Token Listrik' },
-        { id: '102', tanggal: '2026-11-02', siklus: 1, hariKe: 2, omsetKotor: 1500000, stokModal: 1350000, tabungan: 150000, pengeluaran: 0, catatanPengeluaran: '' },
-        { id: '103', tanggal: '2026-11-03', siklus: 1, hariKe: 3, omsetKotor: 950000,  stokModal: 855000,  tabungan: 95000, pengeluaran: 100000, catatanPengeluaran: 'WiFi Indihome' },
-        { id: '104', tanggal: '2026-11-04', siklus: 1, hariKe: 4, omsetKotor: 1800000, stokModal: 1620000, tabungan: 180000, pengeluaran: 0, catatanPengeluaran: '' },
-        { id: '105', tanggal: '2026-11-05', siklus: 1, hariKe: 5, omsetKotor: 2100000, stokModal: 1890000, tabungan: 210000, pengeluaran: 0, catatanPengeluaran: '' }
+        { id: '101', tanggal: '2026-11-01', siklus: 1, hariKe: 1, omsetKotor: 12000000, stokModal: 10800000, tabungan: 1200000, pengeluaran: 50000, catatanPengeluaran: 'Token Listrik' },
+        { id: '102', tanggal: '2026-11-02', siklus: 1, hariKe: 2, omsetKotor: 15000000, stokModal: 13500000, tabungan: 1500000, pengeluaran: 0, catatanPengeluaran: '' },
+        { id: '103', tanggal: '2026-11-03', siklus: 1, hariKe: 3, omsetKotor: 9500000,  stokModal: 8550000,  tabungan: 950000, pengeluaran: 100000, catatanPengeluaran: 'WiFi Indihome' },
+        { id: '104', tanggal: '2026-11-04', siklus: 1, hariKe: 4, omsetKotor: 18000000, stokModal: 16200000, tabungan: 1800000, pengeluaran: 0, catatanPengeluaran: '' },
+        { id: '105', tanggal: '2026-11-05', siklus: 1, hariKe: 5, omsetKotor: 21000000, stokModal: 18900000, tabungan: 2100000, pengeluaran: 0, catatanPengeluaran: '' }
       ];
       localStorage.setItem('suramadu_records', JSON.stringify(records));
-      alert('5 Data uji coba berhasil dimasukkan!');
+      alert('Data uji coba berhasil dimasukkan!');
+      autoSetSiklusDanHari();
       renderRekap();
       updateDashboardCharts();
     }
@@ -1073,12 +1258,13 @@
         records = [];
         localStorage.removeItem('suramadu_records');
         alert('Penyimpanan internal telah dibersihkan.');
+        autoSetSiklusDanHari();
         renderRekap();
         updateDashboardCharts();
       }
     }
 
-    // PDF Generator Resmi 2-Halaman
+    // PDF Generator Resmi (DI-PAKSA EXACT 1 LEMBAR KERTAS F4 [215.9 x 330.2 mm])
     function downloadPDF() {
       if (typeof window.jspdf === 'undefined') {
         alert('Library PDF sedang dimuat, coba beberapa detik lagi.');
@@ -1086,10 +1272,11 @@
       }
 
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'mm', 'a4');
+      // Ukuran Kertas F4 dalam mm: 215.9 x 330.2
+      const doc = new jsPDF('p', 'mm', [215.9, 330.2]);
 
       const activeSiklus = parseInt(document.getElementById('filter-siklus').value, 10) || 1;
-      const filteredRecords = records.filter(r => r.siklus === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+      const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
 
       let totalOmset = 0;
       let totalStok = 0;
@@ -1105,111 +1292,110 @@
 
       const biayaKontrak = settings.gajiPerKaryawan || 0;
       const sisaDanaBagiHasil = totalTabungan - biayaKontrak;
-      const bossShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const totalKaryawanShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const countKaryawan = settings.jumlahKaryawan || 2;
+      
+      const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
+      const bossTotalPendapatan = halfShare + biayaKontrak; // Pendapatan Boss = 50% + Kontrak
+      const totalKaryawanShare = halfShare;
+      const perKaryawanShare = Math.round(totalKaryawanShare / 2);
+
+      const namaWarung = settings.namaWarung || 'WARUNG SURAMADU';
+      const alamatWarung = settings.alamatWarung || 'Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur';
+      const hpWarung = settings.hpWarung || '0812-3456-7890';
+      const namaBoss = settings.namaBoss || 'Ali Imron';
+      const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
+      const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
 
       const startDate = filteredRecords.length > 0 ? filteredRecords[0].tanggal : '-';
       const endDate = filteredRecords.length > 0 ? filteredRecords[filteredRecords.length - 1].tanggal : '-';
       const printDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
-      // ================= PAGE 1 =================
-      // Kop Header
+      // 1. Kop Header Resmi
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
+      doc.setFontSize(15);
       doc.setTextColor(15, 23, 42);
-      doc.text("WARUNG SURAMADU", 14, 16);
+      doc.text(namaWarung.toUpperCase(), 14, 15);
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
+      doc.setFontSize(8.5);
       doc.setTextColor(100);
-      doc.text("Sate & kuliner khas Madura", 14, 21);
-      doc.text("Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur | Telp. 0812-3456-7890", 14, 25);
-      doc.setDrawColor(226, 232, 240);
-      doc.line(14, 28, 196, 28);
+      doc.text("Sate & kuliner khas Madura", 14, 20);
+      doc.text(`${alamatWarung} | Telp. ${hpWarung}`, 14, 24);
+      doc.setDrawColor(203, 213, 225);
+      doc.line(14, 27, 201, 27);
 
-      // Title & Subtitle
+      // 2. Title Laporan
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
+      doc.setFontSize(13);
       doc.setTextColor(37, 99, 235);
-      doc.text("Laporan Keuangan Warung Suramadu", 14, 35);
+      doc.text(`LAPORAN KEUANGAN ${namaWarung.toUpperCase()}`, 14, 33);
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
+      doc.setFontSize(8.5);
       doc.setTextColor(100);
-      doc.text("Rekapitulasi omset harian, tabungan, dan bagi hasil", 14, 40);
+      doc.text(`Siklus Ke-${activeSiklus} • Periode: ${startDate} s.d ${endDate} (${filteredRecords.length} Hari) • Dicetak: ${printDateStr}`, 14, 38);
 
-      // Summary Cards (4 Box Metric Grid)
-      const boxY = 45;
-      const boxW = 43;
-      const boxH = 18;
+      // 3. Grid Summary Box (4 Box Ringkasan)
+      const boxY = 42;
+      const boxW = 44;
+      const boxH = 16;
 
       // Box 1: Omset Kotor
       doc.setFillColor(241, 245, 249);
       doc.rect(14, boxY, boxW, boxH, 'F');
-      doc.setFontSize(7);
+      doc.setFontSize(6.5);
       doc.setTextColor(100);
-      doc.text("OMSET KOTOR", 17, boxY + 5);
-      doc.setFontSize(10);
+      doc.text("TOTAL OMSET KOTOR", 17, boxY + 4.5);
+      doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(15, 23, 42);
-      doc.text(`Rp ${totalOmset.toLocaleString('id-ID')}`, 17, boxY + 12);
+      doc.text(`Rp ${totalOmset.toLocaleString('id-ID')}`, 17, boxY + 11.5);
 
-      // Box 2: Stok Barang (90%)
+      // Box 2: Stok Barang 90%
       doc.setFillColor(241, 245, 249);
-      doc.rect(60, boxY, boxW, boxH, 'F');
-      doc.setFontSize(7);
+      doc.rect(61, boxY, boxW, boxH, 'F');
+      doc.setFontSize(6.5);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100);
-      doc.text("STOK BARANG (90%)", 63, boxY + 5);
-      doc.setFontSize(10);
+      doc.text("STOK BARANG (90%)", 64, boxY + 4.5);
+      doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(37, 99, 235);
-      doc.text(`Rp ${totalStok.toLocaleString('id-ID')}`, 63, boxY + 12);
+      doc.text(`Rp ${totalStok.toLocaleString('id-ID')}`, 64, boxY + 11.5);
 
-      // Box 3: Tabungan (10%)
+      // Box 3: Tabungan 10%
       doc.setFillColor(241, 245, 249);
-      doc.rect(106, boxY, boxW, boxH, 'F');
-      doc.setFontSize(7);
+      doc.rect(108, boxY, boxW, boxH, 'F');
+      doc.setFontSize(6.5);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100);
-      doc.text("TABUNGAN (10%)", 109, boxY + 5);
-      doc.setFontSize(10);
+      doc.text("TABUNGAN (10%)", 111, boxY + 4.5);
+      doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(217, 119, 6);
-      doc.text(`Rp ${totalTabungan.toLocaleString('id-ID')}`, 109, boxY + 12);
+      doc.text(`Rp ${totalTabungan.toLocaleString('id-ID')}`, 111, boxY + 11.5);
 
-      // Box 4: Bagi Hasil Boss
-      doc.setFillColor(241, 245, 249);
-      doc.rect(153, boxY, boxW, boxH, 'F');
-      doc.setFontSize(7);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(100);
-      doc.text("BAGI HASIL PEMILIK", 156, boxY + 5);
-      doc.setFontSize(10);
+      // Box 4: Total Pendapatan Boss (50% + Kontrak)
+      doc.setFillColor(239, 246, 255);
+      doc.rect(155, boxY, boxW + 2, boxH, 'F');
+      doc.setFontSize(6.5);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(16, 185, 129);
-      doc.text(`Rp ${bossShare.toLocaleString('id-ID')}`, 156, boxY + 12);
+      doc.setTextColor(29, 78, 216);
+      doc.text("PENDAPATAN BOSS (50%+KTRK)", 157, boxY + 4.5);
+      doc.setFontSize(9.5);
+      doc.setTextColor(29, 78, 216);
+      doc.text(`Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`, 157, boxY + 11.5);
 
-      // Meta Info Row
-      const metaY = boxY + 23;
-      doc.setFontSize(8);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(71, 85, 105);
-      doc.text(`SIKLUS KE: ${activeSiklus.toString().padStart(2, '0')}   |   PERIODE: ${startDate} s.d ${endDate}   |   ENTRI: ${filteredRecords.length} Hari   |   DICETAK: ${printDateStr}`, 14, metaY);
-
-      // Tabel Rincian Omset Harian
+      // 4. Tabel Rincian Omset Harian (Kompak agar 1 Lembar F4)
       const tableBody = filteredRecords.map((r, i) => [
         (i + 1).toString(),
         r.tanggal,
-        `Hari ke-${r.hariKe}`,
+        `Hari ${r.hariKe}`,
         `Rp ${(r.omsetKotor || 0).toLocaleString('id-ID')}`,
         `Rp ${(r.stokModal || Math.round(r.omsetKotor * 0.9)).toLocaleString('id-ID')}`,
         `Rp ${(r.tabungan || Math.round(r.omsetKotor * 0.1)).toLocaleString('id-ID')}`,
         r.pengeluaran ? `Rp ${r.pengeluaran.toLocaleString('id-ID')}` : '-'
       ]);
 
-      // Total Row Footer for Table
       tableBody.push([
         '', '', 'TOTAL',
         `Rp ${totalOmset.toLocaleString('id-ID')}`,
@@ -1219,114 +1405,76 @@
       ]);
 
       doc.autoTable({
-        startY: metaY + 4,
+        startY: boxY + 20,
         head: [['No', 'Tanggal', 'Hari', 'Omset Kotor', 'Stok (90%)', 'Tabungan (10%)', 'Pengeluaran']],
         body: tableBody,
         theme: 'striped',
-        headStyles: { fillColor: [37, 99, 235], fontSize: 8 },
-        bodyStyles: { fontSize: 8 },
+        margin: { left: 14, right: 14 },
+        styles: { fontSize: 7.5, cellPadding: 1.2 },
+        headStyles: { fillColor: [37, 99, 235], fontSize: 7.5, fontStyle: 'bold' },
         footStyles: { fillColor: [241, 245, 249], textColor: [15, 23, 42], fontStyle: 'bold' }
       });
 
-      // Footer Page 1
-      doc.setFontSize(8);
-      doc.setTextColor(148, 163, 184);
-      doc.text(`Warung Suramadu Laporan Keuangan Siklus ${activeSiklus}`, 14, 285);
-      doc.text("Halaman 1 dari 2", 100, 285);
-      doc.text("by: aliimron1909", 170, 285);
+      // 5. Tabel Formulasi Bagi Hasil & Pendapatan
+      const formY = doc.lastAutoTable.finalY + 5;
 
-      // ================= PAGE 2 =================
-      doc.addPage();
-
-      // Page 2 Header
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
+      doc.setFontSize(9.5);
       doc.setTextColor(15, 23, 42);
-      doc.text("WARUNG SURAMADU - PERHITUNGAN & BAGI HASIL", 14, 16);
+      doc.text("Formulasi Bagi Hasil & Alokasi Pendapatan", 14, formY);
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(100);
-      doc.text(`Siklus ${activeSiklus} • Periode: ${startDate} s.d ${endDate}`, 14, 21);
-      doc.line(14, 24, 196, 24);
-
-      // Section 1: Formulasi Perhitungan
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(37, 99, 235);
-      doc.text("1. PERHITUNGAN PENDAPATAN & OPERASIONAL", 14, 32);
-
-      const rowsPerhitungan = [
-        ["Total Omset Kotor (100%)", `Rp ${totalOmset.toLocaleString('id-ID')}`],
-        ["Alokasi Modal Stok Barang Diputar (90%)", `Rp ${totalStok.toLocaleString('id-ID')}`],
-        ["Total Tabungan Masuk Bagi Hasil (10%)", `Rp ${totalTabungan.toLocaleString('id-ID')}`],
+      const rowsBagiHasilPDF = [
+        ["Total Tabungan Masuk Bagi Hasil (10% Omset)", `Rp ${totalTabungan.toLocaleString('id-ID')}`],
         ["Biaya Kontrak / Operasional Siklus", `Rp ${biayaKontrak.toLocaleString('id-ID')}`],
-        ["Sisa Dana Bagi Hasil Bersih (Tabungan - Kontrak)", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
+        ["Sisa Dana Bagi Hasil Bersih (Tabungan - Kontrak)", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`],
+        [`Total Pendapatan Pemilik / Boss (50% Bagi Hasil + Kontrak)`, `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
+        [`  -> Bagi Hasil ${k1Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`],
+        [`  -> Bagi Hasil ${k2Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`]
       ];
 
       doc.autoTable({
-        startY: 35,
-        body: rowsPerhitungan,
+        startY: formY + 2,
+        body: rowsBagiHasilPDF,
         theme: 'plain',
-        styles: { fontSize: 9, cellPadding: 2.5 },
+        margin: { left: 14, right: 14 },
+        styles: { fontSize: 7.5, cellPadding: 1.3 },
         columnStyles: { 0: { fontStyle: 'bold', textColor: [51, 65, 85] }, 1: { halign: 'right', fontStyle: 'bold' } }
       });
 
-      // Section 2: Bagi Hasil (50% Boss, 50% Karyawan)
-      const section2Y = doc.lastAutoTable.finalY + 10;
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(16, 185, 129);
-      doc.text("2. DISTRIBUSI BAGI HASIL DANA BERSIH", 14, section2Y);
-
-      const rowsBagiHasil = [
-        ["Pemilik Usaha / Boss (50%)", `Rp ${bossShare.toLocaleString('id-ID')}`]
-      ];
-
-      if (countKaryawan === 2) {
-        const perK = Math.round(totalKaryawanShare / 2);
-        rowsBagiHasil.push(["  -> Karyawan 1 (25%)", `Rp ${perK.toLocaleString('id-ID')}`]);
-        rowsBagiHasil.push(["  -> Karyawan 2 (25%)", `Rp ${perK.toLocaleString('id-ID')}`]);
-      } else {
-        const perK = Math.round(totalKaryawanShare / countKaryawan);
-        const pct = (50 / countKaryawan).toFixed(1);
-        for (let i = 1; i <= countKaryawan; i++) {
-          rowsBagiHasil.push([`  -> Karyawan ${i} (${pct}%)`, `Rp ${perK.toLocaleString('id-ID')}`]);
-        }
-      }
-
-      rowsBagiHasil.push(["Total Bagi Hasil Seluruh Karyawan (50%)", `Rp ${totalKaryawanShare.toLocaleString('id-ID')}`]);
-
-      doc.autoTable({
-        startY: section2Y + 3,
-        body: rowsBagiHasil,
-        theme: 'striped',
-        styles: { fontSize: 9, cellPadding: 2.5 },
-        columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right', fontStyle: 'bold' } }
-      });
-
-      // Signature Section
-      const sigY = doc.lastAutoTable.finalY + 25;
-      doc.setFontSize(9);
+      // 6. Kolom Tanda Tangan
+      const sigY = doc.lastAutoTable.finalY + 12;
+      doc.setFontSize(8.5);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(15, 23, 42);
 
-      doc.text("Dibuat oleh,", 30, sigY);
-      doc.text("Mengetahui,", 140, sigY);
+      doc.text("Dibuat oleh,", 25, sigY);
+      doc.text("Mengetahui,", 145, sigY);
 
       doc.setFont("helvetica", "bold");
-      doc.text("Admin Suramadu", 30, sigY + 20);
-      doc.text("Super Boss Warung Suramadu", 140, sigY + 20);
+      doc.text(k1Name, 25, sigY + 16);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.5);
+      doc.setTextColor(100);
+      doc.text("(Penanggung Jawab Laporan)", 25, sigY + 20);
 
-      // Footer Page 2
-      doc.setFontSize(8);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8.5);
+      doc.setTextColor(15, 23, 42);
+      doc.text(namaBoss, 145, sigY + 16);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.5);
+      doc.setTextColor(100);
+      doc.text("(Pemilik Usaha / Boss)", 145, sigY + 20);
+
+      // 7. Footer Hak Cipta Permanent di Bawah
+      doc.setFontSize(7.5);
       doc.setTextColor(148, 163, 184);
-      doc.text(`Warung Suramadu Laporan Keuangan Siklus ${activeSiklus}`, 14, 285);
-      doc.text("Halaman 2 dari 2", 100, 285);
-      doc.text("by: aliimron1909", 170, 285);
+      doc.text(`${namaWarung} • Laporan Keuangan Siklus ${activeSiklus}`, 14, 322);
+      doc.text("Halaman 1 dari 1", 100, 322);
+      doc.text("by: aliimron1909", 170, 322);
 
-      // Save PDF
-      doc.save(`Laporan_Warung_Suramadu_Siklus_${activeSiklus}.pdf`);
+      // Save PDF F4 Single Page
+      doc.save(`Laporan_Keuangan_${namaWarung.replace(/\s+/g, '_')}_Siklus_${activeSiklus}.pdf`);
     }
   </script>
 </body>
