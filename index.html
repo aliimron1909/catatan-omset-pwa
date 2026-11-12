@@ -355,103 +355,10 @@
 
     </section>
 
-    <!-- TAB 4: PENGATURAN -->
+    <!-- TAB 4: PENGATURAN (DIURUTKAN 1 - 5) -->
     <section id="tab-settings" class="tab-section space-y-4" style="display: none;">
       
-      <!-- Backup & Restore CSV -->
-      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-3">
-        <h2 class="text-base font-semibold text-emerald-400 flex items-center gap-2">
-          <i class="fa-solid fa-database"></i> Backup & Restore Data CSV
-        </h2>
-        <p class="text-xs text-slate-400">Cadangkan seluruh catatan ke file CSV atau pulihkan data dari file CSV.</p>
-        
-        <div class="grid grid-cols-2 gap-3 pt-2">
-          <button type="button" onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold py-2.5 px-3 rounded-xl shadow transition text-xs flex justify-center items-center gap-1.5 cursor-pointer">
-            <i class="fa-solid fa-file-csv text-sm"></i> Download CSV
-          </button>
-          
-          <label class="bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-semibold py-2.5 px-3 rounded-xl shadow transition text-xs flex justify-center items-center gap-1.5 cursor-pointer text-center">
-            <i class="fa-solid fa-file-import text-sm"></i> Restore CSV
-            <input type="file" id="import-csv-file" accept=".csv" onchange="importCSV(event)" class="hidden">
-          </label>
-        </div>
-      </div>
-
-      <!-- Keamanan PIN Aplikasi -->
-      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-3">
-        <h2 class="text-base font-semibold text-amber-400 flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i> Keamanan PIN Aplikasi
-        </h2>
-        
-        <div class="flex items-center justify-between pt-1">
-          <label for="setting-pin-toggle" class="text-xs text-slate-300 font-medium cursor-pointer">Aktifkan Kunci PIN Saat Buka App</label>
-          <input type="checkbox" id="setting-pin-toggle" class="w-4 h-4 accent-blue-600 cursor-pointer">
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">Set 4-Digit PIN Keamanan</label>
-          <input type="password" id="setting-pin-code" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="1234" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
-        </div>
-      </div>
-
-      <!-- Pengaturan Penjaga Warung & Bagi Hasil Per Siklus -->
-      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
-        <h2 class="text-base font-semibold text-emerald-400 flex items-center gap-2">
-          <i class="fa-solid fa-users-gear"></i> Pengaturan Penjaga Warung & Bagi Hasil
-        </h2>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">Opsi Default Penjaga (Untuk Siklus Baru)</label>
-          <select id="setting-default-jaga-mode" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-blue-500 outline-none">
-            <option value="pemilik_suami_istri">Dijaga Pemilik Warung Suami Istri (100% Tabungan)</option>
-            <option value="pemilik_1_karyawan">Dijaga Pemilik & 1 Karyawan (Karyawan 25%, Pemilik 75% + Kontrak)</option>
-            <option value="karyawan_suami_istri">Dijaga Karyawan Suami Istri (Karyawan 50%, Pemilik 50% + Kontrak)</option>
-            <option value="dua_karyawan">Dijaga 2 Karyawan (Per Karyawan 25%, Pemilik 50% + Kontrak)</option>
-          </select>
-        </div>
-
-        <!-- Atur Cepat Rentang Siklus -->
-        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 space-y-2.5">
-          <label class="block text-xs font-semibold text-blue-300">Atur Cepat Rentang Siklus</label>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <span class="block text-[10px] text-slate-400 mb-1">Dari Siklus</span>
-              <input type="number" id="range-siklus-start" min="1" value="1" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
-            </div>
-            <div>
-              <span class="block text-[10px] text-slate-400 mb-1">Sampai Siklus</span>
-              <input type="number" id="range-siklus-end" min="1" value="3" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
-            </div>
-          </div>
-          <div>
-            <span class="block text-[10px] text-slate-400 mb-1">Pilih Opsi Penjaga Warung</span>
-            <select id="range-siklus-mode" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white outline-none">
-              <option value="pemilik_suami_istri">Dijaga Pemilik Warung Suami Istri (100% Tabungan)</option>
-              <option value="pemilik_1_karyawan">Dijaga Pemilik & 1 Karyawan (Karyawan 25%, Pemilik 75% + Kontrak)</option>
-              <option value="karyawan_suami_istri">Dijaga Karyawan Suami Istri (Karyawan 50%, Pemilik 50% + Kontrak)</option>
-              <option value="dua_karyawan">Dijaga 2 Karyawan (Per Karyawan 25%, Pemilik 50% + Kontrak)</option>
-            </select>
-          </div>
-          <button type="button" onclick="applyRangeJagaMode()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold py-2 rounded-lg text-xs transition cursor-pointer">
-            Terapkan ke Rentang Siklus
-          </button>
-        </div>
-
-        <!-- Daftar Pengaturan Per Siklus -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label class="block text-xs font-semibold text-slate-300">Pengaturan Per Siklus</label>
-            <button type="button" onclick="tambahSiklusSetting()" class="text-[11px] text-blue-400 hover:text-blue-300 font-medium cursor-pointer">
-              + Tambah Siklus
-            </button>
-          </div>
-          <div id="container-siklus-jaga-settings" class="space-y-2 max-h-64 overflow-y-auto pr-1">
-            <!-- Dynamic cycle dropdowns -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Settings Profil Warung -->
+      <!-- 1. Settings Profil Warung -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
           <i class="fa-solid fa-gear"></i> Pengaturan Profil, Foto & Kontrak
@@ -527,7 +434,100 @@
         </button>
       </div>
 
-      <!-- Testing Tools Internal -->
+      <!-- 2. Keamanan PIN Aplikasi -->
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-3">
+        <h2 class="text-base font-semibold text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-user-shield"></i> Keamanan PIN Aplikasi
+        </h2>
+        
+        <div class="flex items-center justify-between pt-1">
+          <label for="setting-pin-toggle" class="text-xs text-slate-300 font-medium cursor-pointer">Aktifkan Kunci PIN Saat Buka App</label>
+          <input type="checkbox" id="setting-pin-toggle" class="w-4 h-4 accent-blue-600 cursor-pointer">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Set 4-Digit PIN Keamanan</label>
+          <input type="password" id="setting-pin-code" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="1234" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 outline-none">
+        </div>
+      </div>
+
+      <!-- 3. Pengaturan Penjaga Warung & Bagi Hasil Per Siklus -->
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+        <h2 class="text-base font-semibold text-emerald-400 flex items-center gap-2">
+          <i class="fa-solid fa-users-gear"></i> Pengaturan Penjaga Warung & Bagi Hasil
+        </h2>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Opsi Default Penjaga (Untuk Siklus Baru)</label>
+          <select id="setting-default-jaga-mode" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-blue-500 outline-none">
+            <option value="pemilik_suami_istri">Dijaga Pemilik Warung Suami Istri (100% Tabungan)</option>
+            <option value="pemilik_1_karyawan">Dijaga Pemilik & 1 Karyawan (Karyawan 25%, Pemilik 75% + Kontrak)</option>
+            <option value="karyawan_suami_istri">Dijaga Karyawan Suami Istri (Karyawan 50%, Pemilik 50% + Kontrak)</option>
+            <option value="dua_karyawan">Dijaga 2 Karyawan (Per Karyawan 25%, Pemilik 50% + Kontrak)</option>
+          </select>
+        </div>
+
+        <!-- Atur Cepat Rentang Siklus -->
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 space-y-2.5">
+          <label class="block text-xs font-semibold text-blue-300">Atur Cepat Rentang Siklus</label>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <span class="block text-[10px] text-slate-400 mb-1">Dari Siklus</span>
+              <input type="number" id="range-siklus-start" min="1" value="1" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+            </div>
+            <div>
+              <span class="block text-[10px] text-slate-400 mb-1">Sampai Siklus</span>
+              <input type="number" id="range-siklus-end" min="1" value="3" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+            </div>
+          </div>
+          <div>
+            <span class="block text-[10px] text-slate-400 mb-1">Pilih Opsi Penjaga Warung</span>
+            <select id="range-siklus-mode" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white outline-none">
+              <option value="pemilik_suami_istri">Dijaga Pemilik Warung Suami Istri (100% Tabungan)</option>
+              <option value="pemilik_1_karyawan">Dijaga Pemilik & 1 Karyawan (Karyawan 25%, Pemilik 75% + Kontrak)</option>
+              <option value="karyawan_suami_istri">Dijaga Karyawan Suami Istri (Karyawan 50%, Pemilik 50% + Kontrak)</option>
+              <option value="dua_karyawan">Dijaga 2 Karyawan (Per Karyawan 25%, Pemilik 50% + Kontrak)</option>
+            </select>
+          </div>
+          <button type="button" onclick="applyRangeJagaMode()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold py-2 rounded-lg text-xs transition cursor-pointer">
+            Terapkan ke Rentang Siklus
+          </button>
+        </div>
+
+        <!-- Daftar Pengaturan Per Siklus -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-slate-300">Pengaturan Per Siklus</label>
+            <button type="button" onclick="tambahSiklusSetting()" class="text-[11px] text-blue-400 hover:text-blue-300 font-medium cursor-pointer">
+              + Tambah Siklus
+            </button>
+          </div>
+          <div id="container-siklus-jaga-settings" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <!-- Dynamic cycle dropdowns -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Backup & Restore CSV -->
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-3">
+        <h2 class="text-base font-semibold text-emerald-400 flex items-center gap-2">
+          <i class="fa-solid fa-database"></i> Backup & Restore Data CSV
+        </h2>
+        <p class="text-xs text-slate-400">Cadangkan seluruh catatan ke file CSV atau pulihkan data dari file CSV.</p>
+        
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button type="button" onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold py-2.5 px-3 rounded-xl shadow transition text-xs flex justify-center items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-file-csv text-sm"></i> Download CSV
+          </button>
+          
+          <label class="bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-semibold py-2.5 px-3 rounded-xl shadow transition text-xs flex justify-center items-center gap-1.5 cursor-pointer text-center">
+            <i class="fa-solid fa-file-import text-sm"></i> Restore CSV
+            <input type="file" id="import-csv-file" accept=".csv" onchange="importCSV(event)" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <!-- 5. Testing Tools Internal -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-2">
         <p class="text-xs text-slate-400 font-semibold uppercase">Alat Uji Coba (Testing)</p>
         <button type="button" onclick="generateDummyData()" class="w-full bg-slate-700 hover:bg-slate-600 text-yellow-400 text-xs py-2 rounded-xl font-medium cursor-pointer">
