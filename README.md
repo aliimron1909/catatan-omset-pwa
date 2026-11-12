@@ -1,8 +1,8 @@
-# Warung Suramadu PWA
+# Catatan Omset PWA
 
-Aplikasi web progresif (Progressive Web App) untuk pencatatan omset harian, manajemen siklus operasional 30 hari, dan perhitungan alokasi keuangan usaha **Warung Suramadu**. Dirancang ringan, mandiri tanpa sistem login, dan mendukung sinkronisasi cloud dua arah ke Google Sheets.
+Aplikasi web progresif (Progressive Web App) untuk pencatatan omset harian warung Madura, manajemen siklus operasional 30 hari, dan perhitungan alokasi keuangan usaha **Warung Suramadu**. Dirancang ringan, mandiri tanpa sistem login, dan mendukung sinkronisasi cloud dua arah ke Google Sheets.
 
-🌐 **Live Demo:** [https://aliimron1909.github.io/warung-suramadu-pwa/](https://aliimron1909.github.io/warung-suramadu-pwa/)
+🌐 **Live Demo:** [https://aliimron1909.github.io/catatan-omset-pwa/](https://aliimron1909.github.io/catatan-omset-pwa/)
 
 ---
 
