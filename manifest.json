@@ -1,6 +1,6 @@
 {
-  "name": "Warung Suramadu - Omset Mandiri",
-  "short_name": "Catatan Omset",
+  "name": "Catatan Omset - Omset Mandiri WarMad",
+  "short_name": "Catatan Omset WarMad",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
