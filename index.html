@@ -98,12 +98,12 @@
         <div class="bg-gradient-to-r from-blue-900/80 to-slate-800 p-4 rounded-2xl border border-blue-700/60 shadow">
           <div class="flex justify-between items-center">
             <span class="text-xs font-semibold text-blue-300 uppercase tracking-wider">Total Pendapatan Boss</span>
-            <span class="text-[10px] bg-blue-950 px-2 py-0.5 rounded text-blue-400 border border-blue-800">50% Bagi Hasil + Kontrak</span>
+            <span id="dash-boss-badge" class="text-[10px] bg-blue-950 px-2 py-0.5 rounded text-blue-400 border border-blue-800">50% Bagi Hasil + Kontrak</span>
           </div>
           <p id="dash-boss-total" class="text-xl font-black text-white mt-1">Rp 0</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 text-xs">
+        <div id="dash-karyawan-grid" class="grid grid-cols-2 gap-2 text-xs">
           <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
             <span id="label-dash-karyawan1" class="text-slate-400 block font-medium truncate">Karyawan 1 (25%)</span>
             <p id="dash-karyawan1-total" class="text-sm font-bold text-emerald-400 mt-0.5">Rp 0</p>
@@ -248,6 +248,12 @@
           </select>
         </div>
 
+        <!-- Info Penjaga Warung Siklus Aktif -->
+        <div class="flex items-center justify-between text-[11px] bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-700">
+          <span class="text-slate-400">Penjaga Warung:</span>
+          <span id="rekap-jaga-mode-badge" class="font-semibold text-blue-300">Dijaga 2 Karyawan</span>
+        </div>
+
         <!-- Opsi Pemotongan Kontrak Operasional -->
         <div id="box-opsi-kontrak" class="bg-slate-900/80 p-3 rounded-xl border border-amber-500/40 space-y-2 hidden">
           <div class="flex items-center justify-between text-xs">
@@ -302,7 +308,7 @@
           <!-- Rincian Bagi Hasil -->
           <div class="pt-2 border-t border-slate-800 space-y-1.5 text-[11px]">
             <div class="flex justify-between bg-blue-950/60 p-2 rounded-lg border border-blue-800/80">
-              <span class="text-blue-300 font-bold">Total Pendapatan Boss (50% + Kontrak):</span>
+              <span id="rekap-boss-label" class="text-blue-300 font-bold">Total Pendapatan Boss (50% + Kontrak):</span>
               <span id="rekap-boss-share" class="font-bold text-blue-400">Rp 0</span>
             </div>
             
@@ -388,6 +394,63 @@
         </div>
       </div>
 
+      <!-- Pengaturan Penjaga Warung & Bagi Hasil Per Siklus -->
+      <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+        <h2 class="text-base font-semibold text-emerald-400 flex items-center gap-2">
+          <i class="fa-solid fa-users-gear"></i> Pengaturan Penjaga Warung & Bagi Hasil
+        </h2>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Opsi Default Penjaga (Untuk Siklus Baru)</label>
+          <select id="setting-default-jaga-mode" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-blue-500 outline-none">
+            <option value="pemilik_suami_istri">Dijaga Pemilik Warung Suami Istri (100% Tabungan)</option>
+            <option value="pemilik_1_karyawan">Dijaga Pemilik & 1 Karyawan (Karyawan 25%, Pemilik 75% + Kontrak)</option>
+            <option value="karyawan_suami_istri">Dijaga Karyawan Suami Istri (Karyawan 50%, Pemilik 50% + Kontrak)</option>
+            <option value="dua_karyawan">Dijaga 2 Karyawan (Per Karyawan 25%, Pemilik 50% + Kontrak)</option>
+          </select>
+        </div>
+
+        <!-- Atur Cepat Rentang Siklus -->
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 space-y-2.5">
+          <label class="block text-xs font-semibold text-blue-300">Atur Cepat Rentang Siklus</label>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <span class="block text-[10px] text-slate-400 mb-1">Dari Siklus</span>
+              <input type="number" id="range-siklus-start" min="1" value="1" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+            </div>
+            <div>
+              <span class="block text-[10px] text-slate-400 mb-1">Sampai Siklus</span>
+              <input type="number" id="range-siklus-end" min="1" value="3" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+            </div>
+          </div>
+          <div>
+            <span class="block text-[10px] text-slate-400 mb-1">Pilih Opsi Penjaga Warung</span>
+            <select id="range-siklus-mode" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white outline-none">
+              <option value="pemilik_suami_istri">Dijaga Pemilik Warung Suami Istri (100% Tabungan)</option>
+              <option value="pemilik_1_karyawan">Dijaga Pemilik & 1 Karyawan (Karyawan 25%, Pemilik 75% + Kontrak)</option>
+              <option value="karyawan_suami_istri">Dijaga Karyawan Suami Istri (Karyawan 50%, Pemilik 50% + Kontrak)</option>
+              <option value="dua_karyawan">Dijaga 2 Karyawan (Per Karyawan 25%, Pemilik 50% + Kontrak)</option>
+            </select>
+          </div>
+          <button type="button" onclick="applyRangeJagaMode()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold py-2 rounded-lg text-xs transition cursor-pointer">
+            Terapkan ke Rentang Siklus
+          </button>
+        </div>
+
+        <!-- Daftar Pengaturan Per Siklus -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-slate-300">Pengaturan Per Siklus</label>
+            <button type="button" onclick="tambahSiklusSetting()" class="text-[11px] text-blue-400 hover:text-blue-300 font-medium cursor-pointer">
+              + Tambah Siklus
+            </button>
+          </div>
+          <div id="container-siklus-jaga-settings" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <!-- Dynamic cycle dropdowns -->
+          </div>
+        </div>
+      </div>
+
       <!-- Settings Profil Warung -->
       <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl space-y-4">
         <h2 class="text-base font-semibold text-blue-400 flex items-center gap-2">
@@ -404,7 +467,7 @@
                 <i class="fa-solid fa-upload"></i> Unggah Foto dari Galeri
                 <input type="file" id="setting-logo-file" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
               </label>
-              <p class="text-[10px] text-slate-400">Format: JPG, PNG (Otomatis tersimpan di HP)</p>
+              <p class="text-[10px] text-slate-400">Format: JPG, PNG (Otomatis tersimpan di HP & Sheet)</p>
             </div>
           </div>
         </div>
@@ -460,7 +523,7 @@
         </div>
 
         <button type="button" onclick="simpanPengaturan()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold py-2.5 rounded-xl shadow transition text-sm cursor-pointer">
-          Simpan Pengaturan
+          Simpan Pengaturan & Sync Sheet
         </button>
       </div>
 
@@ -523,6 +586,13 @@
   <!-- Global Script Engine -->
   <script>
     const DEFAULT_STORE_ICON = "./icon.svg";
+
+    const JAGA_MODE_SHORT_LABELS = {
+      'pemilik_suami_istri': 'Pemilik Warung Suami Istri (100% Tabungan)',
+      'pemilik_1_karyawan': 'Pemilik & 1 Karyawan (Karyawan 25%, Pemilik 75%+Kontrak)',
+      'karyawan_suami_istri': 'Karyawan Suami Istri (Karyawan 50%, Pemilik 50%+Kontrak)',
+      'dua_karyawan': '2 Karyawan (Per Karyawan 25%, Pemilik 50%+Kontrak)'
+    };
 
     // Helper Tanggal Lokal HP (Mencegah Bug Timezone UTC ISOString)
     function getTodayLocalDateStr() {
@@ -688,6 +758,7 @@
       if (tabId === 'tab-input') autoSetSiklusDanHari();
       if (tabId === 'tab-dashboard') updateDashboardCharts(false);
       if (tabId === 'tab-rekap') renderRekap(false);
+      if (tabId === 'tab-settings') renderSiklusJagaSettingsUI();
     };
 
     // State & Defaults
@@ -700,6 +771,7 @@
       namaKaryawan2: 'Hosnol Fawaid',
       gajiPerKaryawan: 1250000,
       jumlahKaryawan: 2,
+      defaultJagaMode: 'dua_karyawan',
       scriptUrl: '',
       persentaseTabungan: 10,
       logoUrl: DEFAULT_STORE_ICON,
@@ -711,6 +783,7 @@
 
     let records = [];
     let cycleKontrakOptions = {};
+    let cycleJagaModes = {};
     let settings = { ...DEFAULT_SETTINGS };
     let dailyChartInstance = null;
     let cycleChartInstance = null;
@@ -718,6 +791,123 @@
     function getMaxSiklus() {
       if (!records || records.length === 0) return 1;
       return Math.max(...records.map(r => parseInt(r.siklus, 10) || 1));
+    }
+
+    function getMaxConfiguredSiklus() {
+      const recMax = getMaxSiklus();
+      const keys = Object.keys(cycleJagaModes || {}).map(k => parseInt(k, 10) || 1);
+      return keys.length > 0 ? Math.max(recMax, ...keys) : recMax;
+    }
+
+    function getCycleJagaMode(siklusNum) {
+      const s = parseInt(siklusNum, 10) || 1;
+      if (cycleJagaModes && cycleJagaModes[s]) {
+        return cycleJagaModes[s];
+      }
+      return settings.defaultJagaMode || 'dua_karyawan';
+    }
+
+    // Pusat Perhitungan Pendapatan & Bagi Hasil Per Siklus
+    function calculateCycleFinancials(siklusNum) {
+      const s = parseInt(siklusNum, 10) || 1;
+      const filteredRecords = records
+        .filter(r => (parseInt(r.siklus, 10) || 1) === s)
+        .sort((a, b) => a.hariKe - b.hariKe);
+
+      const percentTab = settings.persentaseTabungan || 10;
+      const jagaMode = getCycleJagaMode(s);
+
+      let totalOmset = 0;
+      let totalTabungan = 0;
+      let totalPengeluaran = 0;
+
+      filteredRecords.forEach(r => {
+        totalOmset += (r.omsetKotor || 0);
+        totalTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
+        totalPengeluaran += (r.pengeluaran || 0);
+      });
+
+      const totalHariBerjalan = filteredRecords.length;
+      const fullKontrak = settings.gajiPerKaryawan || 0;
+      let effectiveKontrak = 0;
+      let infoKontrakKet = '';
+
+      if (jagaMode === 'pemilik_suami_istri') {
+        effectiveKontrak = 0;
+        infoKontrakKet = '';
+      } else if (totalHariBerjalan > 0) {
+        if (totalHariBerjalan < 30) {
+          const currentOpt = cycleKontrakOptions[s] || 'prorata';
+          if (currentOpt === 'zero') {
+            effectiveKontrak = 0;
+            infoKontrakKet = ' (Opsi Rp 0)';
+          } else if (currentOpt === 'full') {
+            effectiveKontrak = fullKontrak;
+            infoKontrakKet = ' (Full 1 Bln)';
+          } else {
+            effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
+            infoKontrakKet = ` (${totalHariBerjalan}/30 Hr)`;
+          }
+        } else {
+          effectiveKontrak = fullKontrak;
+        }
+      }
+
+      let sisaDanaBagiHasil = 0;
+      let bossTotal = 0;
+      let karyawan1Share = 0;
+      let karyawan2Share = 0;
+      let totalKaryawanShare = 0;
+
+      if (jagaMode === 'pemilik_suami_istri') {
+        sisaDanaBagiHasil = totalTabungan;
+        bossTotal = totalTabungan;
+        karyawan1Share = 0;
+        karyawan2Share = 0;
+        totalKaryawanShare = 0;
+      } else if (jagaMode === 'pemilik_1_karyawan') {
+        sisaDanaBagiHasil = totalTabungan - effectiveKontrak;
+        const sisaNet = Math.max(0, sisaDanaBagiHasil);
+        karyawan1Share = Math.round(sisaNet * 0.25);
+        const bossNet = sisaNet - karyawan1Share;
+        bossTotal = bossNet + effectiveKontrak;
+        karyawan2Share = 0;
+        totalKaryawanShare = karyawan1Share;
+      } else if (jagaMode === 'karyawan_suami_istri') {
+        sisaDanaBagiHasil = totalTabungan - effectiveKontrak;
+        const sisaNet = Math.max(0, sisaDanaBagiHasil);
+        karyawan1Share = Math.round(sisaNet * 0.50);
+        const bossNet = sisaNet - karyawan1Share;
+        bossTotal = bossNet + effectiveKontrak;
+        karyawan2Share = 0;
+        totalKaryawanShare = karyawan1Share;
+      } else {
+        sisaDanaBagiHasil = totalTabungan - effectiveKontrak;
+        const sisaNet = Math.max(0, sisaDanaBagiHasil);
+        const halfShare = Math.round(sisaNet * 0.50);
+        const perKaryawan = Math.round(halfShare / 2);
+        karyawan1Share = perKaryawan;
+        karyawan2Share = perKaryawan;
+        totalKaryawanShare = halfShare;
+        bossTotal = halfShare + effectiveKontrak;
+      }
+
+      return {
+        siklus: s,
+        jagaMode,
+        filteredRecords,
+        totalHariBerjalan,
+        totalOmset,
+        totalTabungan,
+        totalPengeluaran,
+        effectiveKontrak,
+        infoKontrakKet,
+        sisaDanaBagiHasil,
+        bossTotal,
+        karyawan1Share,
+        karyawan2Share,
+        totalKaryawanShare
+      };
     }
 
     function loadInitialState() {
@@ -730,6 +920,11 @@
         const savedOptions = localStorage.getItem('suramadu_kontrak_options');
         if (savedOptions) cycleKontrakOptions = JSON.parse(savedOptions) || {};
       } catch (e) { cycleKontrakOptions = {}; }
+
+      try {
+        const savedJagaModes = localStorage.getItem('suramadu_jaga_modes');
+        if (savedJagaModes) cycleJagaModes = JSON.parse(savedJagaModes) || {};
+      } catch (e) { cycleJagaModes = {}; }
 
       try {
         const savedSettings = localStorage.getItem('suramadu_settings');
@@ -885,26 +1080,68 @@
       document.getElementById('preview-tabungan').innerText = 'Rp ' + tabungan.toLocaleString('id-ID');
     }
 
+    // Kompresi otomatis gambar logo agar ringan & muat di sel Google Sheets (< 50.000 karakter)
+    function compressLogoToBase64(file, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxSize = 160;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxSize) {
+              height = Math.round(height * (maxSize / width));
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width = Math.round(width * (maxSize / height));
+              height = maxSize;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          callback(compressedDataUrl);
+        };
+        img.onerror = function() {
+          callback(e.target.result);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     function handleLogoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const base64Img = e.target.result;
+      compressLogoToBase64(file, function(base64Img) {
         settings.logoUrl = base64Img;
         document.getElementById('setting-logo-preview').src = base64Img;
         document.getElementById('header-logo').src = base64Img;
         localStorage.setItem('suramadu_settings', JSON.stringify(settings));
-        alert('Foto Profil / Logo berhasil diperbarui!');
-      };
-      reader.readAsDataURL(file);
+        pushToSheets();
+        alert('Foto Profil / Logo berhasil diperbarui & disinkronkan!');
+      });
     }
 
     function mulaiSiklusBaru() {
       batalEdit();
       const maxSiklus = records.length > 0 ? Math.max(...records.map(r => parseInt(r.siklus, 10) || 1)) : 0;
       const siklusBaru = maxSiklus + 1;
+
+      if (!cycleJagaModes[siklusBaru]) {
+        cycleJagaModes[siklusBaru] = settings.defaultJagaMode || 'dua_karyawan';
+        localStorage.setItem('suramadu_jaga_modes', JSON.stringify(cycleJagaModes));
+        pushToSheets();
+      }
       
       document.getElementById('input-siklus').value = siklusBaru;
       document.getElementById('input-hari').value = 1;
@@ -933,6 +1170,11 @@
       if (duplicateRecord && duplicateRecord.id !== editingId) {
         alert(`Omset untuk tanggal ${formatDateDDMMYYYY(tanggal)} sudah pernah dicatat!\nHanya diizinkan 1 kali input per hari.\nSilakan gunakan tombol EDIT jika ingin mengubah.`);
         return;
+      }
+
+      if (!cycleJagaModes[siklus]) {
+        cycleJagaModes[siklus] = settings.defaultJagaMode || 'dua_karyawan';
+        localStorage.setItem('suramadu_jaga_modes', JSON.stringify(cycleJagaModes));
       }
 
       const percent = settings.persentaseTabungan || 10;
@@ -1036,6 +1278,7 @@
       const activeSiklus = selectSiklus ? parseInt(selectSiklus.value, 10) || getMaxSiklus() : getMaxSiklus();
       cycleKontrakOptions[activeSiklus] = optionType;
       localStorage.setItem('suramadu_kontrak_options', JSON.stringify(cycleKontrakOptions));
+      pushToSheets();
       renderRekap(true);
       updateDashboardCharts(true);
     }
@@ -1062,30 +1305,21 @@
       }
 
       const activeSiklus = parseInt(selectSiklus.value, 10) || targetSiklus;
-      const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+      const calc = calculateCycleFinancials(activeSiklus);
+      const filteredRecords = calc.filteredRecords;
 
       const percentTab = settings.persentaseTabungan || 10;
       document.getElementById('rekap-tabungan-percent-label').innerText = percentTab;
 
-      let totalOmset = 0;
-      let totalTabungan = 0;
-      let totalPengeluaran = 0;
+      const jagaBadge = document.getElementById('rekap-jaga-mode-badge');
+      if (jagaBadge) {
+        jagaBadge.innerText = JAGA_MODE_SHORT_LABELS[calc.jagaMode] || JAGA_MODE_SHORT_LABELS['dua_karyawan'];
+      }
 
-      filteredRecords.forEach(r => {
-        totalOmset += (r.omsetKotor || 0);
-        totalTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
-        totalPengeluaran += (r.pengeluaran || 0);
-      });
-
-      const totalHariBerjalan = filteredRecords.length;
-      const fullKontrak = settings.gajiPerKaryawan || 0;
-      
       const boxOpsiKontrak = document.getElementById('box-opsi-kontrak');
-      let effectiveKontrak = fullKontrak;
-
-      if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
+      if (calc.jagaMode !== 'pemilik_suami_istri' && calc.totalHariBerjalan < 30 && calc.totalHariBerjalan > 0) {
         if (boxOpsiKontrak) boxOpsiKontrak.classList.remove('hidden');
-        document.getElementById('txt-total-hari-siklus').innerText = totalHariBerjalan;
+        document.getElementById('txt-total-hari-siklus').innerText = calc.totalHariBerjalan;
 
         const currentOpt = cycleKontrakOptions[activeSiklus] || 'prorata';
 
@@ -1094,17 +1328,14 @@
         const btnFull = document.getElementById('btn-kontrak-full');
 
         if (currentOpt === 'zero') {
-          effectiveKontrak = 0;
           if (btnZero) btnZero.className = 'py-1.5 px-1 rounded-lg font-bold border text-center transition cursor-pointer bg-amber-600 text-white border-amber-500 text-[11px]';
           if (btnProrata) btnProrata.className = 'py-1.5 px-1 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700 text-[11px]';
           if (btnFull) btnFull.className = 'py-1.5 px-1 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700 text-[11px]';
         } else if (currentOpt === 'full') {
-          effectiveKontrak = fullKontrak;
           if (btnFull) btnFull.className = 'py-1.5 px-1 rounded-lg font-bold border text-center transition cursor-pointer bg-amber-600 text-white border-amber-500 text-[11px]';
           if (btnZero) btnZero.className = 'py-1.5 px-1 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700 text-[11px]';
           if (btnProrata) btnProrata.className = 'py-1.5 px-1 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700 text-[11px]';
         } else {
-          effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
           if (btnProrata) btnProrata.className = 'py-1.5 px-1 rounded-lg font-bold border text-center transition cursor-pointer bg-amber-600 text-white border-amber-500 text-[11px]';
           if (btnZero) btnZero.className = 'py-1.5 px-1 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700 text-[11px]';
           if (btnFull) btnFull.className = 'py-1.5 px-1 rounded-lg font-medium border text-center transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700 text-[11px]';
@@ -1113,39 +1344,67 @@
         if (boxOpsiKontrak) boxOpsiKontrak.classList.add('hidden');
       }
 
-      const sisaDanaBagiHasil = totalTabungan - effectiveKontrak;
-      const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const bossTotalPendapatan = halfShare + effectiveKontrak;
-      const totalKaryawanShare = halfShare;
-      
       const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
       const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
 
-      document.getElementById('rekap-omset').innerText = 'Rp ' + totalOmset.toLocaleString('id-ID');
-      document.getElementById('rekap-tabungan').innerText = 'Rp ' + totalTabungan.toLocaleString('id-ID');
-      document.getElementById('rekap-kontrak-operasional').innerText = 'Rp ' + effectiveKontrak.toLocaleString('id-ID');
-      document.getElementById('rekap-total-pengeluaran').innerText = 'Rp ' + totalPengeluaran.toLocaleString('id-ID');
+      document.getElementById('rekap-omset').innerText = 'Rp ' + calc.totalOmset.toLocaleString('id-ID');
+      document.getElementById('rekap-tabungan').innerText = 'Rp ' + calc.totalTabungan.toLocaleString('id-ID');
+      document.getElementById('rekap-kontrak-operasional').innerText = 'Rp ' + calc.effectiveKontrak.toLocaleString('id-ID');
+      document.getElementById('rekap-total-pengeluaran').innerText = 'Rp ' + calc.totalPengeluaran.toLocaleString('id-ID');
       
       const sisaEl = document.getElementById('rekap-sisa-bagihasil');
-      sisaEl.innerText = 'Rp ' + sisaDanaBagiHasil.toLocaleString('id-ID');
-      sisaEl.className = sisaDanaBagiHasil >= 0 ? 'font-bold text-green-400' : 'font-bold text-red-400';
+      sisaEl.innerText = 'Rp ' + calc.sisaDanaBagiHasil.toLocaleString('id-ID');
+      sisaEl.className = calc.sisaDanaBagiHasil >= 0 ? 'font-bold text-green-400' : 'font-bold text-red-400';
 
-      document.getElementById('rekap-boss-share').innerText = 'Rp ' + bossTotalPendapatan.toLocaleString('id-ID');
+      const bossLabelEl = document.getElementById('rekap-boss-label');
+      if (bossLabelEl) {
+        if (calc.jagaMode === 'pemilik_suami_istri') {
+          bossLabelEl.innerText = 'Total Pendapatan Boss (100% Tabungan):';
+        } else if (calc.jagaMode === 'pemilik_1_karyawan') {
+          bossLabelEl.innerText = 'Total Pendapatan Boss (75% + Kontrak):';
+        } else {
+          bossLabelEl.innerText = 'Total Pendapatan Boss (50% + Kontrak):';
+        }
+      }
+
+      document.getElementById('rekap-boss-share').innerText = 'Rp ' + calc.bossTotal.toLocaleString('id-ID');
 
       const karyawanContainer = document.getElementById('container-karyawan-share');
       karyawanContainer.innerHTML = '';
 
-      const perKaryawan = Math.round(totalKaryawanShare / 2);
-      karyawanContainer.innerHTML = `
-        <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
-          <span class="text-emerald-300 font-medium">Bagi Hasil ${k1Name} (25%):</span>
-          <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
-        </div>
-        <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
-          <span class="text-emerald-300 font-medium">Bagi Hasil ${k2Name} (25%):</span>
-          <span class="font-bold text-emerald-400">Rp ${perKaryawan.toLocaleString('id-ID')}</span>
-        </div>
-      `;
+      if (calc.jagaMode === 'pemilik_suami_istri') {
+        karyawanContainer.innerHTML = `
+          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+            <span class="text-slate-400 font-medium">Penjaga Warung:</span>
+            <span class="font-bold text-blue-300">Pemilik Warung Suami Istri (100%)</span>
+          </div>
+        `;
+      } else if (calc.jagaMode === 'pemilik_1_karyawan') {
+        karyawanContainer.innerHTML = `
+          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+            <span class="text-emerald-300 font-medium">Bagi Hasil ${k1Name} (25%):</span>
+            <span class="font-bold text-emerald-400">Rp ${calc.karyawan1Share.toLocaleString('id-ID')}</span>
+          </div>
+        `;
+      } else if (calc.jagaMode === 'karyawan_suami_istri') {
+        karyawanContainer.innerHTML = `
+          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+            <span class="text-emerald-300 font-medium">Bagi Hasil ${k1Name} - Suami Istri (50%):</span>
+            <span class="font-bold text-emerald-400">Rp ${calc.karyawan1Share.toLocaleString('id-ID')}</span>
+          </div>
+        `;
+      } else {
+        karyawanContainer.innerHTML = `
+          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+            <span class="text-emerald-300 font-medium">Bagi Hasil ${k1Name} (25%):</span>
+            <span class="font-bold text-emerald-400">Rp ${calc.karyawan1Share.toLocaleString('id-ID')}</span>
+          </div>
+          <div class="flex justify-between bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+            <span class="text-emerald-300 font-medium">Bagi Hasil ${k2Name} (25%):</span>
+            <span class="font-bold text-emerald-400">Rp ${calc.karyawan2Share.toLocaleString('id-ID')}</span>
+          </div>
+        `;
+      }
 
       const tbody = document.getElementById('tabel-catatan');
       tbody.innerHTML = '';
@@ -1219,72 +1478,120 @@
       const percentTab = settings.persentaseTabungan || 10;
       document.getElementById('dash-tabungan-percent-label').innerText = percentTab;
 
-      const fullKontrak = settings.gajiPerKaryawan || 0;
+      const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
+      const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
+      const bossBadgeEl = document.getElementById('dash-boss-badge');
+      const karyawanGridEl = document.getElementById('dash-karyawan-grid');
+
       let cycleOmset = 0;
       let cycleTabungan = 0;
       let bossTotal = 0;
-      let karyawanPerPerson = 0;
 
       if (isAllCycles) {
         const cyclesToCalc = allSiklus.length > 0 ? allSiklus : [1];
+        let sumK1 = 0;
+        let sumK2 = 0;
+
         cyclesToCalc.forEach(s => {
-          const recsS = records.filter(r => (parseInt(r.siklus, 10) || 1) === s);
-          let omsetS = 0;
-          let tabunganS = 0;
-          recsS.forEach(r => {
-            omsetS += (r.omsetKotor || 0);
-            tabunganS += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
-          });
+          const calcS = calculateCycleFinancials(s);
+          cycleOmset += calcS.totalOmset;
+          cycleTabungan += calcS.totalTabungan;
+          bossTotal += calcS.bossTotal;
+          sumK1 += calcS.karyawan1Share;
+          sumK2 += calcS.karyawan2Share;
+        });
 
-          const hariS = recsS.length;
-          let kontrakS = hariS > 0 ? fullKontrak : 0;
-          if (hariS < 30 && hariS > 0) {
-            const optS = cycleKontrakOptions[s] || 'prorata';
-            if (optS === 'zero') kontrakS = 0;
-            else if (optS === 'full') kontrakS = fullKontrak;
-            else kontrakS = Math.round((fullKontrak / 30) * hariS);
+        if (bossBadgeEl) bossBadgeEl.innerText = 'Akumulasi Semua Siklus';
+
+        if (karyawanGridEl) {
+          if (sumK1 === 0 && sumK2 === 0) {
+            karyawanGridEl.className = 'grid grid-cols-1 gap-2 text-xs';
+            karyawanGridEl.innerHTML = `
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
+                <span class="text-slate-400 font-medium">Penjaga Warung (Semua Siklus)</span>
+                <span class="text-xs font-bold text-blue-300">Pemilik Warung (Rp 0 Karyawan)</span>
+              </div>
+            `;
+          } else if (sumK2 === 0) {
+            karyawanGridEl.className = 'grid grid-cols-1 gap-2 text-xs';
+            karyawanGridEl.innerHTML = `
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
+                <span class="text-slate-400 font-medium truncate">Total Bagian ${k1Name}</span>
+                <p class="text-sm font-bold text-emerald-400">Rp ${sumK1.toLocaleString('id-ID')}</p>
+              </div>
+            `;
+          } else {
+            karyawanGridEl.className = 'grid grid-cols-2 gap-2 text-xs';
+            karyawanGridEl.innerHTML = `
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                <span class="text-slate-400 block font-medium truncate">Total ${k1Name}</span>
+                <p class="text-sm font-bold text-emerald-400 mt-0.5">Rp ${sumK1.toLocaleString('id-ID')}</p>
+              </div>
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                <span class="text-slate-400 block font-medium truncate">Total ${k2Name}</span>
+                <p class="text-sm font-bold text-emerald-400 mt-0.5">Rp ${sumK2.toLocaleString('id-ID')}</p>
+              </div>
+            `;
           }
-
-          const sisaS = tabunganS - kontrakS;
-          const halfS = Math.max(0, Math.round(sisaS * 0.50));
-
-          cycleOmset += omsetS;
-          cycleTabungan += tabunganS;
-          bossTotal += (halfS + kontrakS);
-          karyawanPerPerson += Math.round(halfS / 2);
-        });
+        }
       } else {
-        filtered.forEach(r => {
-          cycleOmset += (r.omsetKotor || 0);
-          cycleTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
-        });
+        const calc = calculateCycleFinancials(selectedCycle);
+        cycleOmset = calc.totalOmset;
+        cycleTabungan = calc.totalTabungan;
+        bossTotal = calc.bossTotal;
 
-        const totalHariBerjalan = filtered.length;
-        let effectiveKontrak = fullKontrak;
-
-        if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
-          const currentOpt = cycleKontrakOptions[selectedCycle] || 'prorata';
-          if (currentOpt === 'zero') effectiveKontrak = 0;
-          else if (currentOpt === 'full') effectiveKontrak = fullKontrak;
-          else effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
+        if (bossBadgeEl) {
+          if (calc.jagaMode === 'pemilik_suami_istri') {
+            bossBadgeEl.innerText = '100% Tabungan (Suami Istri)';
+          } else if (calc.jagaMode === 'pemilik_1_karyawan') {
+            bossBadgeEl.innerText = '75% Bagi Hasil + Kontrak';
+          } else {
+            bossBadgeEl.innerText = '50% Bagi Hasil + Kontrak';
+          }
         }
 
-        const sisaDanaBagiHasil = cycleTabungan - effectiveKontrak;
-        const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-        
-        bossTotal = halfShare + effectiveKontrak;
-        karyawanPerPerson = Math.round(halfShare / 2);
+        if (karyawanGridEl) {
+          if (calc.jagaMode === 'pemilik_suami_istri') {
+            karyawanGridEl.className = 'grid grid-cols-1 gap-2 text-xs';
+            karyawanGridEl.innerHTML = `
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
+                <span class="text-slate-400 font-medium">Penjaga Warung</span>
+                <span class="text-xs font-bold text-blue-300">Pemilik Warung Suami Istri (100%)</span>
+              </div>
+            `;
+          } else if (calc.jagaMode === 'pemilik_1_karyawan') {
+            karyawanGridEl.className = 'grid grid-cols-1 gap-2 text-xs';
+            karyawanGridEl.innerHTML = `
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
+                <span class="text-slate-400 font-medium truncate">${k1Name} (25%)</span>
+                <p class="text-sm font-bold text-emerald-400">Rp ${calc.karyawan1Share.toLocaleString('id-ID')}</p>
+              </div>
+            `;
+          } else if (calc.jagaMode === 'karyawan_suami_istri') {
+            karyawanGridEl.className = 'grid grid-cols-1 gap-2 text-xs';
+            karyawanGridEl.innerHTML = `
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
+                <span class="text-slate-400 font-medium truncate">${k1Name} - Suami Istri (50%)</span>
+                <p class="text-sm font-bold text-emerald-400">Rp ${calc.karyawan1Share.toLocaleString('id-ID')}</p>
+              </div>
+            `;
+          } else {
+            karyawanGridEl.className = 'grid grid-cols-2 gap-2 text-xs';
+            karyawanGridEl.innerHTML = `
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                <span id="label-dash-karyawan1" class="text-slate-400 block font-medium truncate">${k1Name} (25%)</span>
+                <p id="dash-karyawan1-total" class="text-sm font-bold text-emerald-400 mt-0.5">Rp ${calc.karyawan1Share.toLocaleString('id-ID')}</p>
+              </div>
+              <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                <span id="label-dash-karyawan2" class="text-slate-400 block font-medium truncate">${k2Name} (25%)</span>
+                <p id="dash-karyawan2-total" class="text-sm font-bold text-emerald-400 mt-0.5">Rp ${calc.karyawan2Share.toLocaleString('id-ID')}</p>
+              </div>
+            `;
+          }
+        }
       }
 
-      const k1Name = settings.namaKaryawan1 || 'Karyawan 1';
-      const k2Name = settings.namaKaryawan2 || 'Karyawan 2';
-
       document.getElementById('dash-boss-total').innerText = 'Rp ' + bossTotal.toLocaleString('id-ID');
-      document.getElementById('label-dash-karyawan1').innerText = `${k1Name} (25%)`;
-      document.getElementById('dash-karyawan1-total').innerText = 'Rp ' + karyawanPerPerson.toLocaleString('id-ID');
-      document.getElementById('label-dash-karyawan2').innerText = `${k2Name} (25%)`;
-      document.getElementById('dash-karyawan2-total').innerText = 'Rp ' + karyawanPerPerson.toLocaleString('id-ID');
-
       document.getElementById('dash-total-omset').innerText = 'Rp ' + cycleOmset.toLocaleString('id-ID');
       document.getElementById('dash-total-tabungan').innerText = 'Rp ' + cycleTabungan.toLocaleString('id-ID');
 
@@ -1461,6 +1768,66 @@
       event.target.value = '';
     }
 
+    // Render Pengaturan Penjaga Warung Per Siklus
+    function renderSiklusJagaSettingsUI() {
+      const container = document.getElementById('container-siklus-jaga-settings');
+      if (!container) return;
+
+      const maxSiklus = Math.max(1, getMaxConfiguredSiklus());
+      container.innerHTML = '';
+
+      for (let s = 1; s <= maxSiklus; s++) {
+        const currentMode = getCycleJagaMode(s);
+        container.innerHTML += `
+          <div class="flex items-center justify-between gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700">
+            <span class="text-xs font-bold text-blue-400 whitespace-nowrap">Siklus ${s}</span>
+            <select data-siklus-jaga="${s}" onchange="updateSingleCycleJagaMode(${s}, this.value)" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] text-white outline-none">
+              <option value="pemilik_suami_istri" ${currentMode === 'pemilik_suami_istri' ? 'selected' : ''}>Dijaga Pemilik Suami Istri (100%)</option>
+              <option value="pemilik_1_karyawan" ${currentMode === 'pemilik_1_karyawan' ? 'selected' : ''}>Pemilik & 1 Karyawan (25% / 75%+K)</option>
+              <option value="karyawan_suami_istri" ${currentMode === 'karyawan_suami_istri' ? 'selected' : ''}>Karyawan Suami Istri (50% / 50%+K)</option>
+              <option value="dua_karyawan" ${currentMode === 'dua_karyawan' ? 'selected' : ''}>2 Karyawan (25%x2 / 50%+K)</option>
+            </select>
+          </div>
+        `;
+      }
+    }
+
+    function updateSingleCycleJagaMode(siklusNum, modeVal) {
+      cycleJagaModes[siklusNum] = modeVal;
+      localStorage.setItem('suramadu_jaga_modes', JSON.stringify(cycleJagaModes));
+      renderRekap(false);
+      updateDashboardCharts(false);
+    }
+
+    function applyRangeJagaMode() {
+      const startEl = document.getElementById('range-siklus-start');
+      const endEl = document.getElementById('range-siklus-end');
+      const modeEl = document.getElementById('range-siklus-mode');
+      if (!startEl || !endEl || !modeEl) return;
+
+      const startSiklus = Math.max(1, parseInt(startEl.value, 10) || 1);
+      const endSiklus = Math.max(startSiklus, parseInt(endEl.value, 10) || startSiklus);
+      const selectedMode = modeEl.value;
+
+      for (let s = startSiklus; s <= endSiklus; s++) {
+        cycleJagaModes[s] = selectedMode;
+      }
+
+      localStorage.setItem('suramadu_jaga_modes', JSON.stringify(cycleJagaModes));
+      renderSiklusJagaSettingsUI();
+      renderRekap(false);
+      updateDashboardCharts(false);
+      pushToSheets();
+      alert(`Opsi penjaga warung berhasil diterapkan untuk Siklus ${startSiklus} s/d Siklus ${endSiklus}!`);
+    }
+
+    function tambahSiklusSetting() {
+      const nextSiklus = getMaxConfiguredSiklus() + 1;
+      cycleJagaModes[nextSiklus] = settings.defaultJagaMode || 'dua_karyawan';
+      localStorage.setItem('suramadu_jaga_modes', JSON.stringify(cycleJagaModes));
+      renderSiklusJagaSettingsUI();
+    }
+
     // Settings UI & Simpan
     function loadSettingsUI() {
       document.getElementById('setting-nama-warung').value = settings.namaWarung || 'Warung Suramadu';
@@ -1470,6 +1837,11 @@
       document.getElementById('setting-nama-karyawan1').value = settings.namaKaryawan1 || 'Karyawan 1';
       document.getElementById('setting-nama-karyawan2').value = settings.namaKaryawan2 || 'Karyawan 2';
       document.getElementById('setting-tabungan-percent').value = settings.persentaseTabungan || 10;
+
+      const defaultJagaEl = document.getElementById('setting-default-jaga-mode');
+      if (defaultJagaEl) {
+        defaultJagaEl.value = settings.defaultJagaMode || 'dua_karyawan';
+      }
 
       const gajiRate = settings.gajiPerKaryawan || 0;
       document.getElementById('setting-gaji').value = 'Rp ' + gajiRate.toLocaleString('id-ID');
@@ -1487,9 +1859,12 @@
       const currentLogo = settings.logoUrl || DEFAULT_STORE_ICON;
       document.getElementById('header-logo').src = currentLogo;
       document.getElementById('setting-logo-preview').src = currentLogo;
+
+      renderSiklusJagaSettingsUI();
     }
 
-    function simpanPengaturan() {
+    async function simpanPengaturan() {
+      const oldScriptUrl = (settings.scriptUrl || '').trim();
       const pinToggleEl = document.getElementById('setting-pin-toggle');
       const pinCodeEl = document.getElementById('setting-pin-code');
       if (pinToggleEl && pinCodeEl) {
@@ -1501,6 +1876,18 @@
         settings.pinEnabled = pinToggleEl.checked;
         settings.pinCode = rawPin || '1234';
       }
+
+      const defaultJagaEl = document.getElementById('setting-default-jaga-mode');
+      if (defaultJagaEl) {
+        settings.defaultJagaMode = defaultJagaEl.value || 'dua_karyawan';
+      }
+
+      document.querySelectorAll('[data-siklus-jaga]').forEach(sel => {
+        const sNum = parseInt(sel.getAttribute('data-siklus-jaga'), 10);
+        if (sNum) {
+          cycleJagaModes[sNum] = sel.value;
+        }
+      });
 
       settings.namaWarung = document.getElementById('setting-nama-warung').value.trim() || 'Warung Suramadu';
       settings.alamatWarung = document.getElementById('setting-alamat-warung').value.trim() || 'Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur';
@@ -1515,37 +1902,75 @@
       settings.scriptUrl = document.getElementById('setting-script-url').value.trim();
 
       localStorage.setItem('suramadu_settings', JSON.stringify(settings));
+      localStorage.setItem('suramadu_jaga_modes', JSON.stringify(cycleJagaModes));
       loadSettingsUI();
       renderRekap(false);
       updateDashboardCharts(false);
-      alert('Pengaturan Profil Warung & Kontrak berhasil disimpan!');
+
+      if (settings.scriptUrl) {
+        if (!oldScriptUrl && records.length === 0) {
+          await autoFetchFromSheets();
+        }
+        await pushToSheets();
+        alert('Pengaturan Profil Warung & Kontrak berhasil disimpan dan disinkronkan ke Google Sheets!');
+      } else {
+        alert('Pengaturan Profil Warung & Kontrak berhasil disimpan secara lokal!');
+      }
     }
 
-    // Google Sheets Auto & Manual 2-Way Sync
+    // Google Sheets Auto & Manual 2-Way Sync (Omset + Semua Settingan + Opsi Penjaga Per Siklus)
     async function autoFetchFromSheets() {
       if (!settings.scriptUrl) return;
       
       const statusEl = document.getElementById('status-sync');
-      if (statusEl) statusEl.innerText = 'Memeriksa data dari cloud...';
+      if (statusEl) statusEl.innerText = 'Memeriksa data & pengaturan dari cloud...';
 
       try {
         const response = await fetch(settings.scriptUrl);
         const result = await response.json();
 
-        if (result.status === 'success' && Array.isArray(result.records)) {
-          const recordMap = new Map();
-          
-          records.forEach(r => recordMap.set(String(r.id), r));
-          result.records.forEach(r => recordMap.set(String(r.id), r));
+        if (result.status === 'success') {
+          if (Array.isArray(result.records)) {
+            const recordMap = new Map();
+            records.forEach(r => recordMap.set(String(r.id), r));
+            result.records.forEach(r => recordMap.set(String(r.id), r));
 
-          records = Array.from(recordMap.values());
-          localStorage.setItem('suramadu_records', JSON.stringify(records));
+            records = Array.from(recordMap.values());
+            localStorage.setItem('suramadu_records', JSON.stringify(records));
+          }
 
+          if (result.settings && typeof result.settings === 'object' && Object.keys(result.settings).length > 0) {
+            const localScriptUrl = settings.scriptUrl;
+            const incoming = result.settings;
+
+            settings = Object.assign({}, DEFAULT_SETTINGS, settings, incoming);
+            settings.gajiPerKaryawan = Number(settings.gajiPerKaryawan) || 0;
+            settings.jumlahKaryawan = Number(settings.jumlahKaryawan) || 2;
+            settings.persentaseTabungan = Number(settings.persentaseTabungan) || 10;
+            settings.defaultJagaMode = String(incoming.defaultJagaMode || settings.defaultJagaMode || 'dua_karyawan');
+            settings.pinEnabled = (settings.pinEnabled === true || settings.pinEnabled === 'true' || settings.pinEnabled === 'TRUE');
+            settings.pinCode = String(settings.pinCode || '1234');
+            settings.scriptUrl = localScriptUrl || incoming.scriptUrl || '';
+
+            localStorage.setItem('suramadu_settings', JSON.stringify(settings));
+          }
+
+          if (result.cycleKontrakOptions && typeof result.cycleKontrakOptions === 'object') {
+            cycleKontrakOptions = Object.assign({}, cycleKontrakOptions, result.cycleKontrakOptions);
+            localStorage.setItem('suramadu_kontrak_options', JSON.stringify(cycleKontrakOptions));
+          }
+
+          if (result.cycleJagaModes && typeof result.cycleJagaModes === 'object') {
+            cycleJagaModes = Object.assign({}, cycleJagaModes, result.cycleJagaModes);
+            localStorage.setItem('suramadu_jaga_modes', JSON.stringify(cycleJagaModes));
+          }
+
+          loadSettingsUI();
           autoSetSiklusDanHari();
           renderRekap(false);
           updateDashboardCharts(false);
           
-          if (statusEl) statusEl.innerText = 'Data tersinkron otomatis (Cloud Active)';
+          if (statusEl) statusEl.innerText = 'Data & pengaturan tersinkron otomatis (Cloud Active)';
         }
       } catch (err) {
         if (statusEl) statusEl.innerText = 'Penyimpanan internal aktif (Offline Ready)';
@@ -1559,7 +1984,13 @@
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'syncAll', records })
+          body: JSON.stringify({
+            action: 'syncAll',
+            records,
+            settings,
+            cycleKontrakOptions,
+            cycleJagaModes
+          })
         });
       } catch (e) {}
     }
@@ -1570,11 +2001,16 @@
         return;
       }
       const statusEl = document.getElementById('status-sync');
-      if (statusEl) statusEl.innerText = 'Menyinkronkan data...';
+      if (statusEl) statusEl.innerText = 'Menyinkronkan data & pengaturan...';
       
-      await autoFetchFromSheets();
-      await pushToSheets();
-      alert('Sinkronisasi 2 arah berhasil!');
+      if (records.length === 0) {
+        await autoFetchFromSheets();
+        await pushToSheets();
+      } else {
+        await pushToSheets();
+        await autoFetchFromSheets();
+      }
+      alert('Sinkronisasi 2 arah (Omset & Semua Pengaturan) berhasil!');
     }
 
     function generateDummyData() {
@@ -1616,45 +2052,18 @@
       const doc = new jsPDF('p', 'mm', [215.9, 330.2]);
 
       const activeSiklus = parseInt(document.getElementById('filter-siklus').value, 10) || getMaxSiklus();
-      const filteredRecords = records.filter(r => (parseInt(r.siklus, 10) || 1) === activeSiklus).sort((a, b) => a.hariKe - b.hariKe);
+      const calc = calculateCycleFinancials(activeSiklus);
+      const filteredRecords = calc.filteredRecords;
 
       const percentTab = settings.persentaseTabungan || 10;
-
-      let totalOmset = 0;
-      let totalTabungan = 0;
-      let totalPengeluaran = 0;
-
-      filteredRecords.forEach(r => {
-        totalOmset += (r.omsetKotor || 0);
-        totalTabungan += (r.tabungan || Math.round((r.omsetKotor || 0) * (percentTab / 100)));
-        totalPengeluaran += (r.pengeluaran || 0);
-      });
-
-      const totalHariBerjalan = filteredRecords.length;
-      const fullKontrak = settings.gajiPerKaryawan || 0;
-      let effectiveKontrak = fullKontrak;
-      let infoKontrakKet = '';
-
-      if (totalHariBerjalan < 30 && totalHariBerjalan > 0) {
-        const currentOpt = cycleKontrakOptions[activeSiklus] || 'prorata';
-        if (currentOpt === 'zero') {
-          effectiveKontrak = 0;
-          infoKontrakKet = ' (Opsi Rp 0)';
-        } else if (currentOpt === 'full') {
-          effectiveKontrak = fullKontrak;
-          infoKontrakKet = ' (Full 1 Bln)';
-        } else {
-          effectiveKontrak = Math.round((fullKontrak / 30) * totalHariBerjalan);
-          infoKontrakKet = ` (${totalHariBerjalan}/30 Hr)`;
-        }
-      }
-
-      const sisaDanaBagiHasil = totalTabungan - effectiveKontrak;
-      
-      const halfShare = Math.max(0, Math.round(sisaDanaBagiHasil * 0.50));
-      const bossTotalPendapatan = halfShare + effectiveKontrak;
-      const totalKaryawanShare = halfShare;
-      const perKaryawanShare = Math.round(totalKaryawanShare / 2);
+      const totalOmset = calc.totalOmset;
+      const totalTabungan = calc.totalTabungan;
+      const totalPengeluaran = calc.totalPengeluaran;
+      const totalHariBerjalan = calc.totalHariBerjalan;
+      const effectiveKontrak = calc.effectiveKontrak;
+      const infoKontrakKet = calc.infoKontrakKet;
+      const sisaDanaBagiHasil = calc.sisaDanaBagiHasil;
+      const bossTotalPendapatan = calc.bossTotal;
 
       const namaWarung = settings.namaWarung || 'WARUNG SURAMADU';
       const alamatWarung = settings.alamatWarung || 'Jl. Raya Suramadu No. 88, Bangkalan, Jawa Timur';
@@ -1771,17 +2180,51 @@
       doc.setTextColor(...primaryNavy);
       doc.text("Formulasi Bagi Hasil & Alokasi Pendapatan", 14, formY);
 
-      const leftTableData = [
-        [`Total Tabungan (${percentTab}% Omset)`, `Rp ${totalTabungan.toLocaleString('id-ID')}`],
-        [`Biaya Kontrak${infoKontrakKet}`, `Rp ${effectiveKontrak.toLocaleString('id-ID')}`],
-        ["Sisa Bagi Hasil Bersih", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
-      ];
+      let leftTableData = [];
+      let rightTableData = [];
 
-      const rightTableData = [
-        [`Pendapatan Boss (50%+Kontrak)`, `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
-        [`Bagi Hasil ${k1Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`],
-        [`Bagi Hasil ${k2Name} (25%)`, `Rp ${perKaryawanShare.toLocaleString('id-ID')}`]
-      ];
+      if (calc.jagaMode === 'pemilik_suami_istri') {
+        leftTableData = [
+          [`Total Tabungan (${percentTab}% Omset)`, `Rp ${totalTabungan.toLocaleString('id-ID')}`],
+          ["Mode Penjaga Warung", "Pemilik Suami Istri"],
+          ["Sisa Bagi Hasil Bersih", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
+        ];
+        rightTableData = [
+          ["Pendapatan Boss (100% Tabungan)", `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
+          ["Penjaga Warung", "Pemilik Warung Suami Istri"]
+        ];
+      } else if (calc.jagaMode === 'pemilik_1_karyawan') {
+        leftTableData = [
+          [`Total Tabungan (${percentTab}% Omset)`, `Rp ${totalTabungan.toLocaleString('id-ID')}`],
+          [`Biaya Kontrak${infoKontrakKet}`, `Rp ${effectiveKontrak.toLocaleString('id-ID')}`],
+          ["Sisa Bagi Hasil Bersih", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
+        ];
+        rightTableData = [
+          ["Pendapatan Boss (75%+Kontrak)", `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
+          [`Bagi Hasil ${k1Name} (25%)`, `Rp ${calc.karyawan1Share.toLocaleString('id-ID')}`]
+        ];
+      } else if (calc.jagaMode === 'karyawan_suami_istri') {
+        leftTableData = [
+          [`Total Tabungan (${percentTab}% Omset)`, `Rp ${totalTabungan.toLocaleString('id-ID')}`],
+          [`Biaya Kontrak${infoKontrakKet}`, `Rp ${effectiveKontrak.toLocaleString('id-ID')}`],
+          ["Sisa Bagi Hasil Bersih", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
+        ];
+        rightTableData = [
+          ["Pendapatan Boss (50%+Kontrak)", `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
+          [`Bagi Hasil ${k1Name} Suami Istri (50%)`, `Rp ${calc.karyawan1Share.toLocaleString('id-ID')}`]
+        ];
+      } else {
+        leftTableData = [
+          [`Total Tabungan (${percentTab}% Omset)`, `Rp ${totalTabungan.toLocaleString('id-ID')}`],
+          [`Biaya Kontrak${infoKontrakKet}`, `Rp ${effectiveKontrak.toLocaleString('id-ID')}`],
+          ["Sisa Bagi Hasil Bersih", `Rp ${sisaDanaBagiHasil.toLocaleString('id-ID')}`]
+        ];
+        rightTableData = [
+          ["Pendapatan Boss (50%+Kontrak)", `Rp ${bossTotalPendapatan.toLocaleString('id-ID')}`],
+          [`Bagi Hasil ${k1Name} (25%)`, `Rp ${calc.karyawan1Share.toLocaleString('id-ID')}`],
+          [`Bagi Hasil ${k2Name} (25%)`, `Rp ${calc.karyawan2Share.toLocaleString('id-ID')}`]
+        ];
+      }
 
       doc.autoTable({
         startY: formY + 3,
@@ -1817,12 +2260,15 @@
       doc.text("Dibuat oleh,", 25, sigY);
       doc.text("Mengetahui,", 145, sigY);
 
+      const pembuatLaporan = calc.jagaMode === 'pemilik_suami_istri' ? namaBoss : k1Name;
+      const jabatanPembuat = calc.jagaMode === 'pemilik_suami_istri' ? "(Pemilik / Pengelola Warung)" : "(Penanggung Jawab Laporan)";
+
       doc.setFont("helvetica", "bold");
-      doc.text(k1Name, 25, sigY + 16);
+      doc.text(pembuatLaporan, 25, sigY + 16);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.5);
       doc.setTextColor(100);
-      doc.text("(Penanggung Jawab Laporan)", 25, sigY + 20);
+      doc.text(jabatanPembuat, 25, sigY + 20);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8.5);
