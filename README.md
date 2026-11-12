@@ -24,7 +24,7 @@ Aplikasi web progresif (Progressive Web App) untuk pencatatan omset harian warun
 ## 🛠️ Struktur File
 
 ```text
-warung-suramadu-pwa/
+catatan-omset-pwa/
 ├── index.html        # Antarmuka utama aplikasi & modal pengaturan
 ├── style.css         # Styling responsif & layout cetak PDF ukuran F4
 ├── app.js            # Logika perhitungan siklus, alokasi staf, CSV, & sync API
